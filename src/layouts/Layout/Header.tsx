@@ -1,16 +1,18 @@
 import { Navbar, Dropdown, Avatar } from 'flowbite-react';
-import { Logo } from '../../components/Logo';
+import { SearchBar } from '../../components/SearchBar';
 
 export function Header() {
 
     return (
-        <header className='px-10 py-5 border-b bg-primary sticky top-0'>
+        <header className='px-10 py-4 bg-primary sticky top-0'>
             <Navbar fluid rounded className='bg-transparent'>
-                <Navbar.Brand href="/">
-                    <img src="/assets/logo.svg" alt="logo" className="w-32" />
-                </Navbar.Brand>
-                <div className='text-white'>search bar here</div>
-                <div className="flex md:order-2">
+                <div className="flex">
+                    <Navbar.Brand href="/">
+                        <img src="/assets/logo.svg" alt="logo" className="w-32" />
+                    </Navbar.Brand>
+                    <SearchBar/>
+                </div>
+                <div className="flex">
                     <Dropdown
                     arrowIcon={false}
                     inline
