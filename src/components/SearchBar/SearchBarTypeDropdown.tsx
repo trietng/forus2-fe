@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/react";
-import { $searchBarState } from "./SearchBarStore";
 import { Dropdown } from "flowbite-react";
 import type { CustomFlowbiteTheme } from "flowbite-react";
+import { $searchBarState } from "./SearchBarStore";
 
 const customTheme: CustomFlowbiteTheme['dropdown'] = {
     floating: {

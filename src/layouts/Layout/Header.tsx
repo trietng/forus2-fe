@@ -1,34 +1,27 @@
-import { Navbar, Dropdown, Avatar } from 'flowbite-react';
+import { Navbar } from 'flowbite-react';
 import { SearchBar } from '../../components/SearchBar';
+import { ProfileDropdown } from './ProfileDropdown';
+
+
 
 export function Header() {
 
     return (
-        <header className='px-10 py-4 bg-primary sticky top-0'>
-            <Navbar fluid rounded className='bg-transparent'>
-                <div className="flex">
-                    <Navbar.Brand href="/">
-                        <img src="/assets/logo.svg" alt="logo" className="w-32" />
-                    </Navbar.Brand>
+        <header className='sticky top-0'>
+            <Navbar className='bg-primary md:px-10 px-4 py-4'>
+                <div className="flex flex-col md:flex-row m-auto md:m-0 gap-4">
+                    <div className='flex justify-between'>
+                        <Navbar.Brand href="/">
+                            <img src="/assets/logo.svg" alt="logo" className="w-32" />
+                        </Navbar.Brand>
+                        <div className='md:hidden'>
+                            <ProfileDropdown />
+                        </div>
+                    </div>
                     <SearchBar/>
                 </div>
-                <div className="flex">
-                    <Dropdown
-                    arrowIcon={false}
-                    inline
-                    label={
-                        <Avatar alt="User settings" img="https://flowbite.com/docs/images/people/profile-picture-5.jpg" rounded />
-                    }
-                    >
-                        <Dropdown.Header>
-                            <span className="block text-sm">Bonnie Green</span>
-                            <span className="block truncate text-sm font-medium">name@flowbite.com</span>
-                        </Dropdown.Header>
-                        <Dropdown.Item>Profile</Dropdown.Item>
-                        <Dropdown.Item>Settings</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item>Sign out</Dropdown.Item>
-                    </Dropdown>
+                <div className='hidden md:block'>
+                    <ProfileDropdown />
                 </div>
             </Navbar>
         </header>
