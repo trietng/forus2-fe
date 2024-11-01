@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Button, FloatingLabel, HR } from 'flowbite-react';
 import { Bounce, toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -17,6 +17,7 @@ interface LoginFormData {
 
 export function Login() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [formData, setFormData] = useState<LoginFormData>({username: '', password: ''});
     const [formValidation, setFormValidation] = useState<Record<keyof LoginFormData, FormValidationData>>({
         username: {status: true, message: ''},
@@ -34,10 +35,17 @@ export function Login() {
             toast.error(VALIDATION_MESSAGE_FORM);
         }
         else {
-            await api.post('/auth/login', formData);
+            await api.post('/v1/auth/login', formData);
             navigate('/');
         }
     }
+
+    useEffect(() => {
+        const loginData = location.state as LoginFormData;
+        if (loginData) {
+            setFormData(loginData);
+        }
+    }, []);
 
     return (
         <>

@@ -1,28 +1,30 @@
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { Button, FloatingLabel, HR } from 'flowbite-react';
+import { Button, Datepicker, FloatingLabel, HR } from 'flowbite-react';
+import { Bounce, toast, ToastContainer } from 'react-toastify';
 import { api } from '../../../api';
 import { FormValidationData } from '../../../models/form-validation-data';
 import { ValidationMessage } from '../../../components/Validation/ValidationMessage';
 import { colorFromValidation } from '../../../helpers/flowbite/validation';
 import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, VALIDATION_MESSAGE_CONFIRM_PASSWORD, VALIDATION_MESSAGE_FORM } from '../../../constants/validation';
-import { Bounce, toast, ToastContainer } from 'react-toastify';
 
 interface RegisterFormData {
     username: string;
     email: string;
     password: string;
     confirmPassword: string;
+    displayName: string;
 }
 
 export function Register() {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState<RegisterFormData>({username: '', email: '', password: '', confirmPassword: ''});
+    const [formData, setFormData] = useState<RegisterFormData>({username: '', email: '', password: '', confirmPassword: '', displayName: ''});
     const [formValidation, setFormValidation] = useState<Record<keyof RegisterFormData, FormValidationData>>({
         username: {status: true, message: ''},
         email: {status: true, message: ''},
         password: {status: true, message: ''},
-        confirmPassword: {status: true, message: ''}
+        confirmPassword: {status: true, message: ''},
+        displayName: {status: true, message: ''}
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -52,8 +54,10 @@ export function Register() {
             toast.error(VALIDATION_MESSAGE_FORM);
         }
         else {
-            await api.post('/auth/login', formData);
-            navigate('/');
+            const { confirmPassword, ...registerFormData } = formData;
+            await api.post('/v1/auth/register', registerFormData);
+            const { email, ...loginFormData } = registerFormData;
+            navigate('/login', { state: loginFormData });
         }
     }
 
@@ -84,9 +88,11 @@ export function Register() {
                     <ValidationMessage formValidationData={formValidation.password} className='-mt-6 -mb-2'/>
                     <FloatingLabel label='Confirm password' variant='outlined' name='confirmPassword' type='password' onChange={handleConfirmPasswordInputChange} color={colorFromValidation(formValidation.confirmPassword)}/>
                     <ValidationMessage formValidationData={formValidation.confirmPassword} className='-mt-6 -mb-2'/>
+                    <FloatingLabel label='Display name' variant='outlined' name='displayName' type='text' onChange={handleInputChange} color={colorFromValidation(formValidation.displayName)} required minLength={1} maxLength={100}/>
+                    <ValidationMessage formValidationData={formValidation.displayName} className='-mt-6 -mb-2'/>
                     <Button color='blue' type='submit'>Register</Button>
                     <HR className='my-0'/>
-                    <Button color='yellow' className='bg-[unset]' onClick={() => navigate('/login')}>Login</Button>
+                    <Button color='yellow' onClick={() => navigate('/login')}>Login</Button>
                     <div className='self-center mt-12'>&copy; 2023-2024 ForUS</div>
                 </form>
             </div>

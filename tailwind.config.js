@@ -14,7 +14,7 @@ export default {
       'secondary': '#ffc107',
       'tertiary': '#f9f9fa',
       'body-primary': '#23497C',
-      'body-secondary': '#ffffff',
+      'body-secondary': '#1D76C6',
     }
   },
   plugins: [flowbite.plugin()],

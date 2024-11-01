@@ -11,7 +11,8 @@ export function getDecodedPayload() : Payload | undefined {
             return {
                 id: sub.id,
                 username: sub.username,
-                role: sub.role
+                role: sub.role,
+                avatarUrl: sub.avatarUrl
             };
         }
     }

@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Login from './pages/Auth/Login';
 import NotFound from './pages/NotFound';
 import Register from './pages/Auth/Register';
+import Settings from './pages/Settings';
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                 </AuthGuard>
             }>
                 <Route index element={<Home/>}/>
+                <Route path="/settings" element={<Settings/>}/>
             </Route>
             <Route element={<SimpleLayout header={false} className='bg-tertiary'/>}>
                 <Route path='/login' element={

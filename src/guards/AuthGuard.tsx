@@ -10,24 +10,23 @@ interface AuthGuardProps {
 
 export function AuthGuard(props: AuthGuardProps) {
     // DEBUG;
-    return props.children;
-    // TEMP DISABLED
-    // const headerPayload = Cookies.get('headerPayload');
-    // let children;
-    // let redirection;
-    // if (props.reverse) {
-    //     redirection = props.children;
-    //     children = <Navigate to='/' />;
-    // }
-    // else {
-    //     redirection = <Navigate to='/login' />;
-    //     children = props.children;
-    // }
-    // if (headerPayload) {
-    //     const decoded = jwtDecode(headerPayload);
-    //     if (decoded && decoded.exp && decoded.exp * 1000 > Date.now()) {
-    //         return children;
-    //     }
-    // }
-    // return redirection;
+    // return props.children;
+    const headerPayload = Cookies.get('headerPayload');
+    let children;
+    let redirection;
+    if (props.reverse) {
+        redirection = props.children;
+        children = <Navigate to='/' />;
+    }
+    else {
+        redirection = <Navigate to='/login' />;
+        children = props.children;
+    }
+    if (headerPayload) {
+        const decoded = jwtDecode(headerPayload);
+        if (decoded && decoded.exp && decoded.exp * 1000 > Date.now()) {
+            return children;
+        }
+    }
+    return redirection;
 }
