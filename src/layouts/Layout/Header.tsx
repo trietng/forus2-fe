@@ -7,7 +7,7 @@ import { ProfileDropdown } from './ProfileDropdown';
 export function Header() {
 
     return (
-        <header className='sticky top-0'>
+        <header className='sticky top-0 z-10'>
             <Navbar className='bg-primary md:px-10 px-4 py-4'>
                 <div className="flex flex-col md:flex-row m-auto md:m-0 gap-4">
                     <div className='flex justify-between'>

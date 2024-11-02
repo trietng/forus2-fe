@@ -2,3 +2,5 @@ export const PASSWORD_MIN_LENGTH = 2;
 export const PASSWORD_MAX_LENGTH = 72;
 export const VALIDATION_MESSAGE_CONFIRM_PASSWORD = 'Passwords do not match';
 export const VALIDATION_MESSAGE_FORM = 'Please fill in the form correctly';
+export const DESCRIPTION_MAX_LENGTH = 512;
+export const DISPLAY_NAME_MAX_LENGTH = 100;

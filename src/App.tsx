@@ -10,6 +10,7 @@ import Register from './pages/Auth/Register';
 import Settings from './pages/Settings';
 
 function App() {
+
     return (
         <Routes>
             <Route path="/" element={

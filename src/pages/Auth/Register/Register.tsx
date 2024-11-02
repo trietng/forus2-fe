@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { Button, Datepicker, FloatingLabel, HR } from 'flowbite-react';
+import { Button, FloatingLabel, HR } from 'flowbite-react';
 import { Bounce, toast, ToastContainer } from 'react-toastify';
 import { api } from '../../../api';
 import { FormValidationData } from '../../../models/form-validation-data';
@@ -92,7 +92,7 @@ export function Register() {
                     <ValidationMessage formValidationData={formValidation.displayName} className='-mt-6 -mb-2'/>
                     <Button color='blue' type='submit'>Register</Button>
                     <HR className='my-0'/>
-                    <Button color='yellow' onClick={() => navigate('/login')}>Login</Button>
+                    <Button color='secondary' onClick={() => navigate('/login')}>Login</Button>
                     <div className='self-center mt-12'>&copy; 2023-2024 ForUS</div>
                 </form>
             </div>

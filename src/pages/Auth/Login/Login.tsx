@@ -88,7 +88,7 @@ export function Login() {
                     <ValidationMessage formValidationData={formValidation.password} className='-mt-6 -mb-2'/>
                     <Button color='blue' type='submit'>Login</Button>
                     <HR className='my-0'/>
-                    <Button color='yellow' onClick={() => navigate('/register')}>Register</Button>
+                    <Button color='secondary' onClick={() => navigate('/register')}>Register</Button>
                     <Button color='light' onClick={() => navigate('/forgot-password')}>Forgot password</Button>
                     <div className='self-center mt-12'>&copy; 2023-2024 ForUS</div>
                 </form>

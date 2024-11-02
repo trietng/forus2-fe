@@ -13,7 +13,7 @@ export function Footer() {
                 <div className="w-full md:w-1/3 mb-5"></div>
 
                 <div className="w-full md:w-1/3 mb-5">
-                    <h5 className="text-white text-left">Contact Us</h5>
+                    <h5 className="text-left">Contact Us</h5>
                     <ul className="space-y-2 mt-3">
                         <li className="flex items-center text-white">
                             <EnvelopeIcon className="size-4" />
