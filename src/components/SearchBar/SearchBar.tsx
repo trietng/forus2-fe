@@ -13,7 +13,7 @@ export function SearchBar() {
     const [searchInput, setSearchInput] = useState('');
     
     return (
-        <form className="flex" onSubmit={async (e) => {
+        <form className="flex text-black" onSubmit={async (e) => {
             e.preventDefault();
             if (e.currentTarget.checkValidity()) {
                 navigate(route(searchInput, searchBarState.type.toLocaleLowerCase()));

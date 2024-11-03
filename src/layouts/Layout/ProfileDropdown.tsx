@@ -1,14 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Dropdown, Avatar } from "flowbite-react";
 import { getDecodedPayload } from '../../helpers/jwt';
 import { Payload } from "../../models/payload";
 import { UserRoleMap } from "../../models/role";
 import { api } from "../../api";
+import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/validation";
+import { getThumbnail } from "../../firebase/thumbnail";
 
 export function ProfileDropdown() {
     const navigate = useNavigate();
     const [user] = useState<Payload | undefined>(getDecodedPayload());
+    const [avatar, setAvatar] = useState<string>();
+
+    async function fetchAvatar() {
+        if (user?.avatarUrl) {
+            const data = await getThumbnail(user.avatarUrl, AVATAR_THUMBNAIL_HEIGHT)
+            if (data && typeof data === 'string') {
+                setAvatar(data);
+            }
+        }
+    }
+
+    useEffect(() => {
+        fetchAvatar();
+    }, []);
 
     async function logout() {
         await api.delete('v1/auth/logout');
@@ -20,7 +36,7 @@ export function ProfileDropdown() {
             arrowIcon={false}
             inline
             label={
-                <Avatar img={user?.avatarUrl}/>
+                <Avatar img={avatar}/>
             }
             placement="bottom-end"
             >
