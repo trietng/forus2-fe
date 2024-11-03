@@ -21,7 +21,7 @@ export function Footer() {
                         </li>
                         <li className="flex items-center text-white">
                             <EnvelopeIcon className="size-4" />
-                            <a href="mailto:hch22092000@gmail.com" className="px-2">hch22092000@gmail.com</a>
+                            <a href="mailto:minhvip08@gmail.com" className="px-2">minhvip08@gmail.com</a>
                         </li>
                     </ul>
                 </div>

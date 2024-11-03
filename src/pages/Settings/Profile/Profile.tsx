@@ -114,7 +114,7 @@ export function Profile() {
                 </Modal.Body>
             </Modal>
             <div className="px-4 [&_label]:text-white">
-                <div className="flex gap-4">
+                <div className="grid md:flex gap-4">
                     <div className="text-center">
                         <div className={"relative bg-transparent text-transparent hover:text-white cursor-pointer" + (canUpload ? "" : " pointer-events-none")} onClick={pickImage} >
                             { canUpload ?
@@ -136,7 +136,7 @@ export function Profile() {
                         <Textarea placeholder="Tell us about yourself" name="description" className="text-black h-full resize-none mt-1" value={formData?.description} maxLength={DESCRIPTION_MAX_LENGTH} onChange={handleInputChange}/>
                     </div>
                 </div>
-                <div className="grid grid-cols-2 gap-y-2 gap-x-4">
+                <div className="grid md:grid-cols-2 gap-y-2 gap-x-4">
                     <div>
                         <Label htmlFor="email" value="Email" />
                         <TextInput className="text-white mt-1" name='email' type='email' disabled value={immutableUserDetails?.email || ''}/>
@@ -157,7 +157,7 @@ export function Profile() {
                         <Datepicker className="mt-1" label='Date of birth' name='dateOfBirth' value={formData?.dateOfBirth || new Date(0)} onChange={handleDateInputChange}/>
                     </div>
                 </div>
-                <div className="flex justify-end mt-4">
+                <div className="flex justify-end mt-8">
                     <Button onClick={partialUpdateUser} className="place-items-end" color="secondary">Save changes</Button>
                 </div>
             </div>

@@ -19,6 +19,12 @@ function App() {
                 </AuthGuard>
             }>
                 <Route index element={<Home/>}/>
+            </Route>
+            <Route element={
+                <AuthGuard>
+                    <Layout searchDisabled/>
+                </AuthGuard>
+            }>
                 <Route path="/settings" element={<Settings/>}/>
             </Route>
             <Route element={<SimpleLayout header={false} className='bg-tertiary'/>}>

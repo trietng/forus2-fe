@@ -4,12 +4,16 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { customTheme } from '../theme';
 
-export function Layout() {
+interface LayoutProps {
+    searchDisabled?: boolean;
+}
+
+export function Layout(props: LayoutProps) {
     return (
         <Flowbite theme={{theme: customTheme}}>
             <div className='flex flex-col min-h-screen antialiased text-slate-400 bg-body-primary text-white'>
-                <Header />
-                <div className='mx-8 flex flex-grow my-1'>
+                <Header searchDisabled={props.searchDisabled}/>
+                <div className='mx-4 md:mx-8 flex flex-grow my-1'>
                     <Outlet />
                 </div>
                 <Footer />
