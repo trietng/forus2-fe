@@ -5,3 +5,4 @@ export const VALIDATION_MESSAGE_FORM = 'Please fill in the form correctly';
 export const DESCRIPTION_MAX_LENGTH = 512;
 export const DISPLAY_NAME_MAX_LENGTH = 100;
 export const AVATAR_THUMBNAIL_HEIGHT = 64;
+export const GROUP_NAME_MAX_LENGTH = 100;

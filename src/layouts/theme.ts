@@ -8,6 +8,7 @@ export const customTheme: CustomFlowbiteTheme = {
     },
     modal: {
         header: {
+            title: "text-xl font-medium text-white",
             close: {
                 base: "ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-white hover:bg-black/10"
             }
@@ -19,6 +20,13 @@ export const customTheme: CustomFlowbiteTheme = {
     spinner: {
         color: {
             secondary: "fill-secondary"
+        }
+    },
+    label: {
+        root: {
+            colors: {
+                default: "text-white"
+            }
         }
     }
 }
