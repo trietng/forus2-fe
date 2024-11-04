@@ -13,15 +13,15 @@ type ModalMode = 'create' | 'update' | 'delete' | null;
 
 interface GroupModalData {
     open: boolean;
-    keys: {
+    keys?: {
         submitButton: string;
         header: string;
-    };
+    }
     mode: ModalMode;
     group: Group;
 }
 
-const $groupModalData = map<GroupModalData>({open: false, keys: { submitButton: '', header: ''}, group: {name: ''}, mode: null});
+const $groupModalData = map<GroupModalData>({open: false, group: {name: ''}, mode: null});
 
 export function GroupModal() {
     const groupModalData = useStore($groupModalData);
@@ -55,7 +55,7 @@ export function GroupModal() {
 
     return (
         <Modal show={groupModalData.open} size="md" onClose={() => $groupModalData.setKey('open', false)} initialFocus={groupNameInputRef} popup={groupModalData.mode === "delete"}>
-            <Modal.Header>{groupModalData.keys.header}</Modal.Header>
+            <Modal.Header>{groupModalData.keys?.header}</Modal.Header>
             <Modal.Body>
                 {groupModalData.mode === "delete" ?
                 <div className="text-center">
@@ -83,7 +83,7 @@ export function GroupModal() {
             {groupModalData.mode !== "delete" && 
             <Modal.Footer>
                 <Button color="secondary" type="submit" form="createGroup">
-                    {groupModalData.keys.submitButton}
+                    {groupModalData.keys?.submitButton}
                 </Button>
             </Modal.Footer>}
         </Modal>
@@ -91,16 +91,13 @@ export function GroupModal() {
 }
 
 async function openModal(mode: ModalMode, group: Group = { name: '' }) {
-    let keys = { submitButton: '', header: '' };
+    let keys;
     switch (mode) {
         case 'create':
             keys = { submitButton: 'Create', header: 'Create new group' };
             break;
         case 'update':
             keys = { submitButton: 'Update', header: 'Update group' };
-            break;
-        case 'delete':
-            keys = { submitButton: 'Delete', header: '' };
             break;
     }
     $groupModalData.set({
