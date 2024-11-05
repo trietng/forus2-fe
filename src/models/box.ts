@@ -1,6 +1,7 @@
 import { Base } from './base';
+import { Content } from './content';
 
-export interface Box extends Base {
+export interface Box extends Base, Content {
     name: string;
     description: string;
 }

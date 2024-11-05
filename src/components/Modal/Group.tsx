@@ -1,23 +1,15 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { Button, Label, Modal, TextInput } from "flowbite-react";
-import { PlusIcon } from "@heroicons/react/24/solid";
-import { getDecodedPayload } from "../../helpers/jwt";
-import { GROUP_NAME_MAX_LENGTH } from "../../constants/validation";
-import { api } from "../../api";
-import { $groups, Group } from "../../models/group";
-import { map } from "nanostores";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import { useStore } from "@nanostores/react";
-import { ExclamationTriangleIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Modal, Button, Label, TextInput } from "flowbite-react";
+import { map } from "nanostores";
+import { useRef, ChangeEvent } from "react";
+import { api } from "../../api";
+import { GROUP_NAME_MAX_LENGTH } from "../../constants/validation";
+import { Group, $groups } from "../../models/group";
+import { ModalData, ModalMode } from "../../models/modal";
 
-type ModalMode = 'create' | 'update' | 'delete' | null;
 
-interface GroupModalData {
-    open: boolean;
-    keys?: {
-        submitButton: string;
-        header: string;
-    }
-    mode: ModalMode;
+interface GroupModalData extends ModalData {
     group: Group;
 }
 
@@ -34,11 +26,11 @@ export function GroupModal() {
     async function handleSubmit(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault();
         switch (groupModalData.mode) {
-            case 'create':
+            case "create":
                 const group = await api.post('/v1/groups', groupModalData.group);
                 $groups.set([...($groups.get() || []), group.data]);
                 break;
-            case 'update':
+            case "update":
                 console.log(groupModalData.group);
                 const updatedGroup = await api.put(`/v1/groups/${groupModalData.group._id}`, groupModalData.group);
                 $groups.set($groups.get()!.map(group => group._id === updatedGroup.data._id ? updatedGroup.data : group));
@@ -72,7 +64,7 @@ export function GroupModal() {
                         </Button>
                     </div>
                 </div> : 
-                <form id="createGroup" onSubmit={handleSubmit}>
+                <form id="groupEditor" onSubmit={handleSubmit}>
                     <div className="flex justify-between text-white">
                         <Label htmlFor="groupName">Name</Label>
                         <span className="text-sm">{groupModalData.group.name.length || 0}/{GROUP_NAME_MAX_LENGTH}</span>
@@ -82,7 +74,7 @@ export function GroupModal() {
             </Modal.Body>
             {groupModalData.mode !== "delete" && 
             <Modal.Footer>
-                <Button color="secondary" type="submit" form="createGroup">
+                <Button color="secondary" type="submit" form="groupEditor">
                     {groupModalData.keys?.submitButton}
                 </Button>
             </Modal.Footer>}
@@ -90,7 +82,7 @@ export function GroupModal() {
     )
 }
 
-async function openModal(mode: ModalMode, group: Group = { name: '' }) {
+export async function openGroupModal(mode: ModalMode, group: Group = { name: '' }) {
     let keys;
     switch (mode) {
         case 'create':
@@ -106,38 +98,4 @@ async function openModal(mode: ModalMode, group: Group = { name: '' }) {
         group: group,
         mode: mode
     });
-}
-
-export function GroupCreator() {
-    const [user] = useState(getDecodedPayload());
-    if (user?.role !== "ROLE_ADMIN") return null;
-
-    return (
-        <div
-            className="rounded-lg shadow-sm mt-4 py-3 text-white text-center border-dashed border-4 hover:border-solid cursor-pointer"
-            onClick={() => openModal("create")}
-        >
-            <PlusIcon className="size-8 place-self-center mr-2 inline"/><span className="text-lg">Create new group</span>
-        </div>
-    );
-}
-
-interface GroupEditorProps {
-    group: Group;
-}
-
-export function GroupEditor(props: GroupEditorProps) {
-    const [user] = useState(getDecodedPayload());
-    if (user?.role !== "ROLE_ADMIN") return null;
-
-    useEffect(() => {
-        console.log(props.group);
-    });
-
-    return (
-        <div className="flex gap-4">
-            <Button color="blue" onClick={() => openModal("update", props.group)}><PencilIcon className="size-4 place-self-center mr-2"/> Edit</Button>
-            <Button color="failure" onClick={() => openModal("delete", props.group)}><TrashIcon className="size-4 place-self-center mr-2"/> Delete</Button>
-        </div>
-    );
 }

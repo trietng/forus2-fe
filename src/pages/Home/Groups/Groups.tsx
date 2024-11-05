@@ -1,10 +1,12 @@
 import { useEffect } from "react";
+import { useStore } from "@nanostores/react";
 import { api } from "../../../api";
 import { $groups } from "../../../models/group";
 import { GroupCard } from "../../../components/GroupCard/GroupCard";
 import { FallbackSpinner } from "../../../components/FallbackSpinner";
-import { GroupCreator, GroupModal } from "../../../components/AdminControl/Group";
-import { useStore } from "@nanostores/react";
+import { GroupModal } from "../../../components/Modal/Group";
+import { GroupCreator } from "../../../components/Control/Group";
+import { BoxModal } from "../../../components/Modal/Box";
 
 export function Groups() {
     const groups = useStore($groups);
@@ -24,10 +26,11 @@ export function Groups() {
             {groups ? (groups.length === 0 ?
             <div className="text-center">No groups found.</div> :
             groups.map((group) => (
-                <GroupCard key={group._id!} group={group} />
+                <GroupCard group={group} key={group._id!}/>
             ))) : <FallbackSpinner />}
-            <GroupCreator/>
+            <GroupCreator />
             <GroupModal />
+            <BoxModal />
         </>
         
     );

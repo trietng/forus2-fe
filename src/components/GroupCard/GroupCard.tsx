@@ -1,6 +1,8 @@
 import { Key } from "react";
 import { type Group } from "../../models/group";
-import { GroupEditor } from "../AdminControl/Group";
+import { GroupEditor } from "../Control/Group";
+import { Link } from "react-router-dom";
+import { BoxStatus } from "../Control/Box";
 
 interface GroupProps {
     key: Key;
@@ -9,14 +11,23 @@ interface GroupProps {
 
 export function GroupCard(props: GroupProps) {
     return (
-        <div className={"mb-4 rounded-lg shadow-sm bg-white overflow-hidden" + (props.group.boxes!.length > 0 ? " rounded-b-none" : "")} key={props.key}>
+        <div className={"mb-4 shadow-sm rounded-lg bg-white overflow-hidden"}>
             <div className="flex justify-between p-3 bg-primary items-center">
                 <div className="font-bold text-lg">{props.group.name}</div>
                 <GroupEditor group={props.group} />
             </div>
-            <ul className="mb-0">
+            <ul className="text-primary">
                 {props.group.boxes!.map((box) => (
-                    <div>{box.name}</div>
+                    <li key={box._id} className="flex items-center justify-between p-3 border-b">
+                        <Link to={`/box/${box._id}`} className="font-semibold hover:underline">{box.name}</Link>
+                        <div className="flex gap-4">
+                            <div className="flex flex-col items-center justify-center">
+                                <div>Threads</div>
+                                <div>{box.threadCount}</div>
+                            </div>
+                            <BoxStatus box={box} />
+                        </div>
+                    </li>
                 ))}
             </ul>
         </div>
