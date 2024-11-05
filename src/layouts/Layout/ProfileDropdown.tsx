@@ -7,6 +7,7 @@ import { UserRoleMap } from "../../models/role";
 import { api } from "../../api";
 import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/validation";
 import { getThumbnail } from "../../firebase/thumbnail";
+import { ArrowLeftStartOnRectangleIcon, Cog6ToothIcon } from "@heroicons/react/24/solid";
 
 export function ProfileDropdown() {
     const navigate = useNavigate();
@@ -44,9 +45,9 @@ export function ProfileDropdown() {
                 <span className="block text-sm font-medium">{user?.username}</span>
                 {user?.role && <span className="block text-sm">{UserRoleMap[user.role]}</span>}
             </Dropdown.Header>
-            <Dropdown.Item as={Link} to="/settings">Settings</Dropdown.Item>
+            <Dropdown.Item as={Link} to="/settings"><Cog6ToothIcon className="mr-2 inline size-4"/> Settings</Dropdown.Item>
             <Dropdown.Divider />
-            <Dropdown.Item onClick={() => logout()}>Sign out</Dropdown.Item>
+            <Dropdown.Item onClick={() => logout()}><ArrowLeftStartOnRectangleIcon className="mr-2 inline size-4"/> Logout</Dropdown.Item>
         </Dropdown>
     );
 }

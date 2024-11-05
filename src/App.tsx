@@ -1,24 +1,34 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthGuard } from './guards/AuthGuard';
 import Layout from './layouts/Layout';
 import SimpleLayout from './layouts/SimpleLayout';
 import Forbidden from './pages/Forbidden';
-import Home from './pages/Home';
+import All from './pages/All';
 import Login from './pages/Auth/Login';
 import NotFound from './pages/NotFound';
 import Register from './pages/Auth/Register';
 import Settings from './pages/Settings';
+import Home from './pages/Home';
+import { FallbackSpinner } from './components/FallbackSpinner';
+import MainLayout from './layouts/MainLayout';
+const Box = lazy(() => import('./pages/Box'));
 
 function App() {
 
     return (
         <Routes>
-            <Route path="/" element={
+            <Route element={
                 <AuthGuard>
-                    <Layout/>
+                    <Layout>
+                        <MainLayout/>
+                    </Layout>
                 </AuthGuard>
             }>
-                <Route index element={<Home/>}/>
+                <Route path="/" element={<Home/>}/>
+                <Route path="/all" element={<All/>}/>
+                <Route path="/box/:id" element={<Suspense fallback={<FallbackSpinner/>}><Box/></Suspense>}/>
+                <Route path="/box/:id/:page" element={<Suspense fallback={<FallbackSpinner/>}><Box/></Suspense>}/>
             </Route>
             <Route element={
                 <AuthGuard>

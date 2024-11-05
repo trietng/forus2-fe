@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo } from "react";
 import { Button } from "flowbite-react";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -8,7 +8,7 @@ import { openGroupModal } from "../Modal/Group";
 import { BoxCreator } from "./Box";
 
 export function GroupCreator() {
-    const [user] = useState(getDecodedPayload());
+    const user = useMemo(() => getDecodedPayload(), []);
     if (user?.role !== "ROLE_ADMIN") return null;
 
     return (
@@ -26,7 +26,7 @@ interface GroupEditorProps {
 }
 
 export function GroupEditor(props: GroupEditorProps) {
-    const [user] = useState(getDecodedPayload());
+    const user = useMemo(() => getDecodedPayload(), []);
     if (user?.role !== "ROLE_ADMIN") return null;
     return (
         <div className="flex gap-4 items-center">

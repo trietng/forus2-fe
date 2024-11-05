@@ -28,5 +28,5 @@ export const customTheme: CustomFlowbiteTheme = {
                 default: "text-white"
             }
         }
-    }
+    },
 }

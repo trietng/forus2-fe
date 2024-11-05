@@ -6,3 +6,5 @@ export const DESCRIPTION_MAX_LENGTH = 512;
 export const DISPLAY_NAME_MAX_LENGTH = 100;
 export const AVATAR_THUMBNAIL_HEIGHT = 64;
 export const GROUP_NAME_MAX_LENGTH = 100;
+export const BOX_MAX_NAME_LENGTH = 128;
+export const BOX_MAX_DESCRIPTION_LENGTH = 512;

@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { CustomFlowbiteTheme, Tabs } from "flowbite-react";
 import { UserCircleIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-import { Bounce, ToastContainer } from "react-toastify";
 import { FallbackSpinner } from "../../components/FallbackSpinner";
 import Profile from "./Profile";
 const Security = lazy(() => import("./Security"));
@@ -27,32 +26,17 @@ const customThemeTabs: CustomFlowbiteTheme['tabs'] = {
 
 export function Settings() {
     return (
-        <>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss={false}
-                draggable
-                pauseOnHover={false}
-                theme="light"
-                transition={Bounce}
-            />
-            <div className="w-full bg-body-secondary my-8 rounded-lg">
-                <Tabs aria-label="Setting tabs" variant="underline" theme={customThemeTabs}>
-                    <Tabs.Item active title="Profile" icon={UserCircleIcon}>
-                        <Profile />
-                    </Tabs.Item>
-                    <Tabs.Item title="Security" icon={LockClosedIcon}>
-                        <Suspense fallback={<FallbackSpinner/>}>
-                            <Security />
-                        </Suspense>
-                    </Tabs.Item>
-                </Tabs>
-            </div>
-        </>
+        <div className="w-full bg-body-secondary my-8 rounded-lg">
+            <Tabs aria-label="Setting tabs" variant="underline" theme={customThemeTabs}>
+                <Tabs.Item active title="Profile" icon={UserCircleIcon}>
+                    <Profile />
+                </Tabs.Item>
+                <Tabs.Item title="Security" icon={LockClosedIcon}>
+                    <Suspense fallback={<FallbackSpinner/>}>
+                        <Security />
+                    </Suspense>
+                </Tabs.Item>
+            </Tabs>
+        </div>
     );
 }

@@ -1,32 +1,33 @@
 import { map } from "nanostores";
-import { Modal, Button, Label, TextInput } from "flowbite-react";
+import { Modal, Button, Label, TextInput, Textarea } from "flowbite-react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import { useStore } from "@nanostores/react";
 import { ChangeEvent, useRef } from "react";
-import { Box, BoxWithThreadCount } from "../../models/box";
+import { Box, BoxWithCount } from "../../models/box";
 import { ModalData, ModalMode } from "../../models/modal";
 import { $groups, Group } from "../../models/group";
 import { api } from "../../api";
+import { BOX_MAX_DESCRIPTION_LENGTH, BOX_MAX_NAME_LENGTH } from "../../constants/validation";
 
 interface BoxModalData extends ModalData {
     box: Box;
     group?: Group;
 }
 
-export const $boxModalData = map<BoxModalData>({open: false, box: {name: '', description: '', status: 'pending'}, mode: null});
+export const $boxModalData = map<BoxModalData>({open: false, box: {name: '', description: ''}, mode: null});
 
 export function BoxModal() {
     const boxModalData = useStore($boxModalData);
     const boxNameInputRef = useRef<HTMLInputElement>(null);
 
-    async function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
+    async function handleInputChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         $boxModalData.setKey('box', { ...boxModalData.box, [e.target.name]: e.target.value });
     }
 
     async function handleSubmit(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault();
         if (boxModalData.mode === "create") {
-            let box: BoxWithThreadCount = (await api.post(`v1/groups/${boxModalData.group?._id}/box`, boxModalData.box)).data;
+            let box: BoxWithCount = (await api.post(`v1/groups/${boxModalData.group?._id}/box`, boxModalData.box)).data;
             box.threadCount = 0;
             $groups.set($groups.get()!.map(group => group._id === boxModalData.group?._id ? {...group, boxes: [...group.boxes || [], box]} : group));
         } else {
@@ -57,14 +58,14 @@ export function BoxModal() {
                 <form id="boxEditor" onSubmit={handleSubmit}>
                     <div className="flex justify-between text-white">
                         <Label htmlFor="boxName">Name</Label>
-                        <span className="text-sm">{boxModalData.box.name.length || 0}/</span>
+                        <span className="text-sm">{boxModalData.box.name.length || 0}/{BOX_MAX_NAME_LENGTH}</span>
                     </div>
                     <TextInput type="text" id="boxName" name="name" className="mt-1" placeholder="Box name" onChange={handleInputChange} ref={boxNameInputRef} value={boxModalData.box.name}/>
                     <div className="flex justify-between text-white mt-4">
                         <Label htmlFor="boxDescription">Description</Label>
-                        <span className="text-sm">{boxModalData.box.description.length || 0}/</span>
+                        <span className="text-sm">{boxModalData.box.description.length || 0}/{BOX_MAX_DESCRIPTION_LENGTH}</span>
                     </div>
-                    <TextInput type="text" id="boxDescription" name="description" className="mt-1" placeholder="Box description" onChange={handleInputChange} value={boxModalData.box.description}/>
+                    <Textarea id="boxDescription" name="description" className="mt-1" placeholder="Box description" onChange={handleInputChange} value={boxModalData.box.description}/>
                 </form>}
             </Modal.Body>
             {boxModalData.mode !== "delete" && 
@@ -77,7 +78,7 @@ export function BoxModal() {
     )
 }
 
-export async function openBoxModal(mode: ModalMode, group?: Group, box: Box = {name: '', description: '', status: 'pending'}) {
+export async function openBoxModal(mode: ModalMode, group?: Group, box: Box = {name: '', description: ''}) {
     let keys;
     switch (mode) {
         case "create":
