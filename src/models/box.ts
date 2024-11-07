@@ -4,6 +4,10 @@ import { Base } from './base';
 export interface Box extends Base {
     name: string;
     description: string;
+    group?: {
+        _id: string;
+        name: string;
+    }
     threads?: any[];
 }
 

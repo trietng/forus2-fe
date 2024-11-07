@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useStore } from "@nanostores/react";
 import { api } from "../../../api";
 import { $groups } from "../../../models/group";
@@ -9,6 +10,7 @@ import { GroupCreator } from "../../../components/Control/Group";
 import { BoxModal } from "../../../components/Modal/Box";
 
 export function Groups() {
+    const location = useLocation();
     const groups = useStore($groups);
 
     async function fetchGroups() {
@@ -18,8 +20,16 @@ export function Groups() {
     }
 
     useEffect(() => {
-        fetchGroups();
-    }, []);
+        fetchGroups().then(() => {
+            // scroll to hash
+            if (location.hash) {
+                const element = document.getElementById(location.hash.slice(1));
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        })
+    }, [location.key]);
 
     return (
         <>

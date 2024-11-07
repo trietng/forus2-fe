@@ -27,6 +27,14 @@ function App() {
             }>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/all" element={<All/>}/>
+            </Route>
+            <Route element={
+                <AuthGuard>
+                    <Layout>
+                        <MainLayout showBoxInformation/>
+                    </Layout>
+                </AuthGuard>
+            }>
                 <Route path="/box/:id" element={<Suspense fallback={<FallbackSpinner/>}><Box/></Suspense>}/>
                 <Route path="/box/:id/:page" element={<Suspense fallback={<FallbackSpinner/>}><Box/></Suspense>}/>
             </Route>

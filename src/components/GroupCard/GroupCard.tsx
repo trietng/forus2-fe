@@ -11,7 +11,7 @@ interface GroupProps {
 
 export function GroupCard(props: GroupProps) {
     return (
-        <div className={"mb-4 shadow-sm rounded-lg bg-white overflow-hidden"}>
+        <div className={"mb-4 shadow-sm rounded-lg bg-white overflow-hidden"} id={props.group._id}>
             <div className="flex justify-between p-3 bg-primary items-center">
                 <div className="font-bold text-lg">{props.group.name}</div>
                 <GroupEditor group={props.group} />

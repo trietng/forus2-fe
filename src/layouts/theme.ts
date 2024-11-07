@@ -29,4 +29,12 @@ export const customTheme: CustomFlowbiteTheme = {
             }
         }
     },
+    breadcrumb: {
+        item: {
+            href: {
+                off: "flex items-center text-sm font-medium text-gray-400",
+                on: "flex items-center text-sm font-medium text-gray-400 hover:text-white"
+            },
+        }
+    }
 }
