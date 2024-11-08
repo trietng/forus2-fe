@@ -9,6 +9,7 @@ export interface Box extends Base {
         name: string;
     }
     threads?: any[];
+    moderators?: string[];
 }
 
 export interface BoxWithCount extends Box {

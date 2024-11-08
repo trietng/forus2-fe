@@ -60,18 +60,32 @@ export function ContentStatus(props: any) {
     );
 }
 
+export function BoxEditor() {
+    const user = useMemo(() => getDecodedPayload(), []);
+    const box = useStore($box);
+
+    if (user?.role !== "ROLE_ADMIN" && !box?.moderators?.includes(user?.id || '')) return null;
+
+    return (
+        <div className="flex">
+            <button className="w-full bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Rename</button>
+            <button className="w-full bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Edit</button>
+            <button className="w-full bg-red-500 p-3 hover:brightness-105 text-[10px] overflow-hidden"><TrashIcon className="size-3 place-self-center mr-2 inline"/> Delete</button>
+        </div>
+    );
+}
+
 export function BoxInformation() {
     const box = useStore($box);
 
     return (
         <div className="bg-primary rounded-lg overflow-hidden">
+            <div className="p-4 border-b border-b-gray-400 font-bold">{box?.name}</div>
             <div className="m-4">{box?.description}</div>
             <div className="flex md:flex-col md:w-full">
                 <button className="inline w-1/4 md:w-full bg-secondary p-3 hover:brightness-105 text-[10px] overflow-hidden"><ArrowPathRoundedSquareIcon className="mr-2 inline size-3 place-self-center"/> Subscribe</button>
-                <div className="flex w-3/4 md:w-full">
-                    <button className="w-full bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Rename</button>
-                    <button className="w-full bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Edit</button>
-                    <button className="w-full bg-red-500 p-3 hover:brightness-105 text-[10px] overflow-hidden"><TrashIcon className="size-3 place-self-center mr-2 inline"/> Delete</button>
+                <div className="w-3/4 md:w-full">
+                    <BoxEditor />
                 </div>
             </div>
         </div>

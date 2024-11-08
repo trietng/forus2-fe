@@ -6,6 +6,7 @@ import { $box } from "../../models/box";
 import { nand } from "../../utils/boolean";
 import { ForusBreadcrumb } from "../../components/Routing/ForusBreadcrumb";
 import { BoxInformation } from "../../components/Control/Box";
+import TextEditor from "../../components/Control/TextEditor/TextEditor";
 
 function route(id: string, page: number, order: string | null = null, direction: string | null = null) {
     const url = isNaN(page) ? `/box/${id}` : `/box/${id}/${page}`;
@@ -68,6 +69,7 @@ export function Box() {
             <div className="md:hidden mt-4">
                 <BoxInformation />
             </div>
+            <TextEditor/>
         </>
     );
 }

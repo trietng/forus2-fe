@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useStore } from "@nanostores/react";
 import { api } from "../../../api";
 import { $groups } from "../../../models/group";
-import { GroupCard } from "../../../components/GroupCard/GroupCard";
+import { GroupCard } from "../../../components/GroupCard";
 import { FallbackSpinner } from "../../../components/FallbackSpinner";
 import { GroupModal } from "../../../components/Modal/Group";
 import { GroupCreator } from "../../../components/Control/Group";

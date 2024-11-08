@@ -29,6 +29,7 @@ export function BoxModal() {
         if (boxModalData.mode === "create") {
             let box: BoxWithCount = (await api.post(`v1/groups/${boxModalData.group?._id}/box`, boxModalData.box)).data;
             box.threadCount = 0;
+            box.subscriberCount = 0;
             $groups.set($groups.get()!.map(group => group._id === boxModalData.group?._id ? {...group, boxes: [...group.boxes || [], box]} : group));
         } else {
             // Update box

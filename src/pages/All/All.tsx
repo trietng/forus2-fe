@@ -1,4 +1,4 @@
-import { Groups } from "./Groups/Groups";
+import Groups from "./Groups";
 
 export function All() {
     return (
