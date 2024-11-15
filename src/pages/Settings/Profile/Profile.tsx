@@ -49,10 +49,10 @@ export function Profile() {
     async function onFileInputChange(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (file) {
-            // Delete the current avatar before uploading a new one
+            // TODO: Remote CRON job to delete old images
+            setCanUpload(false);
             const avatarUrl = await uploadImage(file);
             try {
-                setCanUpload(false);
                 await api.patch('v1/userdetails', { avatarUrl });
                 setOpenModal(true);
             }

@@ -1,10 +1,18 @@
-button {
-    padding: 0.5rem;
+.control-group {
+    button {
+        padding: 0.5rem;
+    }
+
+    button:hover {
+        background-color: rgb(0 0 0 / 0.1);
+    }
+
+    svg {
+        width: 1.1rem;
+        height: 1.2rem;
+    }
 }
 
-button:hover {
-    background-color: rgb(0 0 0 / 0.1);
-}
 
 .button-group {
     display: flex;
@@ -14,7 +22,9 @@ button:hover {
     align-items: center;
 }
 
-svg {
-    width: 1rem;
-    height: 1rem;
+@media (min-width: 768px) {
+    .button-group {
+        column-gap: 1rem;
+        justify-content: space-between;
+    }
 }
