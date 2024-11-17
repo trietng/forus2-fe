@@ -3,13 +3,16 @@ import { Modal, Button, Label, TextInput, Textarea } from "flowbite-react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import { useStore } from "@nanostores/react";
 import { ChangeEvent, useRef } from "react";
-import { Box, BoxWithCount } from "../../models/box";
-import { ModalData, ModalMode } from "../../models/modal";
+import { $box, Box, BoxWithCount } from "../../models/box";
+import { ModalData } from "../../models/modal";
 import { $groups, Group } from "../../models/group";
 import { api } from "../../api";
 import { BOX_MAX_DESCRIPTION_LENGTH, BOX_MAX_NAME_LENGTH } from "../../constants/validation";
 
-interface BoxModalData extends ModalData {
+type BoxModalMode = "create" | "rename" | "edit" | "delete" | null;
+
+interface BoxModalData extends Omit<ModalData, "mode"> {
+    mode: BoxModalMode;
     box: Box;
     group?: Group;
 }
@@ -26,15 +29,35 @@ export function BoxModal() {
 
     async function handleSubmit(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault();
-        if (boxModalData.mode === "create") {
-            let box: BoxWithCount = (await api.post(`v1/groups/${boxModalData.group?._id}/box`, boxModalData.box)).data;
-            box.threadCount = 0;
-            box.subscriberCount = 0;
-            $groups.set($groups.get()!.map(group => group._id === boxModalData.group?._id ? {...group, boxes: [...group.boxes || [], box]} : group));
-        } else {
-            // Update box
+        switch (boxModalData.mode) {
+            case "create":
+                let box: BoxWithCount = (await api.post(`v1/groups/${boxModalData.group?._id}/box`, boxModalData.box)).data;
+                box.threadCount = 0;
+                box.subscriberCount = 0;
+                $groups.set($groups.get()!.map(group => group._id === boxModalData.group?._id ? {...group, boxes: [...group.boxes || [], box]} : group));
+                break;
+            case "rename":
+                // Rename box
+                await api.patch(`/v1/boxes/${boxModalData.box._id}`, {
+                    name: boxModalData.box.name
+                });
+                $box.set({...$box.get()!, name: boxModalData.box.name});
+                break;
+            case "edit":
+                // Edit box
+                await api.patch(`/v1/boxes/${boxModalData.box._id}`,{
+                    description: boxModalData.box.description
+                });
+                $box.set({...$box.get()!, description: boxModalData.box.description});
+                break;
+            
         }
         $boxModalData.setKey('open', false);
+    }
+
+    async function handleDelete() {
+        await api.delete(`/v1/boxes/${boxModalData.box._id}`);
+        $groups.set($groups.get()!.map(group => group._id === boxModalData.group?._id ? {...group, boxes: group.boxes?.filter(box => box._id !== boxModalData.box._id)} : group));
     }
 
     return (
@@ -48,7 +71,7 @@ export function BoxModal() {
                         Are you sure you want to delete <span className="font-bold">{boxModalData.box.name}</span>?
                     </h3>
                     <div className="flex justify-center gap-4">
-                        <Button color="failure">
+                        <Button color="failure" onClick={() => handleDelete()}>
                             Delete
                         </Button>
                         <Button color="gray" onClick={() => $boxModalData.setKey('open', false)}>
@@ -57,16 +80,20 @@ export function BoxModal() {
                     </div>
                 </div> : 
                 <form id="boxEditor" onSubmit={handleSubmit}>
-                    <div className="flex justify-between text-white">
-                        <Label htmlFor="boxName">Name</Label>
-                        <span className="text-sm">{boxModalData.box.name.length || 0}/{BOX_MAX_NAME_LENGTH}</span>
-                    </div>
-                    <TextInput type="text" id="boxName" name="name" className="mt-1" placeholder="Box name" onChange={handleInputChange} ref={boxNameInputRef} value={boxModalData.box.name}/>
-                    <div className="flex justify-between text-white mt-4">
-                        <Label htmlFor="boxDescription">Description</Label>
-                        <span className="text-sm">{boxModalData.box.description.length || 0}/{BOX_MAX_DESCRIPTION_LENGTH}</span>
-                    </div>
-                    <Textarea id="boxDescription" name="description" className="mt-1" placeholder="Box description" onChange={handleInputChange} value={boxModalData.box.description}/>
+                    {(boxModalData.mode === "create" || boxModalData.mode === "rename") && <>
+                        <div className="flex justify-between text-white">
+                            <Label htmlFor="boxName">Name</Label>
+                            <span className="text-sm">{boxModalData.box.name.length || 0}/{BOX_MAX_NAME_LENGTH}</span>
+                        </div>
+                        <TextInput type="text" id="boxName" name="name" className="mt-1" placeholder="Box name" onChange={handleInputChange} ref={boxNameInputRef} value={boxModalData.box.name}/>
+                    </>}
+                    {(boxModalData.mode === "create" || boxModalData.mode === "edit") && <>
+                        <div className="flex justify-between text-white mt-4">
+                            <Label htmlFor="boxDescription">Description</Label>
+                            <span className="text-sm">{boxModalData.box.description.length || 0}/{BOX_MAX_DESCRIPTION_LENGTH}</span>
+                        </div>
+                        <Textarea id="boxDescription" name="description" className="mt-1" placeholder="Box description" onChange={handleInputChange} value={boxModalData.box.description}/>
+                    </>}
                 </form>}
             </Modal.Body>
             {boxModalData.mode !== "delete" && 
@@ -79,14 +106,17 @@ export function BoxModal() {
     )
 }
 
-export async function openBoxModal(mode: ModalMode, group?: Group, box: Box = {name: '', description: ''}) {
+export async function openBoxModal(mode: BoxModalMode, group?: Group, box: Box = {name: '', description: ''}) {
     let keys;
     switch (mode) {
         case "create":
             keys = {header: `Add new box to ${group?.name}`, submitButton: "Create"};
             break;
-        case "update":
-            keys = {header: "Update box", submitButton: "Update"};
+        case "rename":
+            keys = {header: "Rename box", submitButton: "Save"};
+            break;
+        case "edit":
+            keys = {header: "Edit box", submitButton: "Save"};
             break;
     }
     $boxModalData.set({open: true, keys: keys, mode: mode, box: box, group: group});

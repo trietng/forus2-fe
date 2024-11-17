@@ -54,5 +54,14 @@ export const customTheme: CustomFlowbiteTheme = {
             }
         },
         tabpanel: "py-3 min-h-80"
+    },
+    textInput: {
+        field: {
+            input: {
+                colors: {
+                    primary: "border-none bg-primary text-white focus:border-white focus:ring-white"
+                }
+            }
+        }
     }
 }

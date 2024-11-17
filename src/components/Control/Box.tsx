@@ -68,9 +68,9 @@ export function BoxEditor() {
 
     return (
         <div className="flex">
-            <button className="w-full bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Rename</button>
-            <button className="w-full bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Edit</button>
-            <button className="w-full bg-red-500 p-3 hover:brightness-105 text-[10px] overflow-hidden"><TrashIcon className="size-3 place-self-center mr-2 inline"/> Delete</button>
+            <button onClick={() => openBoxModal("edit", undefined, box)} className="w-full bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Edit</button>
+            {user?.role === "ROLE_ADMIN" && <button onClick={() => openBoxModal("rename", undefined, box)} className="w-full bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Rename</button>}
+            {user?.role === "ROLE_ADMIN" && <button onClick={() => openBoxModal("delete", undefined, box)} className="w-full bg-red-500 p-3 hover:brightness-105 text-[10px] overflow-hidden"><TrashIcon className="size-3 place-self-center mr-2 inline"/> Delete</button>}
         </div>
     );
 }
