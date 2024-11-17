@@ -10,6 +10,7 @@ import { api } from "../../../api";
 import { MutableUserDetails, ImmutableUserDetails } from "../../../models/userdetails";
 import { DESCRIPTION_MAX_LENGTH, DISPLAY_NAME_MAX_LENGTH } from "../../../constants/validation";
 import { uploadImage, deleteImage, getImage } from "../../../firebase/image";
+import { ACCEPTED_IMAGE_MIME_TYPES, FILE_INPUT_ACCEPT_VALUE } from "../../../utils/image";
 
 export function Profile() {
     const navigate = useNavigate();
@@ -49,6 +50,10 @@ export function Profile() {
     async function onFileInputChange(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (file) {
+            if (!ACCEPTED_IMAGE_MIME_TYPES.has(file?.type)) {
+                toast.error('Invalid file type. Please upload an image file.');
+                return;
+            }
             // TODO: Remote CRON job to delete old images
             setCanUpload(false);
             const avatarUrl = await uploadImage(file);
@@ -123,7 +128,7 @@ export function Profile() {
                                 <Spinner color="secondary" className="size-8"/>
                             </div> }
                             <Avatar img={avatar} size="lg" title="Click to change your avatar" className={"hover:brightness-50" + (canUpload ? "" : " brightness-50")}/>
-                            <FileInput className="hidden" accept="image/*" name="avatar" ref={fileInputRef} onChange={onFileInputChange}/>
+                            <FileInput className="hidden" accept={FILE_INPUT_ACCEPT_VALUE} name="avatar" ref={fileInputRef} onChange={onFileInputChange}/>
                         </div>
                         <span className="block text-sm font-medium">{payload?.username}</span>
                         {payload?.role && <span className="block text-sm">{UserRoleMap[payload.role]}</span>}

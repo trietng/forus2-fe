@@ -1,12 +1,13 @@
 import { useEffect, useLayoutEffect } from "react";
-import { useLocation, useNavigate, useSearchParams, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { useStore } from "@nanostores/react";
 import { api } from "../../api";
 import { $box } from "../../models/box";
 import { nand } from "../../utils/boolean";
 import { ForusBreadcrumb } from "../../components/Routing/ForusBreadcrumb";
 import { BoxInformation } from "../../components/Control/Box";
-import TextEditor from "../../components/Control/TextEditor/TextEditor";
+import { ThreadEditor } from "../../components/Control/Thread";
+import { BoxModal } from "../../components/Modal/Box";
 
 function route(id: string, page: number, order: string | null = null, direction: string | null = null) {
     const url = isNaN(page) ? `/box/${id}` : `/box/${id}/${page}`;
@@ -17,7 +18,6 @@ function route(id: string, page: number, order: string | null = null, direction:
 }
 
 export function Box() {
-    const location = useLocation();
     const navigate = useNavigate();
     const params = useParams();
     const [searchParams] = useSearchParams();
@@ -69,7 +69,8 @@ export function Box() {
             <div className="md:hidden mt-4">
                 <BoxInformation />
             </div>
-            <TextEditor/>
+            <ThreadEditor mode="create" />
+            <BoxModal />
         </>
     );
 }

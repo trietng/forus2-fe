@@ -93,4 +93,13 @@
    mark {
       border-radius: 0.25rem;
    }
+
+   a {
+      text-decoration: underline;
+
+      &:hover {
+         color: #ffc107;
+         cursor: pointer;
+      }
+   }
 }
