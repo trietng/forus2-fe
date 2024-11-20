@@ -5,9 +5,7 @@ import { api } from "../api";
 import { readAsDataURLAsync } from "../helpers/filereader";
 
 export async function getThumbnail(url: string, height: number) {
-    console.log('url', url);
     const id = url.split('/').pop();
-    console.log('id', id);
     if (!id) {
         return null;
     }

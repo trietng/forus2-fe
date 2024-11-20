@@ -8,6 +8,7 @@ import { ForusBreadcrumb } from "../../components/Routing/ForusBreadcrumb";
 import { BoxInformation } from "../../components/Control/Box";
 import { ThreadEditor } from "../../components/Control/Thread";
 import { BoxModal } from "../../components/Modal/Box";
+import { ThreadPreviewCard } from "../../components/ThreadPreviewCard";
 
 function route(id: string, page: number, order: string | null = null, direction: string | null = null) {
     const url = isNaN(page) ? `/box/${id}` : `/box/${id}/${page}`;
@@ -69,7 +70,14 @@ export function Box() {
             <div className="md:hidden mt-4">
                 <BoxInformation />
             </div>
-            <ThreadEditor mode="create" />
+            {box && box.threads?.map(thread => (
+                <div key={thread._id} className="mt-4">
+                    <ThreadPreviewCard thread={thread} />
+                </div>
+            ))}
+            <div className="mt-4">
+                <ThreadEditor mode="create" />
+            </div>
             <BoxModal />
         </>
     );

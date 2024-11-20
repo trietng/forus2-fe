@@ -5,7 +5,7 @@ import { getDecodedPayload } from '../../helpers/jwt';
 import { Payload } from "../../models/payload";
 import { UserRoleMap } from "../../models/role";
 import { api } from "../../api";
-import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/validation";
+import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/thumbnail";
 import { getThumbnail } from "../../firebase/thumbnail";
 import { ArrowLeftStartOnRectangleIcon, Cog6ToothIcon } from "@heroicons/react/24/solid";
 

@@ -1,14 +1,7 @@
 import '../../../styles/text.css';
 import '../../../styles/toolbar.css';
 
-import TextStyle from '@tiptap/extension-text-style';
-import Highlight from '@tiptap/extension-highlight';
-import TextAlign from '@tiptap/extension-text-align';
-import Link from '@tiptap/extension-link';
-import Image from '@tiptap/extension-image';
-import Youtube from '@tiptap/extension-youtube';
 import { EditorProvider, JSONContent, useCurrentEditor } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit';
 import { Button, Dropdown, FileInput, Label, Tabs, TextInput, Tooltip, CustomFlowbiteTheme } from 'flowbite-react';
 import { ClipboardIcon, BoldIcon, CodeBracketIcon, ItalicIcon, ListBulletIcon, StrikethroughIcon, NumberedListIcon, CodeBracketSquareIcon, MinusIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, Bars3BottomLeftIcon, Bars3CenterLeftIcon, Bars3BottomRightIcon, Bars3Icon, PhotoIcon, ArrowUpOnSquareIcon, LinkIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { IconBlockquote } from '../../../icons/IconBlockquote';
@@ -29,6 +22,7 @@ import { readAsDataURLAsync } from '../../../helpers/filereader';
 import { atom } from 'nanostores';
 import { useStore } from '@nanostores/react';
 import { IconYoutube } from '../../../icons/IconYoutube';
+import { TiptapExtensions } from '../config/text';
 
 interface URLInputProps {
     tiptapFor: "Image" | "Link" | "Youtube";
@@ -469,16 +463,6 @@ function MenuBar() {
     )
 }
 
-const extensions = [
-    TextStyle,
-    StarterKit,
-    TextAlign.configure({ types: ['heading', 'paragraph'] }),
-    Highlight,
-    Image,
-    Link,
-    Youtube
-]
-
 export type ContentEditorMode = "create" | "edit";
 
 export const $content = atom<JSONContent | undefined>();
@@ -487,7 +471,7 @@ export function TextEditor() {
     const content = useStore($content);
 
     return (
-        <EditorProvider slotBefore={<MenuBar />} extensions={extensions} content={content} editorProps={{
+        <EditorProvider slotBefore={<MenuBar />} extensions={TiptapExtensions} content={content} editorProps={{
             attributes: {
                 class: 'bg-primary p-4 rounded-b-lg',
             }

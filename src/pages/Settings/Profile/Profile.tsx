@@ -56,7 +56,7 @@ export function Profile() {
             }
             // TODO: Remote CRON job to delete old images
             setCanUpload(false);
-            const avatarUrl = await uploadImage(file);
+            const avatarUrl = await uploadImage(file, '/avatars');
             try {
                 await api.patch('v1/userdetails', { avatarUrl });
                 setOpenModal(true);
