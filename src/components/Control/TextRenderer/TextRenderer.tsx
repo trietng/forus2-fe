@@ -5,6 +5,7 @@ import { TiptapExtensions } from "../config/text";
 import { findFirstImage, findImages, summarize } from "../../../utils/json-content";
 import { getImage } from "../../../firebase/image";
 import { getThumbnail } from "../../../firebase/thumbnail";
+import { THREAD_PREVIEW_THUMBNAIL_HEIGHT } from "../../../constants/thumbnail";
 
 interface TextRendererProps {
     preview?: boolean;
@@ -18,12 +19,6 @@ export function TextRenderer(props: TextRendererProps) {
     async function render() {
         const json: JSONContent = JSON.parse(props.text);
         const images = findImages(json);
-        if (props.onPreviewImageAvailable && images.length > 0) {
-            const thumbnail = await getThumbnail(images[0].attrs?.src, 96);
-            if (thumbnail && typeof thumbnail === 'string') {
-                props.onPreviewImageAvailable(thumbnail);
-            }
-        }
         await Promise.all(images.map(async (image) => {
             if (image.attrs?.src) {
                 image.attrs.src = await getImage(image.attrs.src);
@@ -37,13 +32,13 @@ export function TextRenderer(props: TextRendererProps) {
         const json: JSONContent = JSON.parse(props.text);
         const summary = summarize(json);
         const image = findFirstImage(json);
-        setOutput(summary);
         if (props.onPreviewImageAvailable && image && image.attrs) {
-            const thumbnail = await getThumbnail(image.attrs.src, 12);
+            const thumbnail = await getThumbnail(image.attrs.src, THREAD_PREVIEW_THUMBNAIL_HEIGHT);
             if (thumbnail && typeof thumbnail === 'string') {
                 props.onPreviewImageAvailable(thumbnail);
             }
         }
+        setOutput(summary);
     }
 
     useEffect(() => {
