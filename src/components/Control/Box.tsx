@@ -11,6 +11,7 @@ import { api } from "../../api";
 
 interface BoxCreatorProps {
     group?: Group;
+    className?: string;
 }
 
 export function BoxCreator(props: BoxCreatorProps) {
@@ -18,7 +19,7 @@ export function BoxCreator(props: BoxCreatorProps) {
     if (user?.role !== "ROLE_ADMIN") return null;
 
     return (
-        <Button color="blue" onClick={() => openBoxModal("create", props.group)}><PlusIcon className="size-4 place-self-center mr-2"/> Create box</Button>
+        <Button color="blue" onClick={() => openBoxModal("create", props.group)} className={props.className}><PlusIcon className="size-4 place-self-center mr-2"/> Create box</Button>
     );
 }
 
