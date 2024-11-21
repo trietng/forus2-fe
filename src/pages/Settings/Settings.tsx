@@ -10,7 +10,7 @@ export function Settings() {
         <div className="w-full bg-body-secondary my-8 rounded-lg">
             <Tabs aria-label="Setting tabs" variant="underline">
                 <Tabs.Item active title="Profile" icon={UserCircleIcon}>
-                    <Profile />
+                    <Profile mode="edit"/>
                 </Tabs.Item>
                 <Tabs.Item title="Security" icon={LockClosedIcon}>
                     <Suspense fallback={<FallbackSpinner/>}>

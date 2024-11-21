@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Button, Dropdown } from "flowbite-react";
 import { useStore } from "@nanostores/react";
 import { CheckCircleIcon, ClockIcon, PencilIcon, TrashIcon, XCircleIcon } from "@heroicons/react/24/solid";
-import { ArrowPathRoundedSquareIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { ArrowPathRoundedSquareIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { getDecodedPayload } from "../../helpers/jwt";
 import { openBoxModal } from "../Modal/Box";
 import { Group } from "../../models/group";
@@ -78,12 +78,26 @@ export function BoxEditor() {
 export function BoxInformation() {
     const box = useStore($box);
 
+    async function subscribe() {
+        const response = await api.put(`v1/boxes/${box?._id}/subscribe`);
+        $box.set({
+            ...$box.get()!,
+            subscriberCount: $box.get()!.subscriberCount! + (response.data.subscriberStatus === true ? 1 : -1),
+            subscriberStatus: response.data.subscriberStatus,
+        });
+    }
+
     return (
         <div className="bg-primary rounded-lg overflow-hidden">
             <div className="p-4 border-b border-b-gray-400 font-bold">{box?.name}</div>
-            <div className="m-4">{box?.description}</div>
+            <div className="p-4 border-b">{box?.description}</div>
+            <div className="p-4 text-center">{box?.subscriberCount} subscribers</div>
             <div className="flex md:flex-col md:w-full">
-                <button className="inline w-1/4 md:w-full bg-secondary p-3 hover:brightness-105 text-[10px] overflow-hidden"><ArrowPathRoundedSquareIcon className="mr-2 inline size-3 place-self-center"/> Subscribe</button>
+                <button className="inline w-1/4 md:w-full bg-secondary p-3 hover:brightness-105 text-[10px] overflow-hidden" onClick={() => subscribe()}>
+                    {box?.subscriberStatus === true ? 
+                    <><XMarkIcon className="mr-2 inline size-3 place-self-center"/> Unsubscribe</> :
+                    <><ArrowPathRoundedSquareIcon className="mr-2 inline size-3 place-self-center"/> Subscribe</>}
+                </button>
                 <div className="w-3/4 md:w-full">
                     <BoxEditor />
                 </div>

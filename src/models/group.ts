@@ -1,10 +1,10 @@
 import { atom } from "nanostores";
 import { Base } from "./base";
-import { BoxWithCount } from "./box";
+import { Box } from "./box";
 
 export interface Group extends Base {
     name: string;
-    boxes?: BoxWithCount[];
+    boxes?: Box[];
 }
 
 export const $groups = atom<Group[] | undefined>();

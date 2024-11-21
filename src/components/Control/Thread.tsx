@@ -1,18 +1,23 @@
-import { Button, Modal, Spinner, TextInput } from "flowbite-react";
+import { Avatar, Button, Modal, Spinner, TextInput } from "flowbite-react";
 import { $content, ContentEditorMode, TextEditor } from "./TextEditor/TextEditor";
 import { THREAD_MAX_TITLE_LENGTH } from "../../constants/validation";
 import { useStore } from "@nanostores/react";
 import { ArrowPathIcon, CheckIcon, ExclamationCircleIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { BlinkingDots } from "../BlinkingDots";
 import { atom } from "nanostores";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { findImages } from "../../utils/json-content";
 import { uploadImages } from "../../firebase/image";
 import { toast } from "react-toastify";
 import { api } from "../../api";
 import { JSONContent } from "@tiptap/react";
 import { $box } from "../../models/box";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Thread } from "../../models/thread";
+import { getTimePassed } from "../../utils/datetime";
+import { VoteAction, Voter } from "../Voter/Voter";
+import { getThumbnail } from "../../firebase/thumbnail";
+import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/thumbnail";
 
 interface ThreadEditorProps {
     mode: ContentEditorMode;
@@ -105,7 +110,7 @@ export function ThreadEditor(props: ThreadEditorProps) {
                 <><CheckIcon className="place-self-center inline size-4 mr-2"/> Save</>
             }
             </Button>
-            <Modal popup show={modalStatus !== "idle"} size="md">
+            <Modal popup show={props.mode === "create" && modalStatus !== "idle"} size="md">
                 <Modal.Body className="p-0">
                     <div className="m-4 flex flex-col justify-center items-center text-white">
                         {modalStatus === "loading" ?
@@ -128,4 +133,64 @@ export function ThreadEditor(props: ThreadEditorProps) {
             </Modal>
         </>
     )
+}
+
+export async function voteThread(thread: Thread, action: VoteAction) {
+    const response = await api.put(`/v1/threads/${thread._id}/${action}`);
+    $box.set({
+        ...$box.get()!,
+        threads: $box.get()!.threads?.map(t => t._id === thread._id ? {
+            ...t,
+            voteStatus: response.data.voteStatus,
+            score: t.score + response.data.voteStatus - t.voteStatus
+        } : t)
+    });
+}
+
+interface ThreadCommentCounterProps {
+    thread: Thread;
+    vertical?: boolean;
+}
+
+export function ThreadCommentCounter(props: ThreadCommentCounterProps) {
+    return (
+        <div className="text-sm rounded-lg border align-middle p-2">{props.thread.commentCount + (props.vertical === true ? "" : " comments")}</div>
+    );
+}
+
+interface ThreadInfomationProps {
+    thread: Thread;
+}
+
+export function ThreadInfomation(props: ThreadInfomationProps) {
+    const [avatarUrl, setAvatar] = useState<string>();
+
+    async function renderAvatar() {
+        if (props.thread.author) {
+            const thumbnail = await getThumbnail(props.thread.author.avatarUrl, AVATAR_THUMBNAIL_HEIGHT);
+            if (thumbnail && typeof thumbnail === "string") {
+                setAvatar(thumbnail);
+            }
+        }
+    }
+    
+    useEffect(() => {
+        renderAvatar();
+    }, []);
+
+    return (
+        <div className="flex justify-between flex-wrap">
+            <div className="flex gap-2 justify-center">
+                <Avatar img={avatarUrl}/>
+                <div className="flex flex-col justify-center">
+                    <Link className="text-sm hover:underline" to={`/user/${props.thread.author?._id}`}>{props.thread.author?.displayName}</Link>
+                    <div className="text-xs">{getTimePassed(props.thread.createdAt)}</div>
+                </div>
+                <div className="py-2 ms-2 md:flex justify-stretch gap-4 hidden">
+                    <ThreadCommentCounter thread={props.thread}/>
+                    <Voter onVote={(action) => voteThread(props.thread, action)} content={props.thread}/>
+                </div>
+            </div>
+        </div>
+    );
 }

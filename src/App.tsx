@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import { FallbackSpinner } from './components/FallbackSpinner';
 import MainLayout from './layouts/MainLayout';
 const Box = lazy(() => import('./pages/Box'));
+const User = lazy(() => import('./pages/User'));
 
 function App() {
 
@@ -44,6 +45,7 @@ function App() {
                 </AuthGuard>
             }>
                 <Route path="/settings" element={<Settings/>}/>
+                <Route path="/user/:id" element={<Suspense fallback={<FallbackSpinner/>}><User/></Suspense>}/>
             </Route>
             <Route element={<SimpleLayout header={false} className='bg-tertiary'/>}>
                 <Route path='/login' element={

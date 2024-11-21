@@ -103,3 +103,9 @@
       }
    }
 }
+
+.ProseMirror {
+   min-height: 10em;
+   max-height: 20em;
+   overflow: auto;
+}

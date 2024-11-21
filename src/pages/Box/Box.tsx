@@ -34,8 +34,7 @@ export function Box() {
         try {
             const response = await api.get(`v1/boxes/${params.id}/${notNaNNumber}`);
             $box.set(response.data);
-        }
-        catch (error: any) {
+        } catch (error: any) {
             if (error.response?.status === 404) {
                 navigate('/404', { replace: true });
             }

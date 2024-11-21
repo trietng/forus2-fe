@@ -38,7 +38,8 @@ export function TextRenderer(props: TextRendererProps) {
                 props.onPreviewImageAvailable(thumbnail);
             }
         }
-        setOutput(summary);
+        const summaryAligned = `<div class="text-justify">${summary}</div>`;
+        setOutput(summaryAligned);
     }
 
     useEffect(() => {
@@ -51,6 +52,6 @@ export function TextRenderer(props: TextRendererProps) {
     }, [props.text]);
 
     return (
-        <div className="text-sm" dangerouslySetInnerHTML={{ __html: output }} />
+        <div className="text-sm tiptap" dangerouslySetInnerHTML={{ __html: output }} />
     );
 }

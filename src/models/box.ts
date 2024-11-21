@@ -10,11 +10,9 @@ export interface Box extends Base {
     }
     threads?: any[];
     moderators?: string[];
-}
-
-export interface BoxWithCount extends Box {
     threadCount?: number;
     subscriberCount?: number;
+    subscriberStatus?: boolean;
 }
 
 export const $box = atom<Box | undefined>();

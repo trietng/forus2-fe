@@ -3,7 +3,7 @@ import { Modal, Button, Label, TextInput, Textarea } from "flowbite-react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import { useStore } from "@nanostores/react";
 import { ChangeEvent, useRef } from "react";
-import { $box, Box, BoxWithCount } from "../../models/box";
+import { $box, Box } from "../../models/box";
 import { ModalData } from "../../models/modal";
 import { $groups, Group } from "../../models/group";
 import { api } from "../../api";
@@ -31,7 +31,7 @@ export function BoxModal() {
         e.preventDefault();
         switch (boxModalData.mode) {
             case "create":
-                let box: BoxWithCount = (await api.post(`v1/groups/${boxModalData.group?._id}/box`, boxModalData.box)).data;
+                let box: Box = (await api.post(`v1/groups/${boxModalData.group?._id}/box`, boxModalData.box)).data;
                 box.threadCount = 0;
                 box.subscriberCount = 0;
                 $groups.set($groups.get()!.map(group => group._id === boxModalData.group?._id ? {...group, boxes: [...group.boxes || [], box]} : group));

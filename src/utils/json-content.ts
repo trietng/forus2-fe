@@ -45,5 +45,9 @@ function recursiveSummarize(content: JSONContent, summaryData: string[]) {
 export function summarize(content: JSONContent, length: number = 512): string {
     const summaryData: string[] = [];
     recursiveSummarize(content, summaryData);
-    return summaryData.join(' ').substring(0, length);
+    const shorterned = summaryData.join(' ').substring(0, length);
+    if (shorterned.length < summaryData.join(' ').length) {
+        return `${shorterned}...`;
+    }
+    return shorterned;
 }
