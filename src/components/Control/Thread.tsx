@@ -1,8 +1,8 @@
-import { Avatar, Button, Modal, Spinner, TextInput } from "flowbite-react";
+import { Avatar, Button, Modal, Spinner, TextInput, Tooltip } from "flowbite-react";
 import { $content, ContentEditorMode, TextEditor } from "./TextEditor/TextEditor";
 import { THREAD_MAX_TITLE_LENGTH } from "../../constants/validation";
 import { useStore } from "@nanostores/react";
-import { ArrowPathIcon, CheckIcon, ExclamationCircleIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, CheckIcon, ExclamationCircleIcon, EyeIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { BlinkingDots } from "../BlinkingDots";
 import { atom } from "nanostores";
 import { useEffect, useState } from "react";
@@ -97,7 +97,7 @@ export function ThreadEditor(props: ThreadEditorProps) {
         <>
             {props.mode === "create" && 
                 <div className="flex">
-                    <TextInput color="primary" className="[&_input]:rounded-e-none w-full" maxLength={THREAD_MAX_TITLE_LENGTH} onChange={handleTitleChange} value={title} placeholder="Title"/>
+                    <TextInput color="primary" className="[&_input]:rounded-e-none w-full" maxLength={THREAD_MAX_TITLE_LENGTH} onChange={handleTitleChange} placeholder="Title"/>
                     <div className="bg-primary rounded-r-lg p-2 border-s text-sm text-center">
                         {title.length}/{THREAD_MAX_TITLE_LENGTH}
                     </div>
@@ -135,7 +135,7 @@ export function ThreadEditor(props: ThreadEditorProps) {
     )
 }
 
-export async function voteThread(thread: Thread, action: VoteAction) {
+async function voteThread(thread: Thread, action: VoteAction) {
     const response = await api.put(`/v1/threads/${thread._id}/${action}`);
     $box.set({
         ...$box.get()!,
@@ -152,14 +152,42 @@ interface ThreadCommentCounterProps {
     vertical?: boolean;
 }
 
-export function ThreadCommentCounter(props: ThreadCommentCounterProps) {
+function ThreadCommentCounter(props: ThreadCommentCounterProps) {
     return (
         <div className="text-sm rounded-lg border align-middle p-2">{props.thread.commentCount + (props.vertical === true ? "" : " comments")}</div>
     );
 }
 
+interface VisibilityToggleProps {
+    thread: Thread;
+}
+
+function VisibilityToggle(props: VisibilityToggleProps) {
+    async function toggleVisibility() {
+        await api.patch(`/v1/threads/${props.thread._id}`, {
+            visibility: !props.thread.visibility
+        });
+        $box.set({
+            ...$box.get()!,
+            threads: $box.get()!.threads?.map(t => t._id === props.thread._id ? {
+                ...t,
+                visibility: !t.visibility
+            } : t)
+        });
+    }
+
+    return (
+        <Tooltip content="Show/hide" placement="bottom">
+            <button onClick={() => toggleVisibility()} className={"hover:bg-black/10 rounded-full p-2" + (props.thread.visibility === true ? " text-secondary" : "")}>
+                <EyeIcon className="size-6"/>
+            </button>
+        </Tooltip>
+    )
+}
+
 interface ThreadInfomationProps {
     thread: Thread;
+    vertical?: boolean;
 }
 
 export function ThreadInfomation(props: ThreadInfomationProps) {
@@ -175,10 +203,22 @@ export function ThreadInfomation(props: ThreadInfomationProps) {
     }
     
     useEffect(() => {
-        renderAvatar();
+        if (props.vertical !== true) {
+            renderAvatar();
+        }
     }, []);
 
     return (
+        props.vertical === true ?
+        <>
+            <Voter content={props.thread} onVote={(action) => voteThread(props.thread, action)} vertical/>
+            <div className="text-center mt-2">
+                <ThreadCommentCounter thread={props.thread} vertical/>
+            </div>
+            <div className="mt-2 flex justify-center">
+                <VisibilityToggle thread={props.thread} />
+            </div>
+        </> :    
         <div className="flex justify-between flex-wrap">
             <div className="flex gap-2 justify-center">
                 <Avatar img={avatarUrl}/>
@@ -186,9 +226,10 @@ export function ThreadInfomation(props: ThreadInfomationProps) {
                     <Link className="text-sm hover:underline" to={`/user/${props.thread.author?._id}`}>{props.thread.author?.displayName}</Link>
                     <div className="text-xs">{getTimePassed(props.thread.createdAt)}</div>
                 </div>
-                <div className="py-2 ms-2 md:flex justify-stretch gap-4 hidden">
+                <div className="py-2 ms-2 md:flex justify-stretch items-center gap-4 hidden">
                     <ThreadCommentCounter thread={props.thread}/>
                     <Voter onVote={(action) => voteThread(props.thread, action)} content={props.thread}/>
+                    <VisibilityToggle thread={props.thread}/>
                 </div>
             </div>
         </div>

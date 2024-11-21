@@ -3,8 +3,7 @@ import { Thread } from "../../models/thread";
 import { TextRenderer } from "../Control/TextRenderer/TextRenderer";
 import { useState } from "react"
 import { Link } from "react-router-dom";
-import { ThreadCommentCounter, ThreadInfomation, voteThread } from "../Control/Thread";
-import { Voter } from "../Voter/Voter";
+import { ThreadInfomation } from "../Control/Thread";
 
 interface ThreadPreviewCardProps {
     thread: Thread;
@@ -17,10 +16,7 @@ export function ThreadPreviewCard(props: ThreadPreviewCardProps) {
         <Card className="bg-body-secondary">
             <div className="flex gap-4 justify-between" >
                 <div className="md:hidden">
-                    <Voter content={props.thread} onVote={(action) => voteThread(props.thread, action)} vertical/>
-                    <div className="text-center mt-2">
-                        <ThreadCommentCounter thread={props.thread} vertical/>
-                    </div>
+                    <ThreadInfomation thread={props.thread} vertical/>
                 </div>
                 <div className="flex flex-col w-full justify-between">
                     <div>
