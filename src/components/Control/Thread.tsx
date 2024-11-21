@@ -5,7 +5,7 @@ import { useStore } from "@nanostores/react";
 import { ArrowPathIcon, CheckIcon, ExclamationCircleIcon, EyeIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { BlinkingDots } from "../BlinkingDots";
 import { atom } from "nanostores";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { findImages } from "../../utils/json-content";
 import { uploadImages } from "../../firebase/image";
 import { toast } from "react-toastify";
@@ -18,6 +18,7 @@ import { getTimePassed } from "../../utils/datetime";
 import { VoteAction, Voter } from "../Voter/Voter";
 import { getThumbnail } from "../../firebase/thumbnail";
 import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/thumbnail";
+import { getDecodedPayload } from "../../helpers/jwt";
 
 interface ThreadEditorProps {
     mode: ContentEditorMode;
@@ -163,6 +164,8 @@ interface VisibilityToggleProps {
 }
 
 function VisibilityToggle(props: VisibilityToggleProps) {
+    const user = useMemo(() => getDecodedPayload(), []);
+
     async function toggleVisibility() {
         await api.patch(`/v1/threads/${props.thread._id}`, {
             visibility: !props.thread.visibility
@@ -175,6 +178,8 @@ function VisibilityToggle(props: VisibilityToggleProps) {
             } : t)
         });
     }
+
+    if (user?.role !== "ROLE_ADMIN") return null;
 
     return (
         <Tooltip content="Show/hide" placement="bottom">

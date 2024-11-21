@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { Button, Dropdown } from "flowbite-react";
 import { useStore } from "@nanostores/react";
 import { CheckCircleIcon, ClockIcon, PencilIcon, TrashIcon, XCircleIcon } from "@heroicons/react/24/solid";
@@ -8,6 +8,14 @@ import { openBoxModal } from "../Modal/Box";
 import { Group } from "../../models/group";
 import { $box, Box } from "../../models/box";
 import { api } from "../../api";
+
+export function route(id: string, page: number, order: string | null = null, direction: string | null = null) {
+    const url = isNaN(page) || page === 1 ? `/box/${id}` : `/box/${id}/${page}`;
+    if (order && direction) {
+        return `${url}?order=${order}&direction=${direction}`;
+    }
+    return url;
+}
 
 interface BoxCreatorProps {
     group?: Group;
@@ -88,14 +96,16 @@ export function BoxInformation() {
         });
     }
 
+    if (!box) return null;
+
     return (
         <div className="bg-primary rounded-lg overflow-hidden">
-            <div className="p-4 border-b border-b-gray-400 font-bold">{box?.name}</div>
-            <div className="p-4 border-b">{box?.description}</div>
-            <div className="p-4 text-center">{box?.subscriberCount} subscribers</div>
+            <div className="p-4 border-b border-b-gray-400 font-bold">{box.name}</div>
+            <div className="p-4 border-b border-b-gray-400">{box.description}</div>
+            <div className="p-4 text-center">{box.subscriberCount} subscribers</div>
             <div className="flex md:flex-col md:w-full">
                 <button className="inline w-1/4 md:w-full bg-secondary p-3 hover:brightness-105 text-[10px] overflow-hidden" onClick={() => subscribe()}>
-                    {box?.subscriberStatus === true ? 
+                    {box.subscriberStatus === true ? 
                     <><XMarkIcon className="mr-2 inline size-3 place-self-center"/> Unsubscribe</> :
                     <><ArrowPathRoundedSquareIcon className="mr-2 inline size-3 place-self-center"/> Subscribe</>}
                 </button>
@@ -105,4 +115,50 @@ export function BoxInformation() {
             </div>
         </div>
     );
+}
+
+interface ThreadFilterProps {
+    page: number;
+    order: string | null;
+    direction: string | null;
+    onApplyFilter: (order: string, direction: string) => void;
+}
+
+export function ThreadFilter(props: ThreadFilterProps) {
+    const box = useStore($box);
+    const orderRef = useRef<HTMLSelectElement>(null);
+    const directionRef = useRef<HTMLSelectElement>(null);
+
+    function applyFilter() {
+        const order = orderRef.current?.value;
+        const direction = directionRef.current?.value;
+        if (box && box._id && order && direction) {
+            props.onApplyFilter(order, direction);
+        }
+    }
+
+    return (
+        <Dropdown
+            label="Filter"
+            color="gray"
+            placement="bottom-end">
+            <div className="p-3" onSubmit={applyFilter}>
+                <label htmlFor="sortOption">Filter</label>
+                <div className="flex gap-3 mt-2" id="sortOption">
+                    <select className="rounded-lg w-auto" id="sortOrder" ref={orderRef} defaultValue={props.order || "updatedAt"}>
+                        <option value="updatedAt">Updated at</option>
+                        <option value="createdAt">Created at</option>
+                        <option value="score">Score</option>
+                        <option value="commentCount">Comment count</option>
+                        <option value="title">Title</option>
+                    </select>
+                    <select className="rounded-lg w-auto" id="sortDirection" ref={directionRef} defaultValue={props.direction || "desc"}>
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                </div>
+                <Dropdown.Item as={Button} onClick={applyFilter} color="secondary" className="text-white hover:!bg-secondary w-fit p-2 float-end my-3">Apply</Dropdown.Item >
+            </div>
+        </Dropdown>
+    )
 }

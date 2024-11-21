@@ -13,6 +13,7 @@ export interface Box extends Base {
     threadCount?: number;
     subscriberCount?: number;
     subscriberStatus?: boolean;
+    pageCount?: number;
 }
 
 export const $box = atom<Box | undefined>();
