@@ -118,7 +118,6 @@ export function BoxInformation() {
 }
 
 interface ThreadFilterProps {
-    page: number;
     order: string | null;
     direction: string | null;
     onApplyFilter: (order: string, direction: string) => void;

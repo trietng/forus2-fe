@@ -83,7 +83,7 @@ export function Box() {
                 {(box.pageCount || 1) > 1 ? 
                 <Pagination showIcons currentPage={page} onPageChange={(p) => handlePageChange(p)} totalPages={box.pageCount || 0}/> :
                 <div></div>}
-                <ThreadFilter page={page} order={order} direction={direction} onApplyFilter={(order, direction) => handleFilter(order, direction)}/>
+                <ThreadFilter order={order} direction={direction} onApplyFilter={(order, direction) => handleFilter(order, direction)}/>
             </div>
             {box.threads?.map(thread => (
                 <div key={thread._id} className="mt-4">
