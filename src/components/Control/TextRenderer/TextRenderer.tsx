@@ -8,22 +8,28 @@ import { getThumbnail } from "../../../firebase/thumbnail";
 import { THREAD_PREVIEW_THUMBNAIL_HEIGHT } from "../../../constants/thumbnail";
 
 interface TextRendererProps {
+    text: string;
     preview?: boolean;
     onPreviewImageAvailable?: (data: string) => void;
-    text: string;
+}
+
+
+export async function processText(text: string) {
+    const json: JSONContent = JSON.parse(text);
+    const images = findImages(json);
+    await Promise.all(images.map(async (image) => {
+        if (image.attrs && image.attrs.src.startsWith('images/')) {
+            image.attrs.src = await getImage(image.attrs.src);
+        } 
+    }));
+    return json;
 }
 
 export function TextRenderer(props: TextRendererProps) {
     const [output, setOutput] = useState<string>('');
 
     async function render() {
-        const json: JSONContent = JSON.parse(props.text);
-        const images = findImages(json);
-        await Promise.all(images.map(async (image) => {
-            if (image.attrs?.src) {
-                image.attrs.src = await getImage(image.attrs.src);
-            }
-        }));
+        const json = await processText(props.text);
         const html = generateHTML(json, TiptapExtensions);
         setOutput(html);
     }

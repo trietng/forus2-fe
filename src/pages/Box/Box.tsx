@@ -6,7 +6,7 @@ import { $box } from "../../models/box";
 import { nand } from "../../utils/boolean";
 import { ForusBreadcrumb } from "../../components/Routing/ForusBreadcrumb";
 import { BoxInformation, route, ThreadFilter } from "../../components/Control/Box";
-import { ThreadEditor } from "../../components/Control/Thread";
+import { ThreadCreator } from "../../components/Control/Thread";
 import { BoxModal } from "../../components/Modal/Box";
 import { ThreadPreviewCard } from "../../components/ThreadPreviewCard";
 import { Pagination } from "flowbite-react";
@@ -74,7 +74,7 @@ export function Box() {
         <>
             <ForusBreadcrumb urls={[
                 { label: box.group?.name || 'Group', link: box.group?.name ? `/all#${box.group?._id}` : '' },
-                { label: box.name, link: `/box/${box._id}` }
+                { label: box.name, link: `/box/${box._id}` , disabled: true}
             ]}/>
             <div className="md:hidden mt-4">
                 <BoxInformation />
@@ -91,7 +91,7 @@ export function Box() {
                 </div>
             ))}
             <div className="mt-4">
-                <ThreadEditor mode="create" />
+                <ThreadCreator />
             </div>
             <BoxModal />
         </>

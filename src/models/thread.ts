@@ -1,15 +1,16 @@
 import { Content } from './content';
 import { Base } from './base';
-import { Visibility } from './visibility';
+import { atom } from 'nanostores';
+import { Box } from './box';
+import { Group } from './group';
 
-export interface Thread extends Base, Content, Visibility {
+export interface Thread extends Base, Omit<Content, "title"> {
     title: string;
-    body: string;
-    author?: {
-        _id: string;
-        displayName: string;
-        avatarUrl: string;
+    box?: Box & {
+        group?: Group;
     }
-    box?: string;
     commentCount?: number;
+    pageCount?: number;
 }
+
+export const $thread = atom<Thread | undefined>();

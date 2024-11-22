@@ -1,7 +1,7 @@
 import { useMemo, useRef } from "react";
 import { Button, Dropdown } from "flowbite-react";
 import { useStore } from "@nanostores/react";
-import { CheckCircleIcon, ClockIcon, PencilIcon, TrashIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { ArrowPathRoundedSquareIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { getDecodedPayload } from "../../helpers/jwt";
 import { openBoxModal } from "../Modal/Box";
@@ -45,29 +45,6 @@ export function BoxSubscriber(props: BoxSubscriberProps) {
     );
 }
 
-export function ContentStatus(props: any) {
-    const user = useMemo(() => getDecodedPayload(), []);
-    if (user?.role !== "ROLE_ADMIN") return null;
-    return (
-        <Dropdown 
-            label={
-                <div className="rounded-lg p-3 hover:shadow-md border" color={props.box.status === "approved" ? "success" : "warning"}>
-                    {props.box.status === "approved" ?
-                    <><CheckCircleIcon className="size-4 text-green-500 inline mr-2"/> Approved</>
-                    : (props.box.status === "rejected" ?
-                    <><XCircleIcon className="size-4 text-red-500 inline mr-2"/> Rejected</> :
-                    <><ClockIcon className="size-4 text-blue-500 inline mr-2"/> Pending</>)}
-                </div>
-            } 
-            arrowIcon={false}
-            inline
-            placement="bottom-end"
-        >
-            <Dropdown.Item><CheckCircleIcon className="size-4 text-green-500 inline mr-2"/> Approve</Dropdown.Item>
-            <Dropdown.Item><XCircleIcon className="size-4 text-red-500 inline mr-2"/> Reject</Dropdown.Item>
-        </Dropdown>
-    );
-}
 
 export function BoxEditor() {
     const user = useMemo(() => getDecodedPayload(), []);

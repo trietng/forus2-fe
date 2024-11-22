@@ -1,7 +1,7 @@
 import '../../../styles/text.css';
 import '../../../styles/toolbar.css';
 
-import { EditorProvider, JSONContent, useCurrentEditor } from '@tiptap/react'
+import { Content, EditorProvider, generateHTML, JSONContent, useCurrentEditor, useEditor } from '@tiptap/react'
 import { Button, Dropdown, FileInput, Label, Tabs, TextInput, Tooltip, CustomFlowbiteTheme } from 'flowbite-react';
 import { ClipboardIcon, BoldIcon, CodeBracketIcon, ItalicIcon, ListBulletIcon, StrikethroughIcon, NumberedListIcon, CodeBracketSquareIcon, MinusIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, Bars3BottomLeftIcon, Bars3CenterLeftIcon, Bars3BottomRightIcon, Bars3Icon, PhotoIcon, ArrowUpOnSquareIcon, LinkIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { IconBlockquote } from '../../../icons/IconBlockquote';
@@ -19,8 +19,6 @@ import { FormValidationData } from '../../../models/form-validation-data';
 import { isValidHttpUrl } from '../../../utils/string';
 import { ACCEPTED_IMAGE_MIME_TYPES, FILE_INPUT_ACCEPT_VALUE } from '../../../utils/image';
 import { readAsDataURLAsync } from '../../../helpers/filereader';
-import { atom } from 'nanostores';
-import { useStore } from '@nanostores/react';
 import { IconYoutube } from '../../../icons/IconYoutube';
 import { TiptapExtensions } from '../config/text';
 
@@ -200,11 +198,11 @@ function MenuBar() {
     }
 
     return (
-        <div className="mt-4 bg-primary border-b rounded-t-lg overflow-hidden control-group">
+        <div className="bg-primary border-b rounded-t-lg overflow-hidden control-group">
             <div className="button-group">
                 <div className='flex items-center border-e'>
                     <Tooltip content="Bold" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleBold().run()}
                             disabled={
                                 !editor.can()
@@ -218,7 +216,7 @@ function MenuBar() {
                         </button>
                     </Tooltip>
                     <Tooltip content="Italic" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleItalic().run()}
                             disabled={
                                 !editor.can()
@@ -232,7 +230,7 @@ function MenuBar() {
                         </button>
                     </Tooltip>
                     <Tooltip content="Strikethrough" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleStrike().run()}
                             disabled={
                                 !editor.can()
@@ -246,7 +244,7 @@ function MenuBar() {
                         </button>
                     </Tooltip>
                     <Tooltip content="Code" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleCode().run()}
                             disabled={
                                 !editor.can()
@@ -260,7 +258,7 @@ function MenuBar() {
                         </button>
                     </Tooltip>
                     <Tooltip content="Highlight" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleHighlight().run()}
                         >
                             <IconHighlight className={editor.isActive('highlight') ? ' text-secondary' : ''}/>
@@ -271,7 +269,7 @@ function MenuBar() {
                         inline
                         placement="bottom-end"
                         renderTrigger={() =>
-                            <button>
+                            <button type="button">
                                 <Tooltip content="Link" placement="bottom">
                                     <LinkIcon className={editor.isActive('link') ? ' text-secondary' : ''}/>
                                 </Tooltip>
@@ -284,56 +282,56 @@ function MenuBar() {
                 </div>
                 <div className='flex items-center border-e'>
                     <Tooltip content="Heading 1" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
                         >
                             <IconHeading1 className={editor.isActive('heading', { level: 1 }) ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Heading 2" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
                         >
                             <IconHeading2 className={editor.isActive('heading', { level: 2 }) ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Heading 3" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
                         >
                             <IconHeading3 className={editor.isActive('heading', { level: 3 }) ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Paragraph" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().setParagraph().run()}
                         >
                             <IconPilcrow className={editor.isActive('paragraph') ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Align left" placement="bottom">
-                        <button 
+                        <button type="button" 
                             onClick={() => editor.chain().focus().setTextAlign('left').run()}
                         >
                             <Bars3BottomLeftIcon className={editor.isActive({ textAlign: 'left' }) ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Align center" placement="bottom">
-                        <button 
+                        <button type="button" 
                             onClick={() => editor.chain().focus().setTextAlign('center').run()}
                         >
                             <Bars3CenterLeftIcon className={editor.isActive({ textAlign: 'center' }) ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Align right" placement="bottom">
-                        <button 
+                        <button type="button" 
                             onClick={() => editor.chain().focus().setTextAlign('right').run()}
                         >
                             <Bars3BottomRightIcon className={editor.isActive({ textAlign: 'right' }) ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Align justify" placement="bottom">
-                        <button 
+                        <button type="button" 
                             onClick={() => editor.chain().focus().setTextAlign('justify').run()}
                         >
                             <Bars3Icon className={editor.isActive({ textAlign: 'justify' }) ? ' text-secondary' : ''}/>
@@ -342,35 +340,35 @@ function MenuBar() {
                 </div>
                 <div className='flex items-center border-e'>
                     <Tooltip content="Bullet list" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleBulletList().run()}
                         >
                             <ListBulletIcon className={editor.isActive('bulletList') ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Ordered list" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleOrderedList().run()}
                         >
                             <NumberedListIcon className={editor.isActive('orderedList') ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Code block" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
                         >
                             <CodeBracketSquareIcon className={editor.isActive('codeBlock') ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Blockquote" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().toggleBlockquote().run()}
                         >
                             <IconBlockquote className={editor.isActive('blockquote') ? ' text-secondary' : ''}/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Horizontal rule" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().setHorizontalRule().run()}
                         >
                             <MinusIcon/>
@@ -381,7 +379,7 @@ function MenuBar() {
                         inline
                         placement="bottom-end"
                         renderTrigger={() =>
-                            <button>
+                            <button type="button">
                                 <Tooltip content="Insert image" placement="bottom">
                                     <PhotoIcon />
                                 </Tooltip>
@@ -407,7 +405,7 @@ function MenuBar() {
                         inline
                         placement="bottom-end"
                         renderTrigger={() =>
-                            <button>
+                            <button type="button">
                                 <Tooltip content="Insert Youtube video" placement="bottom">
                                     <IconYoutube />
                                 </Tooltip>
@@ -420,7 +418,7 @@ function MenuBar() {
                 </div>
                 <div className='flex items-center'>
                     <Tooltip content="Undo" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().undo().run()}
                             disabled={
                                 !editor.can()
@@ -434,7 +432,7 @@ function MenuBar() {
                         </button>
                     </Tooltip>
                     <Tooltip content="Redo" placement="bottom">
-                        <button
+                        <button type="button"
                             onClick={() => editor.chain().focus().redo().run()}
                             disabled={
                                 !editor.can()
@@ -448,12 +446,12 @@ function MenuBar() {
                         </button>
                     </Tooltip>
                     <Tooltip content="Clear marks" placement="bottom">
-                        <button onClick={() => editor.chain().focus().unsetAllMarks().run()}>
+                        <button type="button" onClick={() => editor.chain().focus().unsetAllMarks().run()}>
                             <IconFormatClear/>
                         </button>
                     </Tooltip>
                     <Tooltip content="Clear nodes" placement="bottom">
-                        <button onClick={() => editor.chain().focus().clearNodes().run()}>
+                        <button type="button" onClick={() => editor.chain().focus().clearNodes().run()}>
                             <IconSectionRemove/>
                         </button>
                     </Tooltip>
@@ -465,18 +463,19 @@ function MenuBar() {
 
 export type ContentEditorMode = "create" | "edit";
 
-export const $content = atom<JSONContent | undefined>();
+interface TextEditorProps {
+    onChange: (content: JSONContent) => void;
+    text?: Content;
+}
 
-export function TextEditor() {
-    const content = useStore($content);
-
+export function TextEditor(props: TextEditorProps) {
     return (
-        <EditorProvider slotBefore={<MenuBar />} extensions={TiptapExtensions} content={content} editorProps={{
+        <EditorProvider slotBefore={<MenuBar />} extensions={TiptapExtensions} content={props.text} editorProps={{
             attributes: {
                 class: 'bg-primary p-4 rounded-b-lg',
             }
         }} onUpdate={({ editor }) => {
-            $content.set(editor.getJSON());
+            props.onChange(editor.getJSON());
         }}></EditorProvider>
     )
 }

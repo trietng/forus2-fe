@@ -3,7 +3,7 @@ import { Thread } from "../../models/thread";
 import { TextRenderer } from "../Control/TextRenderer/TextRenderer";
 import { useState } from "react"
 import { Link } from "react-router-dom";
-import { ThreadInfomation } from "../Control/Thread";
+import { ThreadPreviewInfomation } from "../Control/Thread";
 
 interface ThreadPreviewCardProps {
     thread: Thread;
@@ -13,10 +13,10 @@ export function ThreadPreviewCard(props: ThreadPreviewCardProps) {
     const [previewImage, setPreviewImage] = useState<string>();
 
     return (
-        <Card className="bg-body-secondary">
+        <Card className="bg-body-secondary border-none">
             <div className="flex gap-4 justify-between" >
                 <div className="md:hidden">
-                    <ThreadInfomation thread={props.thread} vertical/>
+                    <ThreadPreviewInfomation thread={props.thread} vertical/>
                 </div>
                 <div className="flex flex-col w-full justify-between">
                     <div>
@@ -26,7 +26,7 @@ export function ThreadPreviewCard(props: ThreadPreviewCardProps) {
                         </div>
                     </div>
                     <div>
-                        <ThreadInfomation thread={props.thread}/>
+                        <ThreadPreviewInfomation thread={props.thread}/>
                     </div>
                 </div>
                 {previewImage && <img src={previewImage} alt="Preview" className="size-24 object-cover rounded-lg border bg-white" />}

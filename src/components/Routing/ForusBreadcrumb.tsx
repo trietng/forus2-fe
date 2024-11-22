@@ -5,6 +5,7 @@ import { capitalize } from "../../utils/string";
 interface ForusBreadcrumbUrl {
     label: string;
     link: string;
+    disabled?: boolean;
 }
 
 interface ForusBreadcrumbProps {
@@ -17,12 +18,13 @@ export function ForusBreadcrumb(props: ForusBreadcrumbProps) {
             <Breadcrumb.Item href="/all" icon={BuildingLibraryIcon}>
                 All
             </Breadcrumb.Item>
-            {props.urls.map(({ label, link }, index) => {
+            {props.urls.map(({ label, link, disabled }, index) => {
                 // get the previous values and add the current value
                 return (
                     <Breadcrumb.Item 
                         key={index}
                         href={link}
+                        className={disabled ? "[&_a]:text-white [&_a]:pointer-events-none" : undefined}
                     >
                         {capitalize(label)}
                     </Breadcrumb.Item>

@@ -17,12 +17,18 @@ export async function uploadImage(file: File, path: string) {
 
 export async function uploadImages(imgObjects: JSONContent[]) {
     return await Promise.all(imgObjects.map(async (imgObject, index) => {
-        const mimeType = imgObject.attrs?.src.split(';')[0].split(':')[1];
-        const extension = mimeType.split('/')[1];
-        const response = await fetch(imgObject.attrs?.src);
-        const blob = await response.blob();
-        const file = new File([blob], `${index}.${extension}`, {type: mimeType});
-        return await uploadImage(file, '/content');
+        // check if the src attribute is data url
+        console.log(imgObject.attrs?.src);
+        if (imgObject.attrs?.src.startsWith('data:')) {
+            const mimeType = imgObject.attrs?.src.split(';')[0].split(':')[1];
+            const extension = mimeType.split('/')[1];
+            const base64 = imgObject.attrs?.src.split(',')[1];
+            const buffer = Buffer.from(base64, 'base64');
+            const file = new File([buffer], `${index}.${extension}`, {type: mimeType});
+            return await uploadImage(file, '/content');
+        } else {
+            return imgObject.attrs?.src;
+        }
     }));
 }
 

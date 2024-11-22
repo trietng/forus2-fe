@@ -1,11 +1,10 @@
 import { Avatar, Button, Modal, Spinner, TextInput, Tooltip } from "flowbite-react";
-import { $content, ContentEditorMode, TextEditor } from "./TextEditor/TextEditor";
+import { TextEditor } from "./TextEditor/TextEditor";
 import { THREAD_MAX_TITLE_LENGTH } from "../../constants/validation";
 import { useStore } from "@nanostores/react";
-import { ArrowPathIcon, CheckIcon, ExclamationCircleIcon, EyeIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, ExclamationCircleIcon, EyeIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { BlinkingDots } from "../BlinkingDots";
-import { atom } from "nanostores";
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { findImages } from "../../utils/json-content";
 import { uploadImages } from "../../firebase/image";
 import { toast } from "react-toastify";
@@ -19,26 +18,25 @@ import { VoteAction, Voter } from "../Voter/Voter";
 import { getThumbnail } from "../../firebase/thumbnail";
 import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/thumbnail";
 import { getDecodedPayload } from "../../helpers/jwt";
+import { Content } from "../../models/content";
+import { FormValidationData } from "../../models/form-validation-data";
+import { ValidationMessage } from "../Validation/ValidationMessage";
 
-interface ThreadEditorProps {
-    mode: ContentEditorMode;
-}
+type ThreadCreatorState = "idle" | "loading" | "error";
+type ThreadCreatorErrorMessages = "Failed to save thread" | "Failed to upload images";
 
-type ThreadEditorState = "idle" | "loading" | "error";
-type ThreadEditorErrorMessages = "Failed to save thread" | "Failed to upload images";
-
-const $title = atom<string>('');
-
-export function ThreadEditor(props: ThreadEditorProps) {
+export function ThreadCreator() {
     const navigate = useNavigate();
     const box = useStore($box);
-    const content = useStore($content);
-    const title = useStore($title);
-    const [modalStatus, setModalStatus] = useState<ThreadEditorState>("idle");
-    const [errorMessage, setErrorMessage] = useState<ThreadEditorErrorMessages>("Failed to save thread");
+    const [title, setTitle] = useState<string>('');
+    const [content, setContent] = useState<JSONContent>();
+    const [titleValidation, setTitleValidation] = useState<FormValidationData>({ status: true, message: '' });
+    const [modalStatus, setModalStatus] = useState<ThreadCreatorState>("idle");
+    const [errorMessage, setErrorMessage] = useState<ThreadCreatorErrorMessages>("Failed to save thread");
 
     function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        $title.set(e.target.value);
+        setTitle(e.target.value);
+        setTitleValidation({ status: e.target.validity.valid, message: e.target.validationMessage });
     }
 
     async function processImages(content: JSONContent) {
@@ -50,20 +48,23 @@ export function ThreadEditor(props: ThreadEditorProps) {
                     image.attrs.src = imageUrls.shift();
                 }
             });
-            $content.set(content);
-        } catch (_) {
-            const em: ThreadEditorErrorMessages = "Failed to upload images";
+            setContent(content);
+        } catch (e) {
+            const em: ThreadCreatorErrorMessages = "Failed to upload images";
             toast.error(em);
             setErrorMessage(em);
             setModalStatus("error");
+            throw e;
         }
     }
 
-    async function saveThread() {
-        
-    }
-
-    async function createThread() {
+    async function createThread(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        if (!titleValidation.status) {
+            toast.error(`Title: ${titleValidation.message}`);
+            return;
+        }
+        setModalStatus("loading");
         if (content) {
             // Find any base64 images in the content and upload them to firebase
             // TODO: Remote CRON job to delete old images
@@ -78,61 +79,46 @@ export function ThreadEditor(props: ThreadEditorProps) {
                 // Refresh the current page
                 navigate(0);
             } catch (_) {
-                const em: ThreadEditorErrorMessages = "Failed to save thread";
+                const em: ThreadCreatorErrorMessages = "Failed to save thread";
                 setErrorMessage(em);
                 setModalStatus("error");
             }
         }
     }
 
-    async function submitThread() {
-        setModalStatus("loading");
-        if (props.mode === "create") {
-            await createThread();
-        } else {
-            await saveThread();
-        }
-    }
-
     return (
-        <>
-            {props.mode === "create" && 
-                <div className="flex">
-                    <TextInput color="primary" className="[&_input]:rounded-e-none w-full" maxLength={THREAD_MAX_TITLE_LENGTH} onChange={handleTitleChange} placeholder="Title"/>
-                    <div className="bg-primary rounded-r-lg p-2 border-s text-sm text-center">
-                        {title.length}/{THREAD_MAX_TITLE_LENGTH}
-                    </div>
+        <form noValidate onSubmit={createThread}>
+            <div className="flex">
+                <TextInput color="primary" className="[&_input]:rounded-e-none w-full" maxLength={THREAD_MAX_TITLE_LENGTH} onChange={handleTitleChange} required placeholder="Title"/>
+                <div className="bg-primary rounded-r-lg p-2 border-s text-sm text-center">
+                    {title.length}/{THREAD_MAX_TITLE_LENGTH}
                 </div>
-            }
-            <TextEditor />
-            <Button color="secondary" className="mt-4 float-end" onClick={() => submitThread()}>{
-                props.mode === "create" ?
-                <><PlusIcon className="place-self-center inline size-4 mr-2"/> Create</> :
-                <><CheckIcon className="place-self-center inline size-4 mr-2"/> Save</>
-            }
+            </div>
+            <ValidationMessage formValidationData={titleValidation} className="my-1"/>
+            <TextEditor onChange={setContent}/>
+            <Button color="secondary" className="mt-4 float-end" type="submit">
+                <PlusIcon className="place-self-center inline size-4 mr-2"/> Create
             </Button>
-            <Modal popup show={props.mode === "create" && modalStatus !== "idle"} size="md">
+            <Modal popup show={modalStatus !== "idle"} size="md">
                 <Modal.Body className="p-0">
                     <div className="m-4 flex flex-col justify-center items-center text-white">
                         {modalStatus === "loading" ?
                         <>
                             <Spinner color="secondary" className="size-8 mb-2"/>
-                            {props.mode === "create" ? 
-                            <div>Creating thread <BlinkingDots/></div> : 
-                            <div>Saving thread <BlinkingDots/></div>}
+                            <div>Creating thread <BlinkingDots/></div> 
                         </> :
                         <>
                             <ExclamationCircleIcon className="size-8 mb-2 text-red-500"/>
                             <div className="mb-2">{errorMessage}</div>
                             <div className="flex gap-4">
-                                <Button color="secondary" onClick={() => submitThread()}><ArrowPathIcon className="size-4 mr-2 place-self-center"/> Retry</Button>
+                                <Button color="secondary"><ArrowPathIcon className="size-4 mr-2 place-self-center"/> Retry</Button>
                                 <Button color="gray" onClick={() => setModalStatus("idle")}><XMarkIcon className="size-4 mr-2 place-self-center"/>  Cancel</Button>
                             </div>
                         </>}
                     </div>
                 </Modal.Body>
             </Modal>
-        </>
+        </form>
     )
 }
 
@@ -153,37 +139,26 @@ interface ThreadCommentCounterProps {
     vertical?: boolean;
 }
 
-function ThreadCommentCounter(props: ThreadCommentCounterProps) {
+export function ThreadCommentCounter(props: ThreadCommentCounterProps) {
     return (
         <div className="text-sm rounded-lg border align-middle p-2">{props.thread.commentCount + (props.vertical === true ? "" : " comments")}</div>
     );
 }
 
 interface VisibilityToggleProps {
-    thread: Thread;
+    content: Content;
+    onToggle: () => void;
 }
 
-function VisibilityToggle(props: VisibilityToggleProps) {
+export function VisibilityToggle(props: VisibilityToggleProps) {
     const user = useMemo(() => getDecodedPayload(), []);
+    const box = useStore($box);
 
-    async function toggleVisibility() {
-        await api.patch(`/v1/threads/${props.thread._id}`, {
-            visibility: !props.thread.visibility
-        });
-        $box.set({
-            ...$box.get()!,
-            threads: $box.get()!.threads?.map(t => t._id === props.thread._id ? {
-                ...t,
-                visibility: !t.visibility
-            } : t)
-        });
-    }
-
-    if (user?.role !== "ROLE_ADMIN") return null;
+    if (user?.role !== "ROLE_ADMIN" && !box?.moderators?.includes(user?.id || '')) return null;
 
     return (
         <Tooltip content="Show/hide" placement="bottom">
-            <button onClick={() => toggleVisibility()} className={"hover:bg-black/10 rounded-full p-2" + (props.thread.visibility === true ? " text-secondary" : "")}>
+            <button onClick={props.onToggle} className={"hover:bg-black/10 rounded-full p-2" + (props.content.visibility === true ? " text-secondary" : "")}>
                 <EyeIcon className="size-6"/>
             </button>
         </Tooltip>
@@ -195,7 +170,7 @@ interface ThreadInfomationProps {
     vertical?: boolean;
 }
 
-export function ThreadInfomation(props: ThreadInfomationProps) {
+export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
     const [avatarUrl, setAvatar] = useState<string>();
 
     async function renderAvatar() {
@@ -205,6 +180,19 @@ export function ThreadInfomation(props: ThreadInfomationProps) {
                 setAvatar(thumbnail);
             }
         }
+    }
+
+    async function toggleThreadVisibilityInBox() {
+        await api.patch(`/v1/threads/${props.thread._id}`, {
+            visibility: !props.thread.visibility
+        });
+        $box.set({
+            ...$box.get()!,
+            threads: $box.get()!.threads?.map(t => t._id === props.thread._id ? {
+                ...t,
+                visibility: !t.visibility
+            } : t)
+        });
     }
     
     useEffect(() => {
@@ -221,7 +209,7 @@ export function ThreadInfomation(props: ThreadInfomationProps) {
                 <ThreadCommentCounter thread={props.thread} vertical/>
             </div>
             <div className="mt-2 flex justify-center">
-                <VisibilityToggle thread={props.thread} />
+                <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
             </div>
         </> :    
         <div className="flex justify-between flex-wrap">
@@ -234,7 +222,7 @@ export function ThreadInfomation(props: ThreadInfomationProps) {
                 <div className="py-2 ms-2 md:flex justify-stretch items-center gap-4 hidden">
                     <ThreadCommentCounter thread={props.thread}/>
                     <Voter onVote={(action) => voteThread(props.thread, action)} content={props.thread}/>
-                    <VisibilityToggle thread={props.thread}/>
+                    <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
                 </div>
             </div>
         </div>

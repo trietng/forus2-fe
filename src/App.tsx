@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import { FallbackSpinner } from './components/FallbackSpinner';
 import MainLayout from './layouts/MainLayout';
 const Box = lazy(() => import('./pages/Box'));
+const Thread = lazy(() => import('./pages/Thread'));
 const User = lazy(() => import('./pages/User'));
 
 function App() {
@@ -28,6 +29,8 @@ function App() {
             }>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/all" element={<All/>}/>
+                <Route path="/thread/:id" element={<Suspense fallback={<FallbackSpinner/>}><Thread/></Suspense>}/>
+                <Route path="/thread/:id/:page" element={<Suspense fallback={<FallbackSpinner/>}><Thread/></Suspense>}/>
             </Route>
             <Route element={
                 <AuthGuard>
