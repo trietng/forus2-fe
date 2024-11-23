@@ -12,6 +12,7 @@ import { Thread } from "../../models/thread";
 import { TextRenderer } from "./TextRenderer";
 import { Comment } from "../../models/comment";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
 
 type ReplyMode = "reply" | "create";
 
@@ -22,10 +23,24 @@ interface ReplyProps {
 }
 
 export function Reply(props: ReplyProps) {
+    const navigate = useNavigate();
+
+    async function handleGoToOriginalComment() {
+        // Scroll to the original comment
+        let comment = Array.from(document.getElementsByClassName('content-card')).find((c) => c.id == props.reply._id);
+        if (comment) {
+            comment.scrollIntoView({ behavior: "smooth" });
+        }
+        else {
+            let response = await api.get(`/v1/comments/${props.reply._id}/locate`);
+            navigate(`/thread/${response.data.thread._id}/${response.data.page}#${response.data._id}`);
+        }
+    }
+
     return (
         <div className={"justify-between rounded-lg overflow-hidden bg-body-secondary" + (props.mode === "reply" ? " border border-primary" : "")}>
             <div className="flex justify-between items-center bg-primary p-4">
-                <span className="font-bold">{props.reply.author && props.reply.author.displayName} {' '} said:</span>
+                <span onClick={() => handleGoToOriginalComment()} className="font-bold hover:underline cursor-pointer">{props.reply.author && props.reply.author.displayName} {' '} said:</span>
                 {props.mode !== "reply" && <Button color="failure" onClick={() => {
                     if (props.onClearReply) {
                         props.onClearReply();
@@ -36,6 +51,19 @@ export function Reply(props: ReplyProps) {
             </div>
             <div className="p-4">
                 <TextRenderer text={props.reply.body} />
+            </div>
+        </div>
+    );
+}
+
+export function MissingReply() {
+    return (
+        <div className="justify-between rounded-lg overflow-hidden bg-body-secondary border border-primary">
+            <div className="flex justify-between items-center bg-primary p-4">
+                [unavailable] said:
+            </div>
+            <div className="p-4">
+                [deleted/hidden]
             </div>
         </div>
     )
@@ -87,6 +115,9 @@ export function CommentCreator(props: CommentCreatorProps) {
                 });
                 $contentModalState.set("idle");
                 // Refresh the current page
+                if (props.onClearReply) {
+                    props.onClearReply();
+                }
                 props.onCommentCreated();
             } catch (_) {
                 const em: ContentModalErrorMessage = "Failed to save content";

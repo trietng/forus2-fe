@@ -30,7 +30,7 @@ export function ContentCard(props: ContentCardProps) {
     }, []);
 
     return (
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row content-card" id={props.content._id}>
             <Card className="hidden md:flex bg-primary border-none rounded-e-none min-w-36">
                 <div className="place-self-start h-full text-center">
                     <Avatar size="lg" img={avatarUrl}/>

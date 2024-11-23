@@ -11,7 +11,7 @@ import { openThreadModal, ThreadModal } from "../../components/Modal/Thread";
 import { ContentDeleter, ContentEditToggle, ContentReplier, VisibilityToggle } from "../../components/Control/Content";
 import { JSONContent } from "@tiptap/react";
 import { $contentModalState } from "../../components/Modal/Content";
-import { CommentCreator, Reply } from "../../components/Control/Comment";
+import { CommentCreator, MissingReply, Reply } from "../../components/Control/Comment";
 import { Comment } from "../../models/comment";
 import { CommentModal, openCommentModal } from "../../components/Modal/Comment";
 
@@ -204,8 +204,11 @@ export function Thread() {
                             <ContentDeleter content={comment} onClick={() => openCommentModal("delete", comment)}/>
                         </>
                     } extraSlot={
-                        comment.reply && <div className="mb-4">
-                            <Reply reply={comment.reply} mode="reply"/>
+                        <div className="mb-4">
+                            {comment.reply ?
+                            <Reply reply={comment.reply} mode="reply"/> : (
+                                comment.replyTo && <MissingReply/>
+                            )}
                         </div>
                     } onSaveContent={(body) => saveComment(comment, body)}/>
                 </div>
