@@ -6,7 +6,7 @@ import { Payload } from "../../models/payload";
 import { UserRoleMap } from "../../models/role";
 import { api } from "../../api";
 import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/thumbnail";
-import { getThumbnail } from "../../firebase/thumbnail";
+import { getFirebaseThumbnail } from "../../firebase/thumbnail";
 import { ArrowLeftStartOnRectangleIcon, Cog6ToothIcon } from "@heroicons/react/24/solid";
 
 export function ProfileDropdown() {
@@ -16,7 +16,7 @@ export function ProfileDropdown() {
 
     async function fetchAvatar() {
         if (user?.avatarUrl) {
-            const data = await getThumbnail(user.avatarUrl, AVATAR_THUMBNAIL_HEIGHT)
+            const data = await getFirebaseThumbnail(user.avatarUrl, AVATAR_THUMBNAIL_HEIGHT)
             if (data && typeof data === 'string') {
                 setAvatar(data);
             }

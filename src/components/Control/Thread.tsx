@@ -15,7 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Thread } from "../../models/thread";
 import { getTimePassed } from "../../utils/datetime";
 import { VoteAction, Voter } from "../Voter/Voter";
-import { getThumbnail } from "../../firebase/thumbnail";
+import { getFirebaseThumbnail } from "../../firebase/thumbnail";
 import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/thumbnail";
 import { getDecodedPayload } from "../../helpers/jwt";
 import { Content } from "../../models/content";
@@ -175,7 +175,7 @@ export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
 
     async function renderAvatar() {
         if (props.thread.author) {
-            const thumbnail = await getThumbnail(props.thread.author.avatarUrl, AVATAR_THUMBNAIL_HEIGHT);
+            const thumbnail = await getFirebaseThumbnail(props.thread.author.avatarUrl, AVATAR_THUMBNAIL_HEIGHT);
             if (thumbnail && typeof thumbnail === "string") {
                 setAvatar(thumbnail);
             }

@@ -1,3 +1,4 @@
+import { Buffer } from "buffer/";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
 import { storage } from "./config";
@@ -18,9 +19,8 @@ export async function uploadImage(file: File, path: string) {
 export async function uploadImages(imgObjects: JSONContent[]) {
     return await Promise.all(imgObjects.map(async (imgObject, index) => {
         // check if the src attribute is data url
-        console.log(imgObject.attrs?.src);
-        if (imgObject.attrs?.src.startsWith('data:')) {
-            const mimeType = imgObject.attrs?.src.split(';')[0].split(':')[1];
+        if (imgObject.attrs && imgObject.attrs.src.startsWith('data:')) {
+            const mimeType = imgObject.attrs.src.split(';')[0].split(':')[1];
             const extension = mimeType.split('/')[1];
             const base64 = imgObject.attrs?.src.split(',')[1];
             const buffer = Buffer.from(base64, 'base64');
