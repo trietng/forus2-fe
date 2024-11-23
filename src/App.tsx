@@ -29,8 +29,7 @@ function App() {
             }>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/all" element={<All/>}/>
-                <Route path="/thread/:id" element={<Suspense fallback={<FallbackSpinner/>}><Thread/></Suspense>}/>
-                <Route path="/thread/:id/:page" element={<Suspense fallback={<FallbackSpinner/>}><Thread/></Suspense>}/>
+                
             </Route>
             <Route element={
                 <AuthGuard>
@@ -41,6 +40,8 @@ function App() {
             }>
                 <Route path="/box/:id" element={<Suspense fallback={<FallbackSpinner/>}><Box/></Suspense>}/>
                 <Route path="/box/:id/:page" element={<Suspense fallback={<FallbackSpinner/>}><Box/></Suspense>}/>
+                <Route path="/thread/:id" element={<Suspense fallback={<FallbackSpinner/>}><Thread/></Suspense>}/>
+                <Route path="/thread/:id/:page" element={<Suspense fallback={<FallbackSpinner/>}><Thread/></Suspense>}/>
             </Route>
             <Route element={
                 <AuthGuard>

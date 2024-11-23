@@ -1,19 +1,20 @@
 import { Avatar, Card } from "flowbite-react";
 import { Content } from "../../models/content";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { getImage } from "../../firebase/image";
-import { getDecodedPayload } from "../../helpers/jwt";
 import { UserRoleMap } from "../../models/role";
 import { Link } from "react-router-dom";
 import { EditableContent } from "../Control/Content";
+import { JSONContent } from "@tiptap/react";
 
 interface ContentCardProps {
     content: Content;
     informationSlot: ReactNode;
+    controlSlot: ReactNode;
+    onSaveContent: (body: JSONContent) => void;
 }
 
 export function ContentCard(props: ContentCardProps) {
-    const user = useMemo(() => getDecodedPayload(), []);
     const [avatarUrl, setAvatarUrl] = useState<string>();
 
     async function renderAvatar() {
@@ -41,12 +42,12 @@ export function ContentCard(props: ContentCardProps) {
                     <div>
                         <div className="text-2xl font-semibold">{props.content.title}</div>
                         <div className="text-sm my-2">
-                            <EditableContent content={props.content}/>
+                            <EditableContent content={props.content} onSave={props.onSaveContent}/>
                         </div>
                     </div>
                     <div className="py-2 ms-2 md:flex justify-stretch items-center gap-4 hidden">
-                        
                         {props.informationSlot}
+                        {props.controlSlot}
                     </div>
                 </div>
             </Card>
@@ -57,9 +58,12 @@ export function ContentCard(props: ContentCardProps) {
                         <Link className="text-sm font-medium mt-1 hover:underline" to={`/user/${props.content.author?._id}`}>{props.content.author?.displayName}</Link>
                         {props.content.author?.role && <span className="block text-sm">{UserRoleMap[props.content.author?.role]}</span>}
                     </div>
-                    <div className="ms-2 flex flex-col justify-stretch items-center gap-4">
+                    <div className="ms-4 flex flex-col gap-4">
                         <div className="flex gap-4">
                             {props.informationSlot}
+                        </div>
+                        <div className="flex gap-4">
+                            {props.controlSlot}
                         </div>
                     </div>
                 </div>

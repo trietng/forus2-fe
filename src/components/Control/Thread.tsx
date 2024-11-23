@@ -1,9 +1,9 @@
-import { Avatar, Button, Modal, Spinner, TextInput, Tooltip } from "flowbite-react";
+import { Avatar, Button, TextInput, Tooltip } from "flowbite-react";
 import { TextEditor } from "./TextEditor/TextEditor";
 import { THREAD_MAX_TITLE_LENGTH } from "../../constants/validation";
 import { useStore } from "@nanostores/react";
-import { ArrowPathIcon, ExclamationCircleIcon, EyeIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { BlinkingDots } from "../BlinkingDots";
+import { EyeIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/solid";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { findImages } from "../../utils/json-content";
 import { uploadImages } from "../../firebase/image";
@@ -21,9 +21,9 @@ import { getDecodedPayload } from "../../helpers/jwt";
 import { Content } from "../../models/content";
 import { FormValidationData } from "../../models/form-validation-data";
 import { ValidationMessage } from "../Validation/ValidationMessage";
+import { openThreadModal } from "../Modal/Thread";
+import { $contentModalErrorMessage, $contentModalState, ContentModal, ContentModalErrorMessage } from "../Modal/Content";
 
-type ThreadCreatorState = "idle" | "loading" | "error";
-type ThreadCreatorErrorMessages = "Failed to save thread" | "Failed to upload images";
 
 export function ThreadCreator() {
     const navigate = useNavigate();
@@ -31,8 +31,6 @@ export function ThreadCreator() {
     const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<JSONContent>();
     const [titleValidation, setTitleValidation] = useState<FormValidationData>({ status: true, message: '' });
-    const [modalStatus, setModalStatus] = useState<ThreadCreatorState>("idle");
-    const [errorMessage, setErrorMessage] = useState<ThreadCreatorErrorMessages>("Failed to save thread");
 
     function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
         setTitle(e.target.value);
@@ -50,21 +48,23 @@ export function ThreadCreator() {
             });
             setContent(content);
         } catch (e) {
-            const em: ThreadCreatorErrorMessages = "Failed to upload images";
+            const em: ContentModalErrorMessage = "Failed to upload images";
             toast.error(em);
-            setErrorMessage(em);
-            setModalStatus("error");
+            $contentModalErrorMessage.set(em);
+            $contentModalState.set("error");
             throw e;
         }
     }
 
-    async function createThread(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
+    async function createThread(e?: FormEvent<HTMLFormElement>) {
+        if (e) {
+            e.preventDefault();
+        }
         if (!titleValidation.status) {
             toast.error(`Title: ${titleValidation.message}`);
             return;
         }
-        setModalStatus("loading");
+        $contentModalState.set("loading");
         if (content) {
             // Find any base64 images in the content and upload them to firebase
             // TODO: Remote CRON job to delete old images
@@ -75,13 +75,13 @@ export function ThreadCreator() {
                     title: title,
                     body: JSON.stringify(content),
                 });
-                setModalStatus("idle");
+                $contentModalState.set("idle");
                 // Refresh the current page
                 navigate(0);
             } catch (_) {
-                const em: ThreadCreatorErrorMessages = "Failed to save thread";
-                setErrorMessage(em);
-                setModalStatus("error");
+                const em: ContentModalErrorMessage = "Failed to save content";
+                $contentModalErrorMessage.set(em);
+                $contentModalState.set("error");
             }
         }
     }
@@ -99,25 +99,7 @@ export function ThreadCreator() {
             <Button color="secondary" className="mt-4 float-end" type="submit">
                 <PlusIcon className="place-self-center inline size-4 mr-2"/> Create
             </Button>
-            <Modal popup show={modalStatus !== "idle"} size="md">
-                <Modal.Body className="p-0">
-                    <div className="m-4 flex flex-col justify-center items-center text-white">
-                        {modalStatus === "loading" ?
-                        <>
-                            <Spinner color="secondary" className="size-8 mb-2"/>
-                            <div>Creating thread <BlinkingDots/></div> 
-                        </> :
-                        <>
-                            <ExclamationCircleIcon className="size-8 mb-2 text-red-500"/>
-                            <div className="mb-2">{errorMessage}</div>
-                            <div className="flex gap-4">
-                                <Button color="secondary"><ArrowPathIcon className="size-4 mr-2 place-self-center"/> Retry</Button>
-                                <Button color="gray" onClick={() => setModalStatus("idle")}><XMarkIcon className="size-4 mr-2 place-self-center"/>  Cancel</Button>
-                            </div>
-                        </>}
-                    </div>
-                </Modal.Body>
-            </Modal>
+            <ContentModal onRetry={createThread}/>
         </form>
     )
 }
@@ -208,8 +190,9 @@ export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
             <div className="text-center mt-2">
                 <ThreadCommentCounter thread={props.thread} vertical/>
             </div>
-            <div className="mt-2 flex justify-center">
+            <div className="mt-2 flex flex-col justify-center">
                 <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
+                <ThreadDeleter thread={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
             </div>
         </> :    
         <div className="flex justify-between flex-wrap">
@@ -223,8 +206,29 @@ export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
                     <ThreadCommentCounter thread={props.thread}/>
                     <Voter onVote={(action) => voteThread(props.thread, action)} content={props.thread}/>
                     <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
+                    <ThreadDeleter thread={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
                 </div>
             </div>
         </div>
+    );
+}
+
+interface ThreadDeleterProps {
+    thread: Thread;
+    onClick: () => void;
+}
+
+export function ThreadDeleter(props: ThreadDeleterProps) {
+    const user = useMemo(() => getDecodedPayload(), []);
+    const box = useStore($box);
+
+    if (user?.role !== "ROLE_ADMIN" && !box?.moderators?.includes(user?.id || '')) return null;
+
+    return (
+        <Tooltip content="Delete" placement="bottom">
+            <button onClick={props.onClick} className="hover:bg-black/10 rounded-full p-2 text-red-500">
+                <TrashIcon className="size-6"/>
+            </button>
+        </Tooltip>
     );
 }

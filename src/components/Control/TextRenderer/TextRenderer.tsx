@@ -7,12 +7,6 @@ import { getImage } from "../../../firebase/image";
 import { getFirebaseThumbnail, getThumbnail } from "../../../firebase/thumbnail";
 import { THREAD_PREVIEW_THUMBNAIL_HEIGHT } from "../../../constants/thumbnail";
 
-interface TextRendererProps {
-    text: string;
-    preview?: boolean;
-    onPreviewImageAvailable?: (data: string) => void;
-}
-
 
 export async function processText(text: string) {
     const json: JSONContent = JSON.parse(text);
@@ -25,11 +19,21 @@ export async function processText(text: string) {
     return json;
 }
 
+interface TextRendererProps {
+    text: string;
+    preview?: boolean;
+    onPreviewImageAvailable?: (data: string) => void;
+    onAfterTextProcessed?: (data: JSONContent) => void;
+}
+
 export function TextRenderer(props: TextRendererProps) {
     const [output, setOutput] = useState<string>('');
 
     async function render() {
         const json = await processText(props.text);
+        if (props.onAfterTextProcessed) {
+            props.onAfterTextProcessed(json);
+        }
         const html = generateHTML(json, TiptapExtensions);
         setOutput(html);
     }

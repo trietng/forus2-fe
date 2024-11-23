@@ -1,7 +1,7 @@
 import '../../../styles/text.css';
 import '../../../styles/toolbar.css';
 
-import { Content, EditorProvider, generateHTML, JSONContent, useCurrentEditor, useEditor } from '@tiptap/react'
+import { Content, EditorProvider, JSONContent, useCurrentEditor } from '@tiptap/react'
 import { Button, Dropdown, FileInput, Label, Tabs, TextInput, Tooltip, CustomFlowbiteTheme } from 'flowbite-react';
 import { ClipboardIcon, BoldIcon, CodeBracketIcon, ItalicIcon, ListBulletIcon, StrikethroughIcon, NumberedListIcon, CodeBracketSquareIcon, MinusIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, Bars3BottomLeftIcon, Bars3CenterLeftIcon, Bars3BottomRightIcon, Bars3Icon, PhotoIcon, ArrowUpOnSquareIcon, LinkIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { IconBlockquote } from '../../../icons/IconBlockquote';

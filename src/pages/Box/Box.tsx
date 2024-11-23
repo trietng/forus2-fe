@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect } from "react";
 import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { useStore } from "@nanostores/react";
+import { Pagination } from "flowbite-react";
 import { api } from "../../api";
 import { $box } from "../../models/box";
 import { nand } from "../../utils/boolean";
@@ -9,9 +10,7 @@ import { BoxInformation, route, ThreadFilter } from "../../components/Control/Bo
 import { ThreadCreator } from "../../components/Control/Thread";
 import { BoxModal } from "../../components/Modal/Box";
 import { ThreadPreviewCard } from "../../components/ThreadPreviewCard";
-import { Pagination } from "flowbite-react";
-
-
+import { ThreadModal } from "../../components/Modal/Thread";
 
 export function Box() {
     const navigate = useNavigate();
@@ -94,6 +93,7 @@ export function Box() {
                 <ThreadCreator />
             </div>
             <BoxModal />
+            <ThreadModal onRefresh={() => fetchBox()} />
         </>
     );
 }
