@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 export type ContentModalState = "idle" | "loading" | "error";
-export type ContentModalErrorMessage = "Failed to save content" | "Failed to upload images";
+export type ContentModalErrorMessage = "Failed to save content" | "Failed to upload images" | "Failed to save comment" | "Failed to save thread";
 
 export const $contentModalState = atom<ContentModalState>("idle");
 export const $contentModalErrorMessage = atom<ContentModalErrorMessage>("Failed to save content")

@@ -2,7 +2,6 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import { useStore } from "@nanostores/react";
 import { Modal, Button } from "flowbite-react";
 import { map } from "nanostores";
-import { useRef } from "react";
 import { api } from "../../api";
 import { ModalData, ModalMode } from "../../models/modal";
 import { Thread } from "../../models/thread";
@@ -11,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 type AfterDeleteAction = "goback" | "refresh";
 
 interface ThreadModalData extends ModalData {
-    thread: Omit<Thread, "body">;
+    thread: Omit<Thread, "body" | "comments">;
     afterDeleteAction?: AfterDeleteAction;
 }
 
@@ -24,7 +23,6 @@ interface ThreadModalProps {
 export function ThreadModal(props: ThreadModalProps) {
     const navigate = useNavigate();
     const threadModalData = useStore($threadModalData);
-    const groupNameInputRef = useRef<HTMLInputElement>(null);
 
     async function handleDelete() {
         await api.delete(`/v1/threads/${threadModalData.thread._id}`);
@@ -39,7 +37,7 @@ export function ThreadModal(props: ThreadModalProps) {
     }
 
     return (
-        <Modal show={threadModalData.open} size="md" onClose={() => $threadModalData.setKey('open', false)} initialFocus={groupNameInputRef} popup={threadModalData.mode === "delete"}>
+        <Modal show={threadModalData.open} size="md" onClose={() => $threadModalData.setKey('open', false)} popup={threadModalData.mode === "delete"}>
             <Modal.Header>{threadModalData.keys?.header}</Modal.Header>
             <Modal.Body>
                 {threadModalData.mode === "delete" &&

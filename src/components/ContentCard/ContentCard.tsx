@@ -40,7 +40,7 @@ export function ContentCard(props: ContentCardProps) {
             <Card className="bg-body-secondary border-none w-full rounded-b-none md:rounded-br-lg md:rounded-tl-none">
                 <div className="flex flex-col w-full justify-between">
                     <div>
-                        <div className="text-2xl font-semibold">{props.content.title}</div>
+                        {props.content.title && <div className="text-2xl font-semibold">{props.content.title}</div>}
                         <div className="text-sm my-2">
                             <EditableContent content={props.content} onSave={props.onSaveContent}/>
                         </div>

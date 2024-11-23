@@ -1,10 +1,9 @@
-import { Avatar, Button, TextInput, Tooltip } from "flowbite-react";
+import { Avatar, Button, TextInput } from "flowbite-react";
 import { TextEditor } from "./TextEditor/TextEditor";
 import { THREAD_MAX_TITLE_LENGTH } from "../../constants/validation";
 import { useStore } from "@nanostores/react";
-import { EyeIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { TrashIcon } from "@heroicons/react/24/solid";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { FormEvent, useEffect, useState } from "react";
 import { findImages } from "../../utils/json-content";
 import { uploadImages } from "../../firebase/image";
 import { toast } from "react-toastify";
@@ -17,12 +16,11 @@ import { getTimePassed } from "../../utils/datetime";
 import { VoteAction, Voter } from "../Voter/Voter";
 import { getFirebaseThumbnail } from "../../firebase/thumbnail";
 import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/thumbnail";
-import { getDecodedPayload } from "../../helpers/jwt";
-import { Content } from "../../models/content";
 import { FormValidationData } from "../../models/form-validation-data";
 import { ValidationMessage } from "../Validation/ValidationMessage";
 import { openThreadModal } from "../Modal/Thread";
 import { $contentModalErrorMessage, $contentModalState, ContentModal, ContentModalErrorMessage } from "../Modal/Content";
+import { ContentDeleter, VisibilityToggle } from "./Content";
 
 
 export function ThreadCreator() {
@@ -64,8 +62,8 @@ export function ThreadCreator() {
             toast.error(`Title: ${titleValidation.message}`);
             return;
         }
-        $contentModalState.set("loading");
         if (content) {
+            $contentModalState.set("loading");
             // Find any base64 images in the content and upload them to firebase
             // TODO: Remote CRON job to delete old images
             await processImages(content);
@@ -79,10 +77,12 @@ export function ThreadCreator() {
                 // Refresh the current page
                 navigate(0);
             } catch (_) {
-                const em: ContentModalErrorMessage = "Failed to save content";
+                const em: ContentModalErrorMessage = "Failed to save thread";
                 $contentModalErrorMessage.set(em);
                 $contentModalState.set("error");
             }
+        } else {
+            toast.error("Thread is empty");
         }
     }
 
@@ -125,26 +125,6 @@ export function ThreadCommentCounter(props: ThreadCommentCounterProps) {
     return (
         <div className="text-sm rounded-lg border align-middle p-2">{props.thread.commentCount + (props.vertical === true ? "" : " comments")}</div>
     );
-}
-
-interface VisibilityToggleProps {
-    content: Content;
-    onToggle: () => void;
-}
-
-export function VisibilityToggle(props: VisibilityToggleProps) {
-    const user = useMemo(() => getDecodedPayload(), []);
-    const box = useStore($box);
-
-    if (user?.role !== "ROLE_ADMIN" && !box?.moderators?.includes(user?.id || '')) return null;
-
-    return (
-        <Tooltip content="Show/hide" placement="bottom">
-            <button onClick={props.onToggle} className={"hover:bg-black/10 rounded-full p-2" + (props.content.visibility === true ? " text-secondary" : "")}>
-                <EyeIcon className="size-6"/>
-            </button>
-        </Tooltip>
-    )
 }
 
 interface ThreadInfomationProps {
@@ -192,7 +172,7 @@ export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
             </div>
             <div className="mt-2 flex flex-col justify-center">
                 <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
-                <ThreadDeleter thread={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
+                <ContentDeleter content={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
             </div>
         </> :    
         <div className="flex justify-between flex-wrap">
@@ -206,29 +186,10 @@ export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
                     <ThreadCommentCounter thread={props.thread}/>
                     <Voter onVote={(action) => voteThread(props.thread, action)} content={props.thread}/>
                     <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
-                    <ThreadDeleter thread={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
+                    <ContentDeleter content={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
                 </div>
             </div>
         </div>
     );
 }
 
-interface ThreadDeleterProps {
-    thread: Thread;
-    onClick: () => void;
-}
-
-export function ThreadDeleter(props: ThreadDeleterProps) {
-    const user = useMemo(() => getDecodedPayload(), []);
-    const box = useStore($box);
-
-    if (user?.role !== "ROLE_ADMIN" && !box?.moderators?.includes(user?.id || '')) return null;
-
-    return (
-        <Tooltip content="Delete" placement="bottom">
-            <button onClick={props.onClick} className="hover:bg-black/10 rounded-full p-2 text-red-500">
-                <TrashIcon className="size-6"/>
-            </button>
-        </Tooltip>
-    );
-}

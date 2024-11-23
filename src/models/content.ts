@@ -1,7 +1,8 @@
+import { Base } from "./base";
 import { UserRole } from "./role";
 import { Visibility } from "./visibility";
 
-export interface Content extends Visibility {
+export interface Content extends Base, Visibility {
     title?: string;
     body: string;
     author?: {
