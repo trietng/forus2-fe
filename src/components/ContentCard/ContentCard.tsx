@@ -11,6 +11,7 @@ interface ContentCardProps {
     content: Content;
     informationSlot: ReactNode;
     controlSlot: ReactNode;
+    extraSlot?: ReactNode;
     onSaveContent: (body: JSONContent) => void;
 }
 
@@ -42,6 +43,7 @@ export function ContentCard(props: ContentCardProps) {
                     <div>
                         {props.content.title && <div className="text-2xl font-semibold">{props.content.title}</div>}
                         <div className="text-sm my-2">
+                            {props.extraSlot}
                             <EditableContent content={props.content} onSave={props.onSaveContent}/>
                         </div>
                     </div>

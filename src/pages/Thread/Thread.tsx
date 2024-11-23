@@ -1,24 +1,27 @@
 import { Pagination } from "flowbite-react";
 import { ForusBreadcrumb } from "../../components/Routing/ForusBreadcrumb";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { type Thread } from "../../models/thread";
 import { api } from "../../api";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ContentCard } from "../../components/ContentCard";
 import { ThreadCommentCounter } from "../../components/Control/Thread";
 import { VoteAction, Voter } from "../../components/Voter/Voter";
 import { openThreadModal, ThreadModal } from "../../components/Modal/Thread";
-import { ContentDeleter, ContentEditToggle, VisibilityToggle } from "../../components/Control/Content";
+import { ContentDeleter, ContentEditToggle, ContentReplier, VisibilityToggle } from "../../components/Control/Content";
 import { JSONContent } from "@tiptap/react";
 import { $contentModalState } from "../../components/Modal/Content";
-import { CommentCreator } from "../../components/Control/Comment";
+import { CommentCreator, Reply } from "../../components/Control/Comment";
 import { Comment } from "../../models/comment";
 import { CommentModal, openCommentModal } from "../../components/Modal/Comment";
 
 export function Thread() {
+    const location = useLocation();
     const navigate = useNavigate();
     const params = useParams();
+    const commentCreatorRef = useRef<HTMLDivElement>(null);
     const [thread, setThread] = useState<Thread>();
+    const [reply, setReply] = useState<Comment>();
     
     const page = Number.parseInt(params.page || '1');
 
@@ -126,6 +129,15 @@ export function Thread() {
         navigate(`/thread/${params.id}/${page}`);
     }
 
+    function jumpToCommentCreator(reply?: Comment) {
+        commentCreatorRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (reply) {
+            setReply(reply);
+        } else {
+            setReply(undefined);
+        }
+    }
+
     useLayoutEffect(() => {
         if (params.id == null) {
             navigate('/404', { replace: true });
@@ -141,6 +153,16 @@ export function Thread() {
         fetchThread();
     }, [params.id, page]);
 
+    useEffect(() => {
+        // scroll to hash
+        if (location.hash) {
+            const element = document.getElementById(location.hash.slice(1));
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, [location.hash]);
+
     if (!thread) return null;
 
     return (
@@ -155,6 +177,7 @@ export function Thread() {
                     <>
                         <Voter onVote={(action) => voteThread(action)} content={thread}/>
                         <ThreadCommentCounter thread={thread}/>
+                        <ContentReplier content={thread} onClick={() => jumpToCommentCreator()}/>
                     </>
                 } controlSlot={
                     <>
@@ -172,6 +195,7 @@ export function Thread() {
                     <ContentCard content={comment} informationSlot={
                         <>
                             <Voter onVote={(action) => voteComment(comment, action)} content={comment}/>
+                            <ContentReplier content={comment} onClick={() => jumpToCommentCreator(comment)}/>
                         </>
                     } controlSlot={
                         <>
@@ -179,11 +203,15 @@ export function Thread() {
                             <VisibilityToggle content={comment} onToggle={() => toggleCommentVisibility(comment)}/>
                             <ContentDeleter content={comment} onClick={() => openCommentModal("delete", comment)}/>
                         </>
+                    } extraSlot={
+                        comment.reply && <div className="mb-4">
+                            <Reply reply={comment.reply} mode="reply"/>
+                        </div>
                     } onSaveContent={(body) => saveComment(comment, body)}/>
                 </div>
             )}
-            <div className="mt-4">
-                <CommentCreator thread={thread} onCommentCreated={() => fetchThread()}/>
+            <div className="mt-4" ref={commentCreatorRef} id="commentCreator">
+                <CommentCreator thread={thread} onCommentCreated={() => fetchThread()} reply={reply} onClearReply={() => setReply(undefined)}/>
             </div>
             <ThreadModal/>
             <CommentModal onRefresh={() => fetchThread()}/>

@@ -1,6 +1,6 @@
 import { Button, Tooltip } from "flowbite-react";
 import { TextEditor } from "./TextEditor";
-import { CheckIcon, EyeIcon } from "@heroicons/react/24/outline";
+import { ArrowUturnLeftIcon, CheckIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { Content } from "../../models/content";
 import { useEffect, useMemo, useState } from "react";
 import { JSONContent } from "@tiptap/react";
@@ -139,6 +139,21 @@ export function ContentDeleter(props: ContentDeleterProps) {
         <Tooltip content="Delete" placement="bottom">
             <button onClick={props.onClick} className="hover:bg-black/10 rounded-full p-2 text-red-500">
                 <TrashIcon className="size-6"/>
+            </button>
+        </Tooltip>
+    );
+}
+
+interface ContentReplierProps {
+    content: Content;
+    onClick: () => void;
+}
+
+export function ContentReplier(props: ContentReplierProps) {
+    return (
+        <Tooltip content="Reply" placement="bottom">
+            <button onClick={props.onClick} className="hover:bg-black/10 rounded-full p-2">
+                <ArrowUturnLeftIcon className="size-6"/>
             </button>
         </Tooltip>
     );

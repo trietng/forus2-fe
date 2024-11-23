@@ -170,7 +170,7 @@ export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
             <div className="text-center mt-2">
                 <ThreadCommentCounter thread={props.thread} vertical/>
             </div>
-            <div className="mt-2 flex flex-col justify-center">
+            <div className="mt-2 flex flex-col justify-center items-center gap-2">
                 <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
                 <ContentDeleter content={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
             </div>
