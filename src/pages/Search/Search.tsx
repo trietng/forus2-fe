@@ -5,7 +5,7 @@ import { api } from "../../api";
 import { Avatar, Pagination } from "flowbite-react";
 import { ContentCard } from "../../components/ContentCard";
 import { ThreadCommentCounter } from "../../components/Control/Thread";
-import { Voter } from "../../components/Voter/Voter";
+import { Voter } from "../../components/Voter";
 import { getFirebaseThumbnail } from "../../firebase/thumbnail";
 import { SearchResult } from "../../models/search";
 

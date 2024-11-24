@@ -1,1 +1,1 @@
-import { Voter } from "./Voter";
+export { type VoteAction, Voter } from "./Voter";

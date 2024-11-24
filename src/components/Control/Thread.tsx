@@ -13,7 +13,7 @@ import { $box } from "../../models/box";
 import { Link, useNavigate } from "react-router-dom";
 import { Thread } from "../../models/thread";
 import { getTimePassed } from "../../utils/datetime";
-import { VoteAction, Voter } from "../Voter/Voter";
+import { VoteAction, Voter } from "../Voter";
 import { getFirebaseThumbnail } from "../../firebase/thumbnail";
 import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/thumbnail";
 import { FormValidationData } from "../../models/form-validation-data";
