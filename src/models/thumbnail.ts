@@ -1,4 +1,4 @@
 export interface Thumbnail {
     id: string;
-    data: Blob;
+    data: Blob | null;
 }

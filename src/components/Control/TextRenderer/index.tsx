@@ -1,0 +1,1 @@
+export { TextRenderer, processText } from './TextRenderer';

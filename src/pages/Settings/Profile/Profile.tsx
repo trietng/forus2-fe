@@ -10,8 +10,16 @@ import { api } from "../../../api";
 import { MutableUserDetails, ImmutableUserDetails } from "../../../models/userdetails";
 import { DESCRIPTION_MAX_LENGTH, DISPLAY_NAME_MAX_LENGTH } from "../../../constants/validation";
 import { uploadImage, deleteImage, getImage } from "../../../firebase/image";
+import { ACCEPTED_IMAGE_MIME_TYPES, FILE_INPUT_ACCEPT_VALUE } from "../../../utils/image";
 
-export function Profile() {
+type ProfileMode = "view" | "edit";
+
+interface ProfileProps {
+    mode: ProfileMode;
+    id?: string;
+}
+
+export function Profile(props: ProfileProps) {
     const navigate = useNavigate();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [payload] = useState<Payload | undefined>(getDecodedPayload());
@@ -21,12 +29,13 @@ export function Profile() {
     const [canUpload, setCanUpload] = useState(true);
     const [avatar, setAvatar] = useState<string>();
 
-    async function fetchUser() {
-        const { data } = await api('v1/userdetails');
+    async function fetchUser(id?: string) {
+        const { data } = await api.get(`/v1/users/${id}`);
         const { description, displayName, dateOfBirth, ...immutable } = data;
         setFormData({ description, displayName, dateOfBirth });
         const { email, createdAt } = immutable;
         setImmutableUserDetails({ email, createdAt });
+        await getAvatarImage();
     }
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -38,7 +47,7 @@ export function Profile() {
     }
 
     async function partialUpdateUser() {
-        const response = await api.patch('v1/userdetails', formData);
+        const response = await api.patch(`v1/users/${payload?.id}`, formData);
         toast.success(response.data.message);
     }
 
@@ -49,11 +58,15 @@ export function Profile() {
     async function onFileInputChange(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (file) {
-            // Delete the current avatar before uploading a new one
-            const avatarUrl = await uploadImage(file);
+            if (!ACCEPTED_IMAGE_MIME_TYPES.has(file?.type)) {
+                toast.error('Invalid file type. Please upload an image file.');
+                return;
+            }
+            // TODO: Remote CRON job to delete old images
+            setCanUpload(false);
+            const avatarUrl = await uploadImage(file, '/avatars');
             try {
-                setCanUpload(false);
-                await api.patch('v1/userdetails', { avatarUrl });
+                await api.patch(`v1/users/${payload?.id}`, { avatarUrl });
                 setOpenModal(true);
             }
             catch (error) {
@@ -86,14 +99,17 @@ export function Profile() {
     }
 
     useEffect(() => {
-        fetchUser();
-        getAvatarImage();
+        if (props.mode === "edit") {
+            fetchUser(payload?.id);
+        } else {
+            fetchUser(props.id);
+        }
     }, []);
 
 
     return (
         <>
-            <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+            {props.mode === "edit" && <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
                 <Modal.Header/>
                 <Modal.Body>
                 <div className="text-center">
@@ -112,10 +128,11 @@ export function Profile() {
                     </div>
                 </div>
                 </Modal.Body>
-            </Modal>
+            </Modal>}
             <div className="px-4 [&_label]:text-white">
                 <div className="grid md:flex gap-4">
                     <div className="text-center">
+                        {props.mode === "edit" ?
                         <div className={"relative bg-transparent text-transparent hover:text-white cursor-pointer" + (canUpload ? "" : " pointer-events-none")} onClick={pickImage} >
                             { canUpload ?
                             <PencilIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-8 z-10 pointer-events-none"/> : 
@@ -123,8 +140,9 @@ export function Profile() {
                                 <Spinner color="secondary" className="size-8"/>
                             </div> }
                             <Avatar img={avatar} size="lg" title="Click to change your avatar" className={"hover:brightness-50" + (canUpload ? "" : " brightness-50")}/>
-                            <FileInput className="hidden" accept="image/*" name="avatar" ref={fileInputRef} onChange={onFileInputChange}/>
-                        </div>
+                            <FileInput className="hidden" accept={FILE_INPUT_ACCEPT_VALUE} name="avatar" ref={fileInputRef} onChange={onFileInputChange}/>
+                        </div> :
+                        <Avatar img={avatar} size="lg"/>}
                         <span className="block text-sm font-medium">{payload?.username}</span>
                         {payload?.role && <span className="block text-sm">{UserRoleMap[payload.role]}</span>}
                     </div>
@@ -133,13 +151,13 @@ export function Profile() {
                             <Label htmlFor="description" value="Description" />
                             <span className="text-sm">{formData?.description?.length || 0}/{DESCRIPTION_MAX_LENGTH}</span>
                         </div>
-                        <Textarea placeholder="Tell us about yourself" name="description" className="text-black h-full resize-none mt-1" value={formData?.description} maxLength={DESCRIPTION_MAX_LENGTH} onChange={handleInputChange}/>
+                        <Textarea placeholder="Tell us about yourself" name="description" className="text-black h-full resize-none mt-1" value={formData?.description} maxLength={DESCRIPTION_MAX_LENGTH} onChange={handleInputChange} readOnly={props.mode === "view"}/>
                     </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-y-2 gap-x-4">
                     <div>
                         <Label htmlFor="email" value="Email" />
-                        <TextInput className="text-white mt-1" name='email' type='email' disabled value={immutableUserDetails?.email || ''}/>
+                        <TextInput className="text-white mt-1" name='email' type='email' disabled={props.mode === "edit"} readOnly={props.mode === "view"} value={immutableUserDetails?.email || ''}/>
                     </div>
                     <div>
                         <Label htmlFor="joinDate" value="Join date" />
@@ -150,16 +168,16 @@ export function Profile() {
                             <Label htmlFor="displayName" value="Display name" />
                             <span className="text-sm">{formData?.displayName.length || 0}/{DISPLAY_NAME_MAX_LENGTH}</span>
                         </div>
-                        <TextInput className="text-white mt-2" name='displayName' type='text'  value={formData?.displayName || ''} onChange={handleInputChange}/>
+                        <TextInput className="text-white mt-2" name='displayName' type='text'  value={formData?.displayName || ''} onChange={handleInputChange} readOnly={props.mode === "view"}/>
                     </div>
                     <div>
                         <Label htmlFor="dateOfBirth" value="Date of birth" />
-                        <Datepicker className="mt-1" label='Date of birth' name='dateOfBirth' value={formData?.dateOfBirth || new Date(0)} onChange={handleDateInputChange}/>
+                        <Datepicker className="mt-1" label='Date of birth' name='dateOfBirth' value={formData?.dateOfBirth || new Date(0)} onChange={handleDateInputChange} disabled={props.mode === "view"}/>
                     </div>
                 </div>
-                <div className="flex justify-end mt-8">
+                {props.mode === "edit" && <div className="flex justify-end mt-8">
                     <Button onClick={partialUpdateUser} className="place-items-end" color="secondary">Save changes</Button>
-                </div>
+                </div>}
             </div>
         </>
     );

@@ -1,0 +1,1 @@
+export { All as default } from './All';

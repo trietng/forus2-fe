@@ -1,0 +1,1 @@
+import { Voter } from "./Voter";

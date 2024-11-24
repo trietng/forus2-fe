@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Flowbite } from "flowbite-react";
 import { SimpleHeader } from "./SimpleHeader";
 import { customTheme } from "../theme";
+import { ToastContainer, Bounce } from "react-toastify";
 
 interface SimpleLayoutProps {
     header?: boolean;
@@ -17,6 +18,19 @@ export function SimpleLayout(props: SimpleLayoutProps) {
                     <Outlet />
                 </div>
             </div>
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable
+                pauseOnHover={false}
+                theme="light"
+                transition={Bounce}
+            />
         </Flowbite>
     );
 }
