@@ -1,16 +1,13 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation, useSearchParams, useParams, Link } from "react-router-dom";
+import { useNavigate, useSearchParams, useParams, Link } from "react-router-dom";
 import { route } from "../../utils/search";
 import { api } from "../../api";
-import { Avatar, Navbar, Pagination } from "flowbite-react";
+import { Avatar, Pagination } from "flowbite-react";
 import { ContentCard } from "../../components/ContentCard";
 import { ThreadCommentCounter } from "../../components/Control/Thread";
 import { Voter } from "../../components/Voter/Voter";
-import { UserRoleMap } from "../../models/role";
-import { getImage } from "../../firebase/image";
-import { getFirebaseThumbnail, getThumbnail } from "../../firebase/thumbnail";
+import { getFirebaseThumbnail } from "../../firebase/thumbnail";
 import { SearchResult } from "../../models/search";
-import { Box } from "../../models/box";
 
 interface RenderedAvatarProps {
     user: any;
@@ -38,7 +35,6 @@ function RenderedAvatar(props: RenderedAvatarProps) {
 
 export function Search() {
     const navigate = useNavigate();
-    const location = useLocation();
     const [searchParams, ] = useSearchParams();
     const params = useParams();
 
