@@ -1,0 +1,14 @@
+.demo-credentials-enter {
+    width: 0;
+}
+.demo-credentials-enter-active {
+    width: 216px;
+    transition: width 400ms;
+}
+.demo-credentials-exit {
+    width: 216px;
+}
+.demo-credentials-exit-active {
+    width: 0;
+    transition: width 400ms;
+}
