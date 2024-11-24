@@ -7,9 +7,10 @@ export interface Content extends Base, Visibility {
     body: string;
     author?: {
         _id: string;
-        displayName: string;
         avatarUrl: string;
         role: UserRole;
+        displayName?: string;
+        username?: string;
     }
     score?: number;
     voteStatus?: number;
