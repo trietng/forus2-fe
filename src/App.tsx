@@ -15,6 +15,7 @@ import MainLayout from './layouts/MainLayout';
 const Box = lazy(() => import('./pages/Box'));
 const Thread = lazy(() => import('./pages/Thread'));
 const User = lazy(() => import('./pages/User'));
+const Search = lazy(() => import('./pages/Search'));
 
 function App() {
 
@@ -50,6 +51,13 @@ function App() {
             }>
                 <Route path="/settings" element={<Settings/>}/>
                 <Route path="/user/:id" element={<Suspense fallback={<FallbackSpinner/>}><User/></Suspense>}/>
+            </Route>
+            <Route element={
+                <AuthGuard>
+                    <Layout/>
+                </AuthGuard>
+            }>
+                <Route path="/search/:page" element={<Suspense fallback={<FallbackSpinner/>}><Search/></Suspense>}/>
             </Route>
             <Route element={<SimpleLayout header={false} className='bg-tertiary'/>}>
                 <Route path='/login' element={

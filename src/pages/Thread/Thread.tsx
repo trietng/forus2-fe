@@ -203,7 +203,7 @@ export function Thread() {
                             <VisibilityToggle content={comment} onToggle={() => toggleCommentVisibility(comment)}/>
                             <ContentDeleter content={comment} onClick={() => openCommentModal("delete", comment)}/>
                         </>
-                    } extraSlot={
+                    } beforeSlot={
                         <div className="mb-4">
                             {comment.reply ?
                             <Reply reply={comment.reply} mode="reply"/> : (

@@ -19,7 +19,7 @@ export function SearchBar() {
                 navigate(route(searchInput, searchBarState.type.toLocaleLowerCase()));
             }
         }}>
-            <input className="rounded-s-md rounded-e-none bg-light text-nowrap w-full border-0" type="search" placeholder="Keywords..." aria-label="Search" onChange={(e) => setSearchInput(e.target.value)}/>
+            <input className="rounded-s-md rounded-e-none bg-light text-nowrap w-full border-0" type="search" placeholder="Keywords..." aria-label="Search" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}/>
             <SearchBarTypeDropdown />
             <Button color="purple" className="rounded-md ms-2" type="submit" >
                 <MagnifyingGlassIcon className="size-5 me-2"/>

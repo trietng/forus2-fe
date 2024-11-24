@@ -1,7 +1,7 @@
 export type SearchType = 'thread' | 'user' | 'box';
 export type SearchDirection = 'asc' | 'desc';
 
-export function route(q: string, type: string, page: number = 1, order: string = '', direction: SearchDirection = 'desc') {
+export function route(q: string, type: string, page: number = 1, order: string = '', direction: string = 'desc') {
     let route = '/search';
     route += `/${page}`;
     route += `?q=${q}`;

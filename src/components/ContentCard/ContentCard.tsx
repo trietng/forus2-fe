@@ -9,10 +9,13 @@ import { JSONContent } from "@tiptap/react";
 
 interface ContentCardProps {
     content: Content;
-    informationSlot: ReactNode;
-    controlSlot: ReactNode;
-    extraSlot?: ReactNode;
-    onSaveContent: (body: JSONContent) => void;
+    informationSlot?: ReactNode;
+    controlSlot?: ReactNode;
+    beforeSlot?: ReactNode;
+    afterSlot?: ReactNode;
+    onSaveContent?: (body: JSONContent) => void;
+    hideUserInformation?: boolean;
+    showLinkToThread?: boolean;
 }
 
 export function ContentCard(props: ContentCardProps) {
@@ -31,20 +34,29 @@ export function ContentCard(props: ContentCardProps) {
 
     return (
         <div className="flex flex-col md:flex-row content-card" id={props.content._id}>
-            <Card className="hidden md:flex bg-primary border-none rounded-e-none min-w-36">
+            {props.hideUserInformation !== true && <Card className="hidden md:flex bg-primary border-none rounded-e-none min-w-36">
                 <div className="place-self-start h-full text-center">
                     <Avatar size="lg" img={avatarUrl}/>
                     <Link className="text-sm font-medium mt-1 hover:underline" to={`/user/${props.content.author?._id}`}>{props.content.author?.displayName}</Link>
                     {props.content.author?.role && <span className="block text-sm">{UserRoleMap[props.content.author?.role]}</span>}
                 </div>
-            </Card>
-            <Card className="bg-body-secondary border-none w-full rounded-b-none md:rounded-br-lg md:rounded-tl-none">
+            </Card>}
+            <Card className={"bg-body-secondary border-none w-full" + (props.hideUserInformation ? " rounded-lg" : " rounded-b-none md:rounded-br-lg md:rounded-tl-none")}>
                 <div className="flex flex-col w-full justify-between">
                     <div>
-                        {props.content.title && <div className="text-2xl font-semibold">{props.content.title}</div>}
+                        {props.content.title && (
+                            props.showLinkToThread ?
+                            <Link to={`/thread/${props.content._id}`} className="text-2xl font-semibold hover:underline">{props.content.title}</Link> :
+                            <div className="text-2xl font-semibold">{props.content.title}</div>
+                        )}
                         <div className="text-sm my-2">
-                            {props.extraSlot}
-                            <EditableContent content={props.content} onSave={props.onSaveContent}/>
+                            {props.beforeSlot}
+                            <EditableContent content={props.content} onSave={(content) => {
+                                if (props.onSaveContent) {
+                                    props.onSaveContent(content);
+                                }
+                            }}/>
+                            {props.afterSlot}
                         </div>
                     </div>
                     <div className="py-2 ms-2 md:flex justify-stretch items-center gap-4 hidden">
@@ -53,7 +65,7 @@ export function ContentCard(props: ContentCardProps) {
                     </div>
                 </div>
             </Card>
-            <Card className="md:hidden bg-primary border-none rounded-t-none">
+            {props.hideUserInformation !== true && <Card className="md:hidden bg-primary border-none rounded-t-none">
                 <div className="flex">
                     <div className="text-center">
                         <Avatar size="lg" img={avatarUrl}/>
@@ -69,7 +81,7 @@ export function ContentCard(props: ContentCardProps) {
                         </div>
                     </div>
                 </div>
-            </Card>
+            </Card>}
         </div>
     );
 }
