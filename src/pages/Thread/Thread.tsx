@@ -6,7 +6,7 @@ import { api } from "../../api";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ContentCard } from "../../components/ContentCard";
 import { ThreadCommentCounter } from "../../components/Control/Thread";
-import { VoteAction, Voter } from "../../components/Voter/Voter";
+import { VoteAction, Voter } from "../../components/Voter";
 import { openThreadModal, ThreadModal } from "../../components/Modal/Thread";
 import { ContentDeleter, ContentEditToggle, ContentReplier, VisibilityToggle } from "../../components/Control/Content";
 import { JSONContent } from "@tiptap/react";
