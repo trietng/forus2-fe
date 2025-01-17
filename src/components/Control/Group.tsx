@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Button } from "flowbite-react";
+import { Button } from "@heroui/react";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { getDecodedPayload } from "../../helpers/jwt";
@@ -31,8 +31,8 @@ export function GroupEditor(props: GroupEditorProps) {
     return (
         <div className="flex items-center gap-4 md:gap-0 justify-evenly">
             <BoxCreator group={props.group} className="md:rounded-e-none"/>
-            <Button color="blue" onClick={() => openGroupModal("update", props.group)} className="md:rounded-s-none md:rounded-e-none"><PencilIcon className="size-4 place-self-center mr-2"/> Rename</Button>
-            <Button color="failure" onClick={() => openGroupModal("delete", props.group)} className="md:rounded-s-none"><TrashIcon className="size-4 place-self-center mr-2"/> Delete</Button>
+            <Button color="primary" onPress={() => openGroupModal("update", props.group)} className="md:rounded-s-none md:rounded-e-none"><PencilIcon className="size-4 place-self-center mr-2"/> Rename</Button>
+            <Button color="danger" onPress={() => openGroupModal("delete", props.group)} className="md:rounded-s-none"><TrashIcon className="size-4 place-self-center mr-2"/> Delete</Button>
         </div>
     );
 }

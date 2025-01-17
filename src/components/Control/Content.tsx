@@ -1,4 +1,4 @@
-import { Button, Tooltip } from "flowbite-react";
+import { Button, Tooltip } from "@heroui/react";
 import { TextEditor } from "./TextEditor";
 import { ArrowUturnLeftIcon, CheckIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { Content } from "../../models/content";
@@ -61,7 +61,7 @@ export function EditableContent(props: EditableContentProps) {
         editable === props.content._id
         ? <>
             <TextEditor text={editableContent} onChange={setEditableContent} />
-            <Button color="secondary" className="mt-4 float-end" onClick={() => saveContent()}>
+            <Button color="secondary" className="mt-4 float-end" onPress={() => saveContent()}>
                 <CheckIcon className="place-self-center inline size-4 mr-2"/> Save
             </Button>
             <ContentModal onRetry={saveContent}/>
@@ -97,7 +97,7 @@ export function ContentEditToggle(props: ContentEditToggleProps) {
 
     return (
         <Tooltip content="Edit" placement="bottom">
-            <button onClick={handleToggle} className={"hover:bg-black/10 rounded-full p-2" + (editableContentId === props.content._id ? " text-secondary" : "")}>
+            <button onClick={handleToggle} className={"hover:bg-black/10 rounded-full p-2" + (editableContentId === props.content._id ? " text-forus-secondary" : "")}>
                 <PencilIcon className="size-6"/>
             </button>
         </Tooltip>
@@ -117,7 +117,7 @@ export function VisibilityToggle(props: VisibilityToggleProps) {
 
     return (
         <Tooltip content="Show/hide" placement="bottom">
-            <button onClick={props.onToggle} className={"hover:bg-black/10 rounded-full p-2" + (props.content.visibility === true ? " text-secondary" : "")}>
+            <button onClick={props.onToggle} className={"hover:bg-black/10 rounded-full p-2" + (props.content.visibility === true ? " text-forus-secondary" : "")}>
                 <EyeIcon className="size-6"/>
             </button>
         </Tooltip>

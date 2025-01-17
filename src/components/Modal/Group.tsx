@@ -1,6 +1,6 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import { useStore } from "@nanostores/react";
-import { Modal, Button, Label, TextInput } from "flowbite-react";
+import { Modal, Button, Input, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/react";
 import { map } from "nanostores";
 import { useRef, ChangeEvent } from "react";
 import { api } from "../../api";
@@ -31,9 +31,14 @@ export function GroupModal() {
                 $groups.set([...($groups.get() || []), group.data]);
                 break;
             case "update":
-                console.log(groupModalData.group);
                 const updatedGroup = await api.put(`/v1/groups/${groupModalData.group._id}`, groupModalData.group);
-                $groups.set($groups.get()!.map(group => group._id === updatedGroup.data._id ? updatedGroup.data : group));
+                console.log(updatedGroup);
+                $groups.set($groups.get()!.map(group => {
+                    if (group._id === updatedGroup.data._id) {
+                        group.name = updatedGroup.data.name;
+                    }
+                    return group;
+                }));
                 break;
         }
         $groupModalData.setKey('open', false);
@@ -46,38 +51,40 @@ export function GroupModal() {
     }
 
     return (
-        <Modal show={groupModalData.open} size="md" onClose={() => $groupModalData.setKey('open', false)} initialFocus={groupNameInputRef} popup={groupModalData.mode === "delete"}>
-            <Modal.Header>{groupModalData.keys?.header}</Modal.Header>
-            <Modal.Body>
-                {groupModalData.mode === "delete" ?
-                <div className="text-center">
-                    <ExclamationTriangleIcon className="mx-auto mb-4 size-14 text-yellow-400" />
-                    <h3 className="mb-5 font-normal text-white">
-                        Are you sure you want to delete <span className="font-bold">{groupModalData.group.name}</span>?
-                    </h3>
-                    <div className="flex justify-center gap-4">
-                        <Button color="failure" onClick={() => handleDelete()}>
-                            Delete
-                        </Button>
-                        <Button color="gray" onClick={() => $groupModalData.setKey('open', false)}>
-                            Cancel
-                        </Button>
-                    </div>
-                </div> : 
-                <form id="groupEditor" onSubmit={handleSubmit}>
-                    <div className="flex justify-between text-white">
-                        <Label htmlFor="groupName">Name</Label>
-                        <span className="text-sm">{groupModalData.group.name.length || 0}/{GROUP_NAME_MAX_LENGTH}</span>
-                    </div>
-                    <TextInput type="text" id="groupName" className="mt-1" placeholder="Group name" onChange={setGroupName} ref={groupNameInputRef} maxLength={GROUP_NAME_MAX_LENGTH} value={groupModalData.group.name}/>
-                </form>}
-            </Modal.Body>
-            {groupModalData.mode !== "delete" && 
-            <Modal.Footer>
-                <Button color="secondary" type="submit" form="groupEditor">
-                    {groupModalData.keys?.submitButton}
-                </Button>
-            </Modal.Footer>}
+        <Modal className="bg-forus-body-secondary"isOpen={groupModalData.open} size="md" onClose={() => $groupModalData.setKey('open', false)}>
+            <ModalContent>
+                <ModalHeader className="text-white">{groupModalData.keys?.header}</ModalHeader>
+                <ModalBody>
+                    {groupModalData.mode === "delete" ?
+                    <div className="text-center">
+                        <ExclamationTriangleIcon className="mx-auto mb-4 size-14 text-yellow-400" />
+                        <h3 className="mb-5 font-normal text-white">
+                            Are you sure you want to delete <span className="font-bold">{groupModalData.group.name}</span>?
+                        </h3>
+                        <div className="flex justify-center gap-4">
+                            <Button color="danger" onPress={() => handleDelete()}>
+                                Delete
+                            </Button>
+                            <Button onPress={() => $groupModalData.setKey('open', false)}>
+                                Cancel
+                            </Button>
+                        </div>
+                    </div> : 
+                    <form id="groupEditor" onSubmit={handleSubmit}>
+                        <div className="flex justify-between text-white">
+                            <label htmlFor="groupName">Name</label>
+                            <span className="text-sm">{groupModalData.group.name.length || 0}/{GROUP_NAME_MAX_LENGTH}</span>
+                        </div>
+                        <Input type="text" id="groupName" className="mt-1" placeholder="Group name" onChange={setGroupName} ref={groupNameInputRef} maxLength={GROUP_NAME_MAX_LENGTH} value={groupModalData.group.name}/>
+                    </form>}
+                </ModalBody>
+                {groupModalData.mode !== "delete" &&
+                <ModalFooter>
+                    <Button color="secondary" type="submit" form="groupEditor">
+                        {groupModalData.keys?.submitButton}
+                    </Button>
+                </ModalFooter>}
+            </ModalContent>
         </Modal>
     )
 }

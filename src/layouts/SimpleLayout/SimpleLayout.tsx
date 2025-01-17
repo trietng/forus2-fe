@@ -1,7 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { Flowbite } from "flowbite-react";
+import { HeroUIProvider } from "@heroui/react";
 import { SimpleHeader } from "./SimpleHeader";
-import { customTheme } from "../theme";
 import { ToastContainer, Bounce } from "react-toastify";
 
 interface SimpleLayoutProps {
@@ -11,7 +10,7 @@ interface SimpleLayoutProps {
 
 export function SimpleLayout(props: SimpleLayoutProps) {
     return (
-        <Flowbite theme={{theme: customTheme}}>
+        <HeroUIProvider>
             <div className={'min-h-screen flex flex-col antialiased' + (props.className ? ' ' + props.className : '')}>
                 {(props.header !== false) && <SimpleHeader />}
                 <div className='my-auto'>
@@ -31,6 +30,6 @@ export function SimpleLayout(props: SimpleLayoutProps) {
                 theme="light"
                 transition={Bounce}
             />
-        </Flowbite>
+        </HeroUIProvider>
     );
 }

@@ -1,10 +1,10 @@
 export interface ImmutableUserDetails {
     email: string;
-    createdAt: Date;
+    createdAt: string;
 }
 
 export interface MutableUserDetails {
     displayName: string;
     description?: string;
-    dateOfBirth?: Date;
+    dateOfBirth?: string;
 }

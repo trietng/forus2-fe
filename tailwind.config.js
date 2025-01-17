@@ -1,22 +1,35 @@
-import flowbite from 'flowbite-react/tailwind';
+import { heroui } from '@heroui/react';
 
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
-    flowbite.content()
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
     colors: {
-      'primary': '#162B40',
-      'secondary': '#ffc107',
-      'tertiary': '#f9f9fa',
-      'body-primary': '#23497C',
-      'body-secondary': '#1D76C6',
+      'forus-primary': '#162B40',
+      'forus-secondary': '#ffc107',
+      'forus-tertiary': '#f9f9fa',
+      'forus-body-primary': '#23497C',
+      'forus-body-secondary': '#1D76C6',
     }
   },
-  plugins: [flowbite.plugin()],
+  darkMode: "class",
+  plugins: [heroui({
+    addCommonColors: true,
+    themes: {
+      light: {
+        colors: {
+          secondary: {
+            DEFAULT: '#ffc107',
+            foreground: '#ffffff',
+          },
+        }
+      },
+      // ignore dark theme
+    }
+  })],
 }
 

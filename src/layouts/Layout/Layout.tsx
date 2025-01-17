@@ -1,10 +1,9 @@
 import { PropsWithChildren } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Flowbite } from 'flowbite-react';
+import { ToastContainer, Bounce } from 'react-toastify';
+import { HeroUIProvider } from '@heroui/react';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { customTheme } from '../theme';
-import { ToastContainer, Bounce } from 'react-toastify';
 
 interface LayoutProps extends PropsWithChildren {
     searchDisabled?: boolean;
@@ -12,8 +11,8 @@ interface LayoutProps extends PropsWithChildren {
 
 export function Layout(props: LayoutProps) {
     return (
-        <Flowbite theme={{theme: customTheme}}>
-            <div className='flex flex-col min-h-screen antialiased text-slate-400 bg-body-primary text-white'>
+        <HeroUIProvider>
+            <div className='flex flex-col min-h-screen antialiased text-slate-400 bg-forus-body-primary text-white'>
                 <Header searchDisabled={props.searchDisabled}/>
                 <div className='mx-4 md:mx-8 flex flex-grow my-1'>
                     {props.children || <Outlet />}
@@ -33,6 +32,6 @@ export function Layout(props: LayoutProps) {
                 theme="light"
                 transition={Bounce}
             />
-        </Flowbite>
+        </HeroUIProvider>
     );
 }

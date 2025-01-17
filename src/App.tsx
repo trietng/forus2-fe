@@ -59,7 +59,7 @@ function App() {
             }>
                 <Route path="/search/:page" element={<Suspense fallback={<FallbackSpinner/>}><Search/></Suspense>}/>
             </Route>
-            <Route element={<SimpleLayout header={false} className='bg-tertiary'/>}>
+            <Route element={<SimpleLayout header={false} className='bg-forus-tertiary'/>}>
                 <Route path='/login' element={
                     <AuthGuard reverse>
                         <Login/>

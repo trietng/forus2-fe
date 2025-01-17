@@ -1,4 +1,4 @@
-import { Card } from "flowbite-react";
+import { Card } from "@heroui/react";
 import { Thread } from "../../models/thread";
 import { TextRenderer } from "../Control/TextRenderer/TextRenderer";
 import { useState } from "react"
@@ -13,7 +13,7 @@ export function ThreadPreviewCard(props: ThreadPreviewCardProps) {
     const [previewImage, setPreviewImage] = useState<string>();
 
     return (
-        <Card className="bg-body-secondary border-none">
+        <Card className="bg-forus-body-secondary border-none p-6 text-white">
             <div className="flex gap-4 justify-between" >
                 <div className="md:hidden">
                     <ThreadPreviewInfomation thread={props.thread} vertical/>

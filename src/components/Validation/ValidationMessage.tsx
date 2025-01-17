@@ -5,6 +5,9 @@ interface ValidationMessageProps {
     className?: string;
 }
 
+/**
+ * @deprecated Not needed anymore after migration to HeroUI
+ */
 export function ValidationMessage(props: ValidationMessageProps) {
     return (
         <div className={'text-red-500 text-xs' + (props.className ? ' ' + props.className : '')}>

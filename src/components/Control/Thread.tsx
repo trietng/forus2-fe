@@ -1,4 +1,4 @@
-import { Avatar, Button, TextInput } from "flowbite-react";
+import { Avatar, Button, Input } from "@heroui/react";
 import { TextEditor } from "./TextEditor/TextEditor";
 import { THREAD_MAX_TITLE_LENGTH } from "../../constants/validation";
 import { useStore } from "@nanostores/react";
@@ -17,7 +17,6 @@ import { VoteAction, Voter } from "../Voter";
 import { getFirebaseThumbnail } from "../../firebase/thumbnail";
 import { AVATAR_THUMBNAIL_HEIGHT } from "../../constants/thumbnail";
 import { FormValidationData } from "../../models/form-validation-data";
-import { ValidationMessage } from "../Validation/ValidationMessage";
 import { openThreadModal } from "../Modal/Thread";
 import { $contentModalErrorMessage, $contentModalState, ContentModal, ContentModalErrorMessage } from "../Modal/Content";
 import { ContentDeleter, VisibilityToggle } from "./Content";
@@ -88,13 +87,7 @@ export function ThreadCreator() {
 
     return (
         <form noValidate onSubmit={createThread}>
-            <div className="flex">
-                <TextInput color="primary" className="[&_input]:rounded-e-none w-full" maxLength={THREAD_MAX_TITLE_LENGTH} onChange={handleTitleChange} required placeholder="Title"/>
-                <div className="bg-primary rounded-r-lg p-2 border-s text-sm text-center">
-                    {title.length}/{THREAD_MAX_TITLE_LENGTH}
-                </div>
-            </div>
-            <ValidationMessage formValidationData={titleValidation} className="my-1"/>
+            <Input className=" mb-4 w-full" maxLength={THREAD_MAX_TITLE_LENGTH} onChange={handleTitleChange} required placeholder="Title"/>
             <TextEditor onChange={setContent}/>
             <Button color="secondary" className="mt-4 float-end" type="submit">
                 <PlusIcon className="place-self-center inline size-4 mr-2"/> Create
@@ -177,7 +170,7 @@ export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
         </> :    
         <div className="flex justify-between flex-wrap">
             <div className="flex gap-2 justify-center">
-                <Avatar img={avatarUrl}/>
+                <Avatar className="[&_img]:opacity-100" src={avatarUrl}/>
                 <div className="flex flex-col justify-center">
                     <Link className="text-sm hover:underline" to={`/user/${props.thread.author?._id}`}>{props.thread.author?.displayName}</Link>
                     <div className="text-xs">{getTimePassed(props.thread.createdAt)}</div>

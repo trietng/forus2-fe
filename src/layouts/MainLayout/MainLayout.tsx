@@ -1,6 +1,7 @@
 import { BoxInformation } from "../../components/Control/Box";
 import { SideMenu } from "../../components/SideMenu";
 import { Outlet } from "react-router-dom";
+import { HeroUIProvider } from "@heroui/react";
 
 interface MainLayoutProps {
     showBoxInformation?: boolean;
@@ -8,7 +9,7 @@ interface MainLayoutProps {
 
 export function MainLayout(props: MainLayoutProps) {
     return (
-        <div className="w-full my-8 grid md:grid-cols-12 gap-8">
+        <HeroUIProvider className="w-full my-8 grid md:grid-cols-12 gap-8">
             <div className="md:col-span-3 hidden md:block">
                 <SideMenu />
                 {props.showBoxInformation === true && 
@@ -20,6 +21,6 @@ export function MainLayout(props: MainLayoutProps) {
             <div className="md:col-span-9">
                 <Outlet />
             </div>
-        </div>
+        </HeroUIProvider>
     );
 }

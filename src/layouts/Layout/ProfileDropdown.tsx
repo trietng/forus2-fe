@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Dropdown, Avatar } from "flowbite-react";
+import { Dropdown, Avatar, DropdownMenu, DropdownTrigger, DropdownItem, DropdownSection } from "@heroui/react";
 import { getDecodedPayload } from '../../helpers/jwt';
 import { Payload } from "../../models/payload";
 import { UserRoleMap } from "../../models/role";
@@ -34,20 +34,27 @@ export function ProfileDropdown() {
         
     return (
         <Dropdown
-            arrowIcon={false}
-            inline
-            label={
-                <Avatar img={avatar}/>
-            }
-            placement="bottom-end"
+            placement="bottom"
             >
-            <Dropdown.Header>
-                <span className="block text-sm font-medium">{user?.username}</span>
-                {user?.role && <span className="block text-sm">{UserRoleMap[user.role]}</span>}
-            </Dropdown.Header>
-            <Dropdown.Item as={Link} to="/settings"><Cog6ToothIcon className="mr-2 inline size-4"/> Settings</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item onClick={() => logout()}><ArrowLeftStartOnRectangleIcon className="mr-2 inline size-4"/> Logout</Dropdown.Item>
+            <DropdownTrigger>
+                <Avatar className="[&_img]:opacity-100 cursor-pointer" src={avatar}/>
+            </DropdownTrigger>
+            <DropdownMenu>
+                <DropdownSection>
+                    <DropdownItem key="profile" showDivider>
+                        <span className="block text-sm font-medium">{user?.username}</span>
+                        {user?.role && <span className="block text-sm">{UserRoleMap[user.role]}</span>}
+                    </DropdownItem>
+                </DropdownSection>
+                <DropdownSection>
+                    <DropdownItem key="settings">
+                        <Link to="/settings"><Cog6ToothIcon className="mr-2 inline size-4"/> Settings</Link>
+                    </DropdownItem>
+                    <DropdownItem key="logout" onPress={() => logout()}>
+                        <ArrowLeftStartOnRectangleIcon className="mr-2 inline size-4"/> Logout
+                    </DropdownItem>
+                </DropdownSection>
+            </DropdownMenu>
         </Dropdown>
     );
 }

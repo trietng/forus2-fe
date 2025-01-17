@@ -1,6 +1,6 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { $contentModalErrorMessage, $contentModalState, ContentModal, ContentModalErrorMessage } from "../Modal/Content";
-import { Button } from "flowbite-react";
+import { Button } from "@heroui/react";
 import { api } from "../../api";
 import { FormEvent, useState } from "react";
 import { TextEditor } from "./TextEditor";
@@ -38,10 +38,10 @@ export function Reply(props: ReplyProps) {
     }
 
     return (
-        <div className={"justify-between rounded-lg overflow-hidden bg-body-secondary" + (props.mode === "reply" ? " border border-primary" : "")}>
-            <div className="flex justify-between items-center bg-primary p-4">
+        <div className={"justify-between rounded-lg overflow-hidden bg-forus-body-secondary" + (props.mode === "reply" ? " border border-primary" : "")}>
+            <div className="flex justify-between items-center bg-forus-primary p-4">
                 <span onClick={() => handleGoToOriginalComment()} className="font-bold hover:underline cursor-pointer">{props.reply.author && props.reply.author.displayName} {' '} said:</span>
-                {props.mode !== "reply" && <Button color="failure" onClick={() => {
+                {props.mode !== "reply" && <Button color="danger" onPress={() => {
                     if (props.onClearReply) {
                         props.onClearReply();
                     }
@@ -58,8 +58,8 @@ export function Reply(props: ReplyProps) {
 
 export function MissingReply() {
     return (
-        <div className="justify-between rounded-lg overflow-hidden bg-body-secondary border border-primary">
-            <div className="flex justify-between items-center bg-primary p-4">
+        <div className="justify-between rounded-lg overflow-hidden bg-forus-body-secondary border border-primary">
+            <div className="flex justify-between items-center bg-forus-primary p-4">
                 [unavailable] said:
             </div>
             <div className="p-4">

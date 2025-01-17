@@ -1,4 +1,4 @@
-import { Pagination } from "flowbite-react";
+// import { Pagination } from "@heroui/react";
 import { ForusBreadcrumb } from "../../components/Routing/ForusBreadcrumb";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { type Thread } from "../../models/thread";
@@ -14,6 +14,7 @@ import { $contentModalState } from "../../components/Modal/Content";
 import { CommentCreator, MissingReply, Reply } from "../../components/Control/Comment";
 import { Comment } from "../../models/comment";
 import { CommentModal, openCommentModal } from "../../components/Modal/Comment";
+import { Pagination } from "@heroui/react";
 
 export function Thread() {
     const location = useLocation();
@@ -188,7 +189,7 @@ export function Thread() {
                 } onSaveContent={saveThread}/>
             </div>
             <div className="mt-4 flex justify-between">
-                <Pagination showIcons currentPage={page} onPageChange={(p) => {handlePageChange(p)}} totalPages={thread.pageCount || 0}/>
+                <Pagination isCompact showControls page={page} onChange={handlePageChange} total={thread.pageCount || 0}/>
             </div>
             {thread.comments?.map(comment => 
                 <div className="mt-4" key={comment._id}>
