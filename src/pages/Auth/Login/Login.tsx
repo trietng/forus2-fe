@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { Button, Input } from '@heroui/react';
+import { Button, Input, Popover, PopoverContent, PopoverTrigger } from '@heroui/react';
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import "./style.css";
@@ -73,18 +73,17 @@ export function Login() {
                     <div className='self-center mt-12'>&copy; 2023-2024 ForUS</div>
                 </form>
             </div>
-            {/* <div className="sticky bottom-0">
-                <div className="flex bg-forus-body-secondary text-xs text-white">
-                    <button onClick={() => setInProp(!inProp)} className="p-1 border-r min-w-36">{
-                        inProp ? <div>Hide demo credentials</div> : <div>Show demo credentials</div>
-                    }</button>
-                    <CSSTransition nodeRef={nodeRef} in={inProp} timeout={400} classNames="demo-credentials">
-                        <div className={"py-1 px-2 text-nowrap overflow-hidden" + (inProp ? " block" : " hidden")} ref={nodeRef}>
-                            username:<span className="font-bold">{" superman"}</span> password:<span className="font-bold">{" 1234"}</span>
-                        </div>
-                    </CSSTransition>
-                </div>
-            </div> */}
+            <Popover showArrow>
+                <PopoverTrigger>
+                    <Button color='primary' variant='ghost' className='rounded-none absolute top-0 left-0'>Show demo credentials</Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                    <div className="p-4">
+                        <div><span className='font-bold'>{"Username: "}</span>superman</div>
+                        <div><span className='font-bold'>{"Password: "}</span>1234</div>
+                    </div>  
+                </PopoverContent>
+            </Popover>
         </>
         
     );
