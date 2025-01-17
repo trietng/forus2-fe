@@ -22,7 +22,11 @@ standard.interceptors.request.use((config) => {
 standard.interceptors.response.use((response) => response, (error) => {
   if (error.response?.status === 401) {
     Cookies.remove('headerPayload');
-    window.location.href = '/login';
+    if (error.response?.data?.message === 'Unauthorized') {
+      window.location.href = '/login';
+    } else {
+      toast.error(error.response?.data?.message);
+    }
   }
   else {
     toast.error(error.response?.data?.message ?? 'An error occurred');
