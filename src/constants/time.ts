@@ -1,0 +1,2 @@
+export const UNIX_EPOCH_ZERO_ZONED_DATETIME = '1970-01-01T00:00:00Z';
+export const UTC_TIMEZONE = 'UTC';

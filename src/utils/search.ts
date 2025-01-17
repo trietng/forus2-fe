@@ -4,6 +4,8 @@ export type SearchDirection = 'asc' | 'desc';
 export function route(q: string, type: string, page: number = 1, order: string = '', direction: string = 'desc') {
     let route = '/search';
     route += `/${page}`;
+    // make q url safe
+    q = encodeURIComponent(q);
     route += `?q=${q}`;
     route += `&type=${type}`;
     const searchType = type as SearchType;

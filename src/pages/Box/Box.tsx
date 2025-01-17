@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect } from "react";
 import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { useStore } from "@nanostores/react";
-import { Pagination } from "flowbite-react";
+import { Pagination } from "@heroui/react";
 import { api } from "../../api";
 import { $box } from "../../models/box";
 import { nand } from "../../utils/boolean";
@@ -80,7 +80,7 @@ export function Box() {
             </div>
             <div className="mt-4 flex justify-between">
                 {(box.pageCount || 1) > 1 ? 
-                <Pagination showIcons currentPage={page} onPageChange={(p) => handlePageChange(p)} totalPages={box.pageCount || 0}/> :
+                <Pagination isCompact showControls page={page} onChange={handlePageChange} total={box.pageCount || 0}/> :
                 <div></div>}
                 <ThreadFilter order={order} direction={direction} onApplyFilter={(order, direction) => handleFilter(order, direction)}/>
             </div>

@@ -1,5 +1,5 @@
 import { BuildingLibraryIcon } from "@heroicons/react/24/solid";
-import { Breadcrumb } from "flowbite-react";
+import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
 import { capitalize } from "../../utils/string";
 
 interface ForusBreadcrumbUrl {
@@ -14,22 +14,23 @@ interface ForusBreadcrumbProps {
 
 export function ForusBreadcrumb(props: ForusBreadcrumbProps) {
     return (
-        <Breadcrumb>
-            <Breadcrumb.Item href="/all" icon={BuildingLibraryIcon}>
+        <Breadcrumbs className="[&_a]:!text-white [&_span]:!text-white">
+            <BreadcrumbItem href="/all">
+                <BuildingLibraryIcon className="size-4 mr-2"/>
                 All
-            </Breadcrumb.Item>
+            </BreadcrumbItem>
             {props.urls.map(({ label, link, disabled }, index) => {
                 // get the previous values and add the current value
                 return (
-                    <Breadcrumb.Item 
+                    <BreadcrumbItem 
                         key={index}
                         href={link}
-                        className={disabled ? "[&_a]:text-white [&_a]:pointer-events-none" : undefined}
+                        isDisabled={disabled}
                     >
                         {capitalize(label)}
-                    </Breadcrumb.Item>
+                    </BreadcrumbItem>
                 );
             })}
-        </Breadcrumb>
+        </Breadcrumbs>
     );
 }

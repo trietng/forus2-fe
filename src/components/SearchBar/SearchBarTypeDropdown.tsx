@@ -1,22 +1,12 @@
-import { useStore } from "@nanostores/react";
-import { Dropdown } from "flowbite-react";
-import type { CustomFlowbiteTheme } from "flowbite-react";
-import { $searchBarState } from "../../models/search-bar";
-
-const customTheme: CustomFlowbiteTheme['dropdown'] = {
-    floating: {
-        target: 'rounded-s-none border-s-1 border-e-0 border-y-0',
-    }
-};
+import { Select, SelectItem } from "@heroui/react";
+import { $searchBarState, SearchBarTypeSet } from "../../models/search-bar";
 
 export function SearchBarTypeDropdown() {
-    const searchBarState = useStore($searchBarState);
-
     return (
-        <Dropdown label={searchBarState.type} color="light" theme={customTheme}>
-            <Dropdown.Item onClick={() => $searchBarState.setKey('type', 'Thread')}>Thread</Dropdown.Item>
-            <Dropdown.Item onClick={() => $searchBarState.setKey('type', 'User')}>User</Dropdown.Item>
-            <Dropdown.Item onClick={() => $searchBarState.setKey('type', 'Box')}>Box</Dropdown.Item>
-        </Dropdown>
+        <Select className="[&_button]:rounded-s-none" defaultSelectedKeys={['Thread']}>
+            {SearchBarTypeSet.map((type) => (
+                <SelectItem key={type} onPress={() => $searchBarState.setKey('type', type)}>{type}</SelectItem>
+            ))}
+        </Select>
     );
 }

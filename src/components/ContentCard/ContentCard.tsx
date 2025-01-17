@@ -1,4 +1,4 @@
-import { Avatar, Card } from "flowbite-react";
+import { Avatar, Card } from "@heroui/react";
 import { Content } from "../../models/content";
 import { ReactNode, useEffect, useState } from "react";
 import { getImage } from "../../firebase/image";
@@ -22,7 +22,7 @@ export function ContentCard(props: ContentCardProps) {
     const [avatarUrl, setAvatarUrl] = useState<string>();
 
     async function renderAvatar() {
-        if (props.content.author) {
+        if (props.content.author && props.content.author.avatarUrl) {
             const image = await getImage(props.content.author.avatarUrl);
             setAvatarUrl(image);
         }
@@ -34,14 +34,14 @@ export function ContentCard(props: ContentCardProps) {
 
     return (
         <div className="flex flex-col md:flex-row content-card" id={props.content._id}>
-            {props.hideUserInformation !== true && <Card className="hidden md:flex bg-primary border-none rounded-e-none min-w-36">
+            {props.hideUserInformation !== true && <Card className="text-white p-6 hidden md:flex bg-forus-primary border-none rounded-e-none min-w-36">
                 <div className="place-self-start h-full text-center">
-                    <Avatar size="lg" img={avatarUrl}/>
+                    <Avatar className="[&_img]:opacity-100 place-self-center" size="lg" src={avatarUrl}/>
                     <Link className="text-sm font-medium mt-1 hover:underline" to={`/user/${props.content.author?._id}`}>{props.content.author?.displayName}</Link>
                     {props.content.author?.role && <span className="block text-sm">{UserRoleMap[props.content.author?.role]}</span>}
                 </div>
             </Card>}
-            <Card className={"bg-body-secondary border-none w-full" + (props.hideUserInformation ? " rounded-lg" : " rounded-b-none md:rounded-br-lg md:rounded-tl-none")}>
+            <Card className={"text-white p-6 bg-forus-body-secondary border-none w-full" + (props.hideUserInformation ? " rounded-lg" : " rounded-b-none md:rounded-br-lg md:rounded-tl-none")}>
                 <div className="flex flex-col w-full justify-between">
                     <div>
                         {props.content.title && (
@@ -65,10 +65,10 @@ export function ContentCard(props: ContentCardProps) {
                     </div>
                 </div>
             </Card>
-            {props.hideUserInformation !== true && <Card className="md:hidden bg-primary border-none rounded-t-none">
+            {props.hideUserInformation !== true && <Card className="text-white p-6 md:hidden bg-forus-primary border-none rounded-t-none">
                 <div className="flex">
                     <div className="text-center">
-                        <Avatar size="lg" img={avatarUrl}/>
+                        <Avatar className="[&_img]:opacity-100 place-self-center" size="lg" src={avatarUrl}/>
                         <Link className="text-sm font-medium mt-1 hover:underline" to={`/user/${props.content.author?._id}`}>{props.content.author?.displayName}</Link>
                         {props.content.author?.role && <span className="block text-sm">{UserRoleMap[props.content.author?.role]}</span>}
                     </div>

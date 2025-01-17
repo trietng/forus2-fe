@@ -1,15 +1,12 @@
 import { EnvelopeIcon } from "@heroicons/react/24/solid";
-import { HR } from "flowbite-react";
-
 
 export function Footer() {
     return (
-        <footer className="bg-primary mt-5">
+        <footer className="bg-forus-primary mt-5 text-white">
             <div className="container mx-auto">
                 <div className="flex flex-wrap px-4 pt-8 pb-4">
                     <div className="w-full md:w-1/3 mb-5">
                         <img src="/assets/logo.svg" alt="logo" className="w-36" />
-                        <HR className="my-4" />
                         <div className="text-sm">
                             <p>Powered by</p>
                             <a className="inline-block mt-2 h-8 w-[106px] bg-[url('/assets/third-party/react/wordmark_dark.svg')] bg-contain" href="https://react.dev"></a>

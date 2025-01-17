@@ -1,16 +1,18 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Button, Datepicker, FileInput, Label, Modal, Textarea, TextInput, Spinner } from "flowbite-react";
+import { Avatar, Button, Modal, Textarea, Input, Spinner, ModalContent, ModalBody, DatePicker } from "@heroui/react";
 import { PencilIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
+import { parseAbsolute, ZonedDateTime } from "@internationalized/date";
 import { Payload } from "../../../models/payload";
 import { getDecodedPayload } from "../../../helpers/jwt";
 import { UserRoleMap } from "../../../models/role";
 import { api } from "../../../api";
 import { MutableUserDetails, ImmutableUserDetails } from "../../../models/userdetails";
-import { DESCRIPTION_MAX_LENGTH, DISPLAY_NAME_MAX_LENGTH } from "../../../constants/validation";
+import { DESCRIPTION_MAX_LENGTH } from "../../../constants/validation";
 import { uploadImage, deleteImage, getImage } from "../../../firebase/image";
 import { ACCEPTED_IMAGE_MIME_TYPES, FILE_INPUT_ACCEPT_VALUE } from "../../../utils/image";
+import { UNIX_EPOCH_ZERO_ZONED_DATETIME, UTC_TIMEZONE } from "../../../constants/time";
 
 type ProfileMode = "view" | "edit";
 
@@ -42,8 +44,8 @@ export function Profile(props: ProfileProps) {
         setFormData({...formData, [e.target.name]: e.target.value});
     }
 
-    const handleDateInputChange = (date: Date | null) => {
-        setFormData({...formData, dateOfBirth: date || new Date(0)});
+    const handleDateInputChange = (date: ZonedDateTime | null) => {
+        setFormData({...formData, dateOfBirth: date?.toString()});
     }
 
     async function partialUpdateUser() {
@@ -109,25 +111,26 @@ export function Profile(props: ProfileProps) {
 
     return (
         <>
-            {props.mode === "edit" && <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
-                <Modal.Header/>
-                <Modal.Body>
-                <div className="text-center">
-                    <CheckCircleIcon className="mx-auto mb-4 size-14 text-green-500" />
-                    <h3 className="mb-5 font-normal text-white">
-                        Avatar updated successfully.
-                        <div>Please logout and login again to see the changes.</div>
-                    </h3>
-                    <div className="flex justify-center gap-4">
-                    <Button color="secondary" onClick={() => logout()}>
-                        Logout
-                    </Button>
-                    <Button color="gray" onClick={() => setOpenModal(false)}>
-                        Continue
-                    </Button>
-                    </div>
-                </div>
-                </Modal.Body>
+            {props.mode === "edit" && <Modal className="bg-forus-body-secondary"isOpen={openModal} size="md" onClose={() => setOpenModal(false)}>
+                <ModalContent>
+                    <ModalBody>
+                        <div className="text-center">
+                            <CheckCircleIcon className="mx-auto mb-4 size-14 text-green-500" />
+                            <h3 className="mb-5 font-normal text-white">
+                                Avatar updated successfully.
+                                <div>Please logout and login again to see the changes.</div>
+                            </h3>
+                            <div className="flex justify-center gap-4">
+                                <Button color="secondary" onPress={() => logout()}>
+                                    Logout
+                                </Button>
+                                <Button onPress={() => setOpenModal(false)}>
+                                    Continue
+                                </Button>
+                            </div>
+                        </div>
+                    </ModalBody>
+                </ModalContent>
             </Modal>}
             <div className="px-4 [&_label]:text-white">
                 <div className="grid md:flex gap-4">
@@ -139,44 +142,31 @@ export function Profile(props: ProfileProps) {
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
                                 <Spinner color="secondary" className="size-8"/>
                             </div> }
-                            <Avatar img={avatar} size="lg" title="Click to change your avatar" className={"hover:brightness-50" + (canUpload ? "" : " brightness-50")}/>
-                            <FileInput className="hidden" accept={FILE_INPUT_ACCEPT_VALUE} name="avatar" ref={fileInputRef} onChange={onFileInputChange}/>
+                            <Avatar src={avatar} size="lg" title="Click to change your avatar" className={"[&_img]:opacity-100 hover:brightness-50" + (canUpload ? "" : " brightness-50")}/>
+                            <Input type='file' className="hidden" accept={FILE_INPUT_ACCEPT_VALUE} name="avatar" ref={fileInputRef} onChange={onFileInputChange}/>
                         </div> :
-                        <Avatar img={avatar} size="lg"/>}
+                        <Avatar className="[&_img]:opacity-100" src={avatar} size="lg"/>}
                         <span className="block text-sm font-medium">{payload?.username}</span>
                         {payload?.role && <span className="block text-sm">{UserRoleMap[payload.role]}</span>}
                     </div>
                     <div className="flex flex-col w-full">
                         <div className="flex justify-between">
-                            <Label htmlFor="description" value="Description" />
+                            <label htmlFor="description">Description</label>
                             <span className="text-sm">{formData?.description?.length || 0}/{DESCRIPTION_MAX_LENGTH}</span>
                         </div>
-                        <Textarea placeholder="Tell us about yourself" name="description" className="text-black h-full resize-none mt-1" value={formData?.description} maxLength={DESCRIPTION_MAX_LENGTH} onChange={handleInputChange} readOnly={props.mode === "view"}/>
+                        <Textarea placeholder="Tell us about yourself" name="description" className="text-black h-full resize-none mt-1" value={formData?.description} maxLength={DESCRIPTION_MAX_LENGTH} onChange={handleInputChange} isReadOnly={props.mode === "view"}/>
                     </div>
                 </div>
-                <div className="grid md:grid-cols-2 gap-y-2 gap-x-4">
+                <div className="grid md:grid-cols-2 gap-y-4 gap-x-4 mt-4">
+                    <Input label="Email" className="text-white" name='email' type='email' isDisabled={props.mode === "edit"} readOnly={props.mode === "view"} value={immutableUserDetails?.email || ''}/>
                     <div>
-                        <Label htmlFor="email" value="Email" />
-                        <TextInput className="text-white mt-1" name='email' type='email' disabled={props.mode === "edit"} readOnly={props.mode === "view"} value={immutableUserDetails?.email || ''}/>
+                        <Input label="Display name" className="text-white" name='displayName' type='text'  value={formData?.displayName || ''} onChange={handleInputChange} isReadOnly={props.mode === "view"}/>
                     </div>
-                    <div>
-                        <Label htmlFor="joinDate" value="Join date" />
-                        <Datepicker className="mt-1" label='Join date' name='joinDate' disabled value={immutableUserDetails?.createdAt || new Date(0)}/>
-                    </div>
-                    <div>
-                        <div className="flex justify-between">
-                            <Label htmlFor="displayName" value="Display name" />
-                            <span className="text-sm">{formData?.displayName.length || 0}/{DISPLAY_NAME_MAX_LENGTH}</span>
-                        </div>
-                        <TextInput className="text-white mt-2" name='displayName' type='text'  value={formData?.displayName || ''} onChange={handleInputChange} readOnly={props.mode === "view"}/>
-                    </div>
-                    <div>
-                        <Label htmlFor="dateOfBirth" value="Date of birth" />
-                        <Datepicker className="mt-1" label='Date of birth' name='dateOfBirth' value={formData?.dateOfBirth || new Date(0)} onChange={handleDateInputChange} disabled={props.mode === "view"}/>
-                    </div>
+                    <DatePicker granularity="day" label='Join date' name='joinDate' isDisabled value={parseAbsolute(immutableUserDetails?.createdAt || UNIX_EPOCH_ZERO_ZONED_DATETIME, UTC_TIMEZONE)} isReadOnly/>
+                    <DatePicker granularity="day" label='Date of birth' name='dateOfBirth' value={parseAbsolute(formData?.dateOfBirth || UNIX_EPOCH_ZERO_ZONED_DATETIME, UTC_TIMEZONE)} onChange={handleDateInputChange} isDisabled={props.mode === "view"}/>
                 </div>
                 {props.mode === "edit" && <div className="flex justify-end mt-8">
-                    <Button onClick={partialUpdateUser} className="place-items-end" color="secondary">Save changes</Button>
+                    <Button onPress={partialUpdateUser} className="place-items-end" color="secondary">Save changes</Button>
                 </div>}
             </div>
         </>

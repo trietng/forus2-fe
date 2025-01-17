@@ -1,5 +1,5 @@
 import { ExclamationCircleIcon, ArrowPathIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { Modal, Spinner, Button } from "flowbite-react";
+import { Modal, Button, ModalContent, ModalBody } from "@heroui/react";
 import { BlinkingDots } from "../BlinkingDots";
 import { atom } from "nanostores";
 import { useStore } from "@nanostores/react";
@@ -26,24 +26,26 @@ export function ContentModal(props: ContentModalProps) {
     }, [location]);
 
     return (
-        <Modal popup show={contentModalState !== "idle"} size="md">
-            <Modal.Body className="p-0">
-                <div className="m-4 flex flex-col justify-center items-center text-white">
-                    {contentModalState === "loading" ?
-                    <>
-                        <Spinner color="secondary" className="size-8 mb-2"/>
-                        <div>Saving content <BlinkingDots/></div> 
-                    </> :
-                    <>
-                        <ExclamationCircleIcon className="size-8 mb-2 text-red-500"/>
-                        <div className="mb-2">{contentModalErrorMessage}</div>
-                        <div className="flex gap-4">
-                            <Button color="secondary" onClick={props.onRetry}><ArrowPathIcon className="size-4 mr-2 place-self-center"/> Retry</Button>
-                            <Button color="gray" onClick={() => $contentModalState.set("idle")}><XMarkIcon className="size-4 mr-2 place-self-center"/>  Cancel</Button>
-                        </div>
-                    </>}
-                </div>
-            </Modal.Body>
+        <Modal className="bg-forus-body-secondary"isOpen={contentModalState !== "idle"} size="md">
+            <ModalContent>
+                <ModalBody>
+                    <div className="m-4 flex flex-col justify-center items-center text-white">
+                        {contentModalState === "loading" ?
+                        <>
+                            {/* <Spinner color="secondary" className="size-8 mb-2"/> */}
+                            <div>Saving content <BlinkingDots/></div> 
+                        </> :
+                        <>
+                            <ExclamationCircleIcon className="size-8 mb-2 text-red-500"/>
+                            <div className="mb-2">{contentModalErrorMessage}</div>
+                            <div className="flex gap-4">
+                                <Button color="secondary" onPress={props.onRetry}><ArrowPathIcon className="size-4 mr-2 place-self-center"/> Retry</Button>
+                                <Button onPress={() => $contentModalState.set("idle")}><XMarkIcon className="size-4 mr-2 place-self-center"/>  Cancel</Button>
+                            </div>
+                        </>}
+                    </div>
+                </ModalBody>
+            </ModalContent>
         </Modal>
     )
 }

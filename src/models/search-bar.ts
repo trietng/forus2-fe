@@ -1,6 +1,7 @@
 import { map } from 'nanostores'
 
-export type SearchBarType = 'Thread' | 'User' | 'Box';
+export const SearchBarTypeSet = <const> ['Thread', 'User', 'Box'];
+export type SearchBarType = typeof SearchBarTypeSet[number];
 
 export interface SearchBarState {
     type: SearchBarType;

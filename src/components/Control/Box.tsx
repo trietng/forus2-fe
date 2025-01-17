@@ -1,8 +1,8 @@
 import { useMemo, useRef } from "react";
-import { Button, Dropdown } from "flowbite-react";
+import { Button, Popover, PopoverContent, PopoverTrigger, Select, SelectItem } from "@heroui/react";
 import { useStore } from "@nanostores/react";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { ArrowPathRoundedSquareIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ArrowPathRoundedSquareIcon, ChevronDownIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { getDecodedPayload } from "../../helpers/jwt";
 import { openBoxModal } from "../Modal/Box";
 import { Group } from "../../models/group";
@@ -27,7 +27,7 @@ export function BoxCreator(props: BoxCreatorProps) {
     if (user?.role !== "ROLE_ADMIN") return null;
 
     return (
-        <Button color="blue" onClick={() => openBoxModal("create", props.group)} className={props.className}><PlusIcon className="size-4 place-self-center mr-2"/> Create box</Button>
+        <Button color="primary" onPress={() => openBoxModal("create", props.group)} className={props.className}><PlusIcon className="size-4 place-self-center mr-2"/> Create box</Button>
     );
 }
 
@@ -41,7 +41,7 @@ export function BoxSubscriber(props: BoxSubscriberProps) {
     }
 
     return (
-        <Button color="secondary" onClick={() => subscribe()}><ArrowPathRoundedSquareIcon className="mr-2 inline size-4 place-self-center"/>Subscribe</Button>
+        <Button color="secondary" onPress={() => subscribe()}><ArrowPathRoundedSquareIcon className="mr-2 inline size-4 place-self-center"/>Subscribe</Button>
     );
 }
 
@@ -54,9 +54,9 @@ export function BoxEditor() {
 
     return (
         <div className="flex">
-            <button onClick={() => openBoxModal("edit", undefined, box)} className="w-full bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Edit</button>
-            {user?.role === "ROLE_ADMIN" && <button onClick={() => openBoxModal("rename", undefined, box)} className="w-full bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Rename</button>}
-            {user?.role === "ROLE_ADMIN" && <button onClick={() => openBoxModal("delete", undefined, box)} className="w-full bg-red-500 p-3 hover:brightness-105 text-[10px] overflow-hidden"><TrashIcon className="size-3 place-self-center mr-2 inline"/> Delete</button>}
+            <Button onPress={() => openBoxModal("edit", undefined, box)} className="w-full rounded-none text-white bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Edit</Button>
+            {user?.role === "ROLE_ADMIN" && <Button onPress={() => openBoxModal("rename", undefined, box)} className="w-full rounded-none text-white bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Rename</Button>}
+            {user?.role === "ROLE_ADMIN" && <Button onPress={() => openBoxModal("delete", undefined, box)} className="w-full rounded-none text-white bg-red-500 p-3 hover:brightness-105 text-[10px] overflow-hidden"><TrashIcon className="size-3 place-self-center mr-2 inline"/> Delete</Button>}
         </div>
     );
 }
@@ -76,16 +76,16 @@ export function BoxInformation() {
     if (!box) return null;
 
     return (
-        <div className="bg-primary rounded-lg overflow-hidden">
+        <div className="bg-forus-primary rounded-lg overflow-hidden">
             <div className="p-4 border-b border-b-gray-400 font-bold">{box.name}</div>
             <div className="p-4 border-b border-b-gray-400">{box.description}</div>
             <div className="p-4 text-center">{box.subscriberCount} subscribers</div>
             <div className="flex md:flex-col md:w-full">
-                <button className="inline w-1/4 md:w-full bg-secondary p-3 hover:brightness-105 text-[10px] overflow-hidden" onClick={() => subscribe()}>
+                <Button className="inline w-1/4 md:w-full rounded-none text-white bg-forus-secondary p-3 hover:brightness-105 text-[10px] overflow-hidden" onPress={() => subscribe()}>
                     {box.subscriberStatus === true ? 
                     <><XMarkIcon className="mr-2 inline size-3 place-self-center"/> Unsubscribe</> :
                     <><ArrowPathRoundedSquareIcon className="mr-2 inline size-3 place-self-center"/> Subscribe</>}
-                </button>
+                </Button>
                 <div className="w-3/4 md:w-full">
                     <BoxEditor />
                 </div>
@@ -114,27 +114,33 @@ export function ThreadFilter(props: ThreadFilterProps) {
     }
 
     return (
-        <Dropdown
-            label="Filter"
-            color="gray"
-            placement="bottom-end">
-            <div className="p-3" onSubmit={applyFilter}>
-                <label htmlFor="sortOption">Filter</label>
-                <div className="flex gap-3 mt-2" id="sortOption">
-                    <select className="rounded-lg w-auto" id="sortOrder" ref={orderRef} defaultValue={props.order || "updatedAt"}>
-                        <option value="updatedAt">Updated at</option>
-                        <option value="createdAt">Created at</option>
-                        <option value="score">Score</option>
-                        <option value="commentCount">Comment count</option>
-                        <option value="title">Title</option>
-                    </select>
-                    <select className="rounded-lg w-auto" id="sortDirection" ref={directionRef} defaultValue={props.direction || "desc"}>
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
-                    </select>
+        <Popover
+            placement="bottom">
+            <PopoverTrigger>
+                <Button color="secondary" className="text-white">
+                    <ChevronDownIcon className="size-4 place-self-center mr-2 inline"/>
+                    Filter
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="bg-forus-primary">
+                <div className="p-3">
+                    <label className="text-white" htmlFor="sortOption">Filter</label>
+                    <div className="flex gap-3 mt-2" id="sortOption">
+                        <Select className="min-w-40" id="sortOrder" ref={orderRef} defaultSelectedKeys={[props.order || "updatedAt"]}>
+                            <SelectItem key="updatedAt">Updated at</SelectItem>
+                            <SelectItem key="createdAt">Created at</SelectItem>
+                            <SelectItem key="score">Score</SelectItem>
+                            <SelectItem key="commentCount">Comment count</SelectItem>
+                            <SelectItem key="title">Title</SelectItem>
+                        </Select>
+                        <Select className="min-w-40" id="sortDirection" ref={directionRef} defaultSelectedKeys={[props.direction || "desc"]}>
+                            <SelectItem key="asc">Ascending</SelectItem>
+                            <SelectItem key="desc">Descending</SelectItem>
+                        </Select>
+                    </div>
+                    <Button color="secondary" onPress={applyFilter} className="text-white w-fit p-2 float-end my-3">Apply</Button>
                 </div>
-                <Dropdown.Item as={Button} onClick={applyFilter} color="secondary" className="text-white hover:!bg-secondary w-fit p-2 float-end my-3">Apply</Dropdown.Item >
-            </div>
-        </Dropdown>
+            </PopoverContent>
+        </Popover>
     )
 }
