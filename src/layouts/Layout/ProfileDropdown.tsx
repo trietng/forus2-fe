@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Dropdown, Avatar, DropdownMenu, DropdownTrigger, DropdownItem, DropdownSection } from "@heroui/react";
 import { getDecodedPayload } from '../../helpers/jwt';
 import { Payload } from "../../models/payload";
@@ -47,8 +47,8 @@ export function ProfileDropdown() {
                     </DropdownItem>
                 </DropdownSection>
                 <DropdownSection>
-                    <DropdownItem key="settings">
-                        <Link to="/settings"><Cog6ToothIcon className="mr-2 inline size-4"/> Settings</Link>
+                    <DropdownItem key="settings" onPress={() => navigate('/settings')}>
+                        <Cog6ToothIcon className="mr-2 inline size-4"/> Settings
                     </DropdownItem>
                     <DropdownItem key="logout" onPress={() => logout()}>
                         <ArrowLeftStartOnRectangleIcon className="mr-2 inline size-4"/> Logout

@@ -66,7 +66,7 @@ export function Register() {
                 <h1 className='text-3xl font-semibold text-black text-center'>Register</h1>
                 <Input label='Username' name='username' type='text' onChange={handleInputChange} required/>
                 <Input label='Email' name='email' type='email' onChange={handleInputChange} required/>
-                <Input label='Password' name='password' type='password' onChange={handlePasswordInputChange} minLength={PASSWORD_MIN_LENGTH} maxLength={PASSWORD_MAX_LENGTH}/>
+                <Input label='Password' name='password' type='password' onChange={handlePasswordInputChange} minLength={PASSWORD_MIN_LENGTH} maxLength={PASSWORD_MAX_LENGTH} current-password/>
                 <Input label='Confirm password' name='confirmPassword' type='password' onChange={handleConfirmPasswordInputChange} />
                 <Input label='Display name' name='displayName' type='text' onChange={handleInputChange} required minLength={1} maxLength={100}/>
                 <Button color='primary' type='submit'>Register</Button>
