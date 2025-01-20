@@ -116,7 +116,7 @@ interface ThreadCommentCounterProps {
 
 export function ThreadCommentCounter(props: ThreadCommentCounterProps) {
     return (
-        <div className="text-sm rounded-lg border align-middle p-2">{props.thread.commentCount + (props.vertical === true ? "" : " comments")}</div>
+        <div className="text-sm rounded-lg border align-middle p-2 text-nowrap text-ellipsis overflow-hidden">{props.thread.commentCount + (props.vertical === true ? "" : " comments")}</div>
     );
 }
 

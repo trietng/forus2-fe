@@ -13,7 +13,7 @@ export function SideMenuDropdown() {
             </Button>
             <Drawer isOpen={openSidebar} onClose={() => setOpenSidebar(false)} placement="left">
                 <DrawerContent>
-                    <SideMenu className="bg-white m-5" onNavigate={() => setOpenSidebar(false)}/>
+                    <SideMenu className="bg-opacity-0 m-5" onNavigate={() => setOpenSidebar(false)}/>
                 </DrawerContent>
             </Drawer>
         </>

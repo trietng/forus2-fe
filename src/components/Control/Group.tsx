@@ -29,10 +29,10 @@ export function GroupEditor(props: GroupEditorProps) {
     const user = useMemo(() => getDecodedPayload(), []);
     if (user?.role !== "ROLE_ADMIN") return null;
     return (
-        <div className="flex items-center gap-4 md:gap-0 justify-evenly">
-            <BoxCreator group={props.group} className="md:rounded-e-none"/>
-            <Button color="primary" onPress={() => openGroupModal("update", props.group)} className="md:rounded-s-none md:rounded-e-none"><PencilIcon className="size-4 place-self-center mr-2"/> Rename</Button>
-            <Button color="danger" onPress={() => openGroupModal("delete", props.group)} className="md:rounded-s-none"><TrashIcon className="size-4 place-self-center mr-2"/> Delete</Button>
+        <div className="flex items-center gap-3 md:gap-0 justify-evenly">
+            <BoxCreator group={props.group} className="md:rounded-e-none text-xs md:text-sm"/>
+            <Button color="primary" onPress={() => openGroupModal("update", props.group)} className="md:rounded-s-none md:rounded-e-none text-xs md:text-sm"><PencilIcon className="size-4 place-self-center mr-2"/> Rename</Button>
+            <Button color="danger" onPress={() => openGroupModal("delete", props.group)} className="md:rounded-s-none text-xs md:text-sm"><TrashIcon className="size-4 place-self-center mr-2"/> Delete</Button>
         </div>
     );
 }
