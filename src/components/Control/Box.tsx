@@ -31,21 +31,6 @@ export function BoxCreator(props: BoxCreatorProps) {
     );
 }
 
-interface BoxSubscriberProps {
-    box: Box;
-}
-
-export function BoxSubscriber(props: BoxSubscriberProps) {
-    async function subscribe() {
-        await api.put(`v1/box/${props.box._id}/subscribe`);
-    }
-
-    return (
-        <Button color="secondary" onPress={() => subscribe()}><ArrowPathRoundedSquareIcon className="mr-2 inline size-4 place-self-center"/>Subscribe</Button>
-    );
-}
-
-
 export function BoxEditor() {
     const user = useMemo(() => getDecodedPayload(), []);
     const box = useStore($box);
@@ -59,6 +44,22 @@ export function BoxEditor() {
             {user?.role === "ROLE_ADMIN" && <Button onPress={() => openBoxModal("delete", undefined, box)} className="w-full rounded-none text-white bg-red-500 p-3 hover:brightness-105 text-[10px] text-ellipsis overflow-hidden"><TrashIcon className="size-3 place-self-center mr-2 inline"/> Delete</Button>}
         </div>
     );
+}
+
+interface BoxSubscriberProps {
+    className?: string;
+    box: Box;
+    onSubscribe: () => void;
+}
+
+export function BoxSubscriber(props: BoxSubscriberProps) {
+    return (
+        <Button color="secondary" className={props.className} onPress={() => props.onSubscribe()}>
+            {props.box.subscriberStatus === true ? 
+            <><XMarkIcon className="mr-2 inline min-w-3 size-3 place-self-center"/> Unsubscribe</> :
+            <><ArrowPathRoundedSquareIcon className="mr-2 inline size-3 min-w-3 place-self-center"/> Subscribe</>}
+        </Button>
+    )
 }
 
 export function BoxInformation() {
@@ -81,11 +82,7 @@ export function BoxInformation() {
             <div className="p-4 border-b border-b-gray-400">{box.description}</div>
             <div className="p-4 text-center">{box.subscriberCount} subscribers</div>
             <div className="flex md:flex-col md:w-full">
-                <Button className="inline w-1/4 md:w-full rounded-none text-white bg-forus-secondary p-3 hover:brightness-105 text-[10px] overflow-hidden" onPress={() => subscribe()}>
-                    {box.subscriberStatus === true ? 
-                    <><XMarkIcon className="mr-2 inline size-3 place-self-center"/> Unsubscribe</> :
-                    <><ArrowPathRoundedSquareIcon className="mr-2 inline size-3 place-self-center"/> Subscribe</>}
-                </Button>
+                <BoxSubscriber className="inline w-1/4 md:w-full rounded-none p-3 text-[10px] overflow-hidden" box={box} onSubscribe={subscribe} />
                 <div className="w-3/4 md:w-full">
                     <BoxEditor />
                 </div>

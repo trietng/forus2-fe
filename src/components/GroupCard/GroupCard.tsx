@@ -1,9 +1,11 @@
 import { Key } from "react";
-import { type Group } from "../../models/group";
+import { $groups, type Group } from "../../models/group";
 import { GroupEditor } from "../Control/Group";
 import { Link, useNavigate } from "react-router-dom";
 import { BoxSubscriber } from "../Control/Box";
 import { Button } from "@heroui/react";
+import { api } from "../../api";
+import { useStore } from "@nanostores/react";
 
 interface GroupProps {
     key: Key;
@@ -12,6 +14,27 @@ interface GroupProps {
 
 export function GroupCard(props: GroupProps) {
     const navigate = useNavigate();
+    const groups = useStore($groups);
+
+    async function subscribe(id?: string) {
+        const resp = await api.put(`v1/boxes/${id}/subscribe`);
+        const subscriberStatus = resp.data.subscriberStatus;
+        $groups.set(groups!.map((group) => {
+            return {
+                ...group,
+                boxes: group.boxes!.map((box) => {
+                    if (box._id === id) {
+                        return {
+                            ...box,
+                            subscriberCount: box.subscriberCount! + (subscriberStatus === true ? 1 : -1),
+                            subscriberStatus: !box.subscriberStatus,
+                        }
+                    }
+                    return box;
+                })
+            }
+        }));
+    }
 
     return (
         <div className={"mb-4 shadow-sm rounded-lg bg-white overflow-hidden"} id={props.group._id}>
@@ -34,7 +57,7 @@ export function GroupCard(props: GroupProps) {
                                 <div>Subscribers</div>
                                 <div>{box.subscriberCount}</div>
                             </div>
-                            <BoxSubscriber box={box} />
+                            <BoxSubscriber className="w-32" box={box} onSubscribe={() => subscribe(box._id)}/>
                         </div>
                     </li>
                 ))}
