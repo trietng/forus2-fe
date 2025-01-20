@@ -11,13 +11,13 @@ interface VoterProps {
 
 export function Voter(props: VoterProps) {
     return (
-        <div className={"flex text-sm border rounded-lg items-center overflow-hidden" + (props.vertical === true ? " flex-col" : "")}>
+        <div className={"flex text-sm border rounded-lg items-center" + (props.vertical === true ? " flex-col" : "")}>
             <button onClick={() => {
                 if (props.onVote) {
                     props.onVote("upvote");
                 }
             }} className={
-                "hover:bg-green-500 p-2 text-center" + 
+                "hover:bg-green-500 p-2 text-center rounded-s-lg" + 
                 (props.vertical === true ? " w-full" : " h-full") +
                 (props.content.voteStatus === 1 ? " bg-green-500" : "") +
                 (props.onVote ? "" : " cursor-not-allowed")
@@ -30,7 +30,7 @@ export function Voter(props: VoterProps) {
                     props.onVote("downvote");
                 }
             }} className={
-                "hover:bg-red-500 p-2 text-center" + 
+                "hover:bg-red-500 p-2 text-center rounded-e-lg" + 
                 (props.vertical === true ? " w-full" : " h-full") +
                 (props.content.voteStatus === -1 ? " bg-red-500" : "") +
                 (props.onVote ? "" : " cursor-not-allowed")

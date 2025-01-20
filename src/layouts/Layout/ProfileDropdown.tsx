@@ -39,19 +39,19 @@ export function ProfileDropdown() {
             <DropdownTrigger>
                 <Avatar className="[&_img]:opacity-100 cursor-pointer" src={avatar}/>
             </DropdownTrigger>
-            <DropdownMenu>
-                <DropdownSection>
-                    <DropdownItem key="profile" showDivider>
+            <DropdownMenu aria-label="Profile dropdown menu">
+                <DropdownSection showDivider>
+                    <DropdownItem key="profile" textValue="Profile">
                         <span className="block text-sm font-medium">{user?.username}</span>
                         {user?.role && <span className="block text-sm">{UserRoleMap[user.role]}</span>}
                     </DropdownItem>
                 </DropdownSection>
                 <DropdownSection>
-                    <DropdownItem key="settings" onPress={() => navigate('/settings')}>
-                        <Cog6ToothIcon className="mr-2 inline size-4"/> Settings
+                    <DropdownItem key="settings" onPress={() => navigate('/settings')} startContent={<Cog6ToothIcon className="size-4"/>}>
+                        Settings
                     </DropdownItem>
-                    <DropdownItem key="logout" onPress={() => logout()}>
-                        <ArrowLeftStartOnRectangleIcon className="mr-2 inline size-4"/> Logout
+                    <DropdownItem key="logout" onPress={() => logout()} startContent={<ArrowLeftStartOnRectangleIcon className="size-4"/>}>
+                        Logout
                     </DropdownItem>
                 </DropdownSection>
             </DropdownMenu>

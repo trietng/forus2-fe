@@ -178,10 +178,10 @@ export function Thread() {
                     <>
                         <Voter onVote={(action) => voteThread(action)} content={thread}/>
                         <ThreadCommentCounter thread={thread}/>
-                        <ContentReplier content={thread} onClick={() => jumpToCommentCreator()}/>
                     </>
                 } controlSlot={
                     <>
+                        <ContentReplier content={thread} onClick={() => jumpToCommentCreator()}/>
                         <ContentEditToggle content={thread}/>
                         <VisibilityToggle content={thread} onToggle={toggleThreadVisibility}/>
                         <ContentDeleter content={thread} onClick={() => openThreadModal("delete", thread, "goback")}/>
@@ -196,10 +196,10 @@ export function Thread() {
                     <ContentCard content={comment} informationSlot={
                         <>
                             <Voter onVote={(action) => voteComment(comment, action)} content={comment}/>
-                            <ContentReplier content={comment} onClick={() => jumpToCommentCreator(comment)}/>
                         </>
                     } controlSlot={
                         <>
+                            <ContentReplier content={comment} onClick={() => jumpToCommentCreator(comment)}/>
                             <ContentEditToggle content={comment}/>
                             <VisibilityToggle content={comment} onToggle={() => toggleCommentVisibility(comment)}/>
                             <ContentDeleter content={comment} onClick={() => openCommentModal("delete", comment)}/>
