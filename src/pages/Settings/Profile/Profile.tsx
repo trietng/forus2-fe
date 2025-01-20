@@ -106,7 +106,7 @@ export function Profile(props: ProfileProps) {
         } else {
             fetchUser(props.id);
         }
-    }, []);
+    }, [props.id]);
 
 
     return (
@@ -133,7 +133,7 @@ export function Profile(props: ProfileProps) {
                 </ModalContent>
             </Modal>}
             <div className="px-4 [&_label]:text-white">
-                <div className="grid md:flex gap-4">
+                <div className={"grid gap-4" + (props.mode === "edit" ? " md:flex" : "")}>
                     <div className="text-center">
                         {props.mode === "edit" ?
                         <div className={"relative bg-transparent text-transparent hover:text-white cursor-pointer" + (canUpload ? "" : " pointer-events-none")} onClick={pickImage} >

@@ -40,13 +40,13 @@ export function ProfileDropdown() {
                 <Avatar className="[&_img]:opacity-100 cursor-pointer" src={avatar}/>
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile dropdown menu">
-                <DropdownSection showDivider>
-                    <DropdownItem key="profile" textValue="Profile">
+                <DropdownSection showDivider title="Profile">
+                    <DropdownItem key="user" textValue="User" onPress={() => navigate(`/user/${user?.id}`)}>
                         <span className="block text-sm font-medium">{user?.username}</span>
                         {user?.role && <span className="block text-sm">{UserRoleMap[user.role]}</span>}
                     </DropdownItem>
                 </DropdownSection>
-                <DropdownSection>
+                <DropdownSection title="Quick actions">
                     <DropdownItem key="settings" onPress={() => navigate('/settings')} startContent={<Cog6ToothIcon className="size-4"/>}>
                         Settings
                     </DropdownItem>
