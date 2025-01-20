@@ -27,7 +27,7 @@ export function BoxCreator(props: BoxCreatorProps) {
     if (user?.role !== "ROLE_ADMIN") return null;
 
     return (
-        <Button color="primary" onPress={() => openBoxModal("create", props.group)} className={props.className}><PlusIcon className="size-4 place-self-center mr-2"/> Create box</Button>
+        <Button color="primary" onPress={() => openBoxModal("create", props.group)} className={props.className}><PlusIcon className="size-4 place-self-center mr-2"/> Add box</Button>
     );
 }
 
