@@ -142,10 +142,10 @@ export function Profile(props: ProfileProps) {
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
                                 <Spinner color="secondary" className="size-8"/>
                             </div> }
-                            <Avatar src={avatar} size="lg" title="Click to change your avatar" className={"place-self-center [&_img]:opacity-100 hover:brightness-50" + (canUpload ? "" : " brightness-50")}/>
+                            <Avatar src={avatar} size="lg" title="Click to change your avatar" className={"relative left-1/2 -translate-x-1/2 [&_img]:opacity-100 hover:brightness-50" + (canUpload ? "" : " brightness-50")}/>
                             <Input type='file' className="hidden" accept={FILE_INPUT_ACCEPT_VALUE} name="avatar" ref={fileInputRef} onChange={onFileInputChange}/>
                         </div> :
-                        <Avatar className="place-self-center [&_img]:opacity-100" src={avatar} size="lg"/>}
+                        <Avatar className="relative left-1/2 -translate-x-1/2 [&_img]:opacity-100" src={avatar} size="lg"/>}
                         <span className="block text-sm font-medium">{payload?.username}</span>
                         {payload?.role && <span className="block text-sm">{UserRoleMap[payload.role]}</span>}
                     </div>
