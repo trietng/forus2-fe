@@ -15,15 +15,14 @@ interface ForusBreadcrumbProps {
 export function ForusBreadcrumb(props: ForusBreadcrumbProps) {
     return (
         <Breadcrumbs className="[&_a]:!text-white [&_span]:!text-white">
-            <BreadcrumbItem href="/all">
+            <BreadcrumbItem href="/all" key={0}>
                 <BuildingLibraryIcon className="size-4 mr-2"/>
                 All
             </BreadcrumbItem>
             {props.urls.map(({ label, link, disabled }, index) => {
-                // get the previous values and add the current value
                 return (
                     <BreadcrumbItem 
-                        key={index}
+                        key={index + 1}
                         href={link}
                         isDisabled={disabled}
                     >
