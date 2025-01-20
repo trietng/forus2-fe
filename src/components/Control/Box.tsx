@@ -53,10 +53,10 @@ export function BoxEditor() {
     if (user?.role !== "ROLE_ADMIN" && !box?.moderators?.includes(user?.id || '')) return null;
 
     return (
-        <div className="flex">
-            <Button onPress={() => openBoxModal("edit", undefined, box)} className="w-full rounded-none text-white bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Edit</Button>
-            {user?.role === "ROLE_ADMIN" && <Button onPress={() => openBoxModal("rename", undefined, box)} className="w-full rounded-none text-white bg-blue-600 p-3 hover:brightness-105 text-[10px] overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Rename</Button>}
-            {user?.role === "ROLE_ADMIN" && <Button onPress={() => openBoxModal("delete", undefined, box)} className="w-full rounded-none text-white bg-red-500 p-3 hover:brightness-105 text-[10px] overflow-hidden"><TrashIcon className="size-3 place-self-center mr-2 inline"/> Delete</Button>}
+        <div className="grid grid-cols-3">
+            <Button onPress={() => openBoxModal("edit", undefined, box)} className="w-full rounded-none text-white bg-blue-600 p-3 hover:brightness-105 text-[10px] text-ellipsis overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline"/> Edit</Button>
+            {user?.role === "ROLE_ADMIN" && <Button onPress={() => openBoxModal("rename", undefined, box)} className="w-full rounded-none text-white bg-blue-600 p-3 hover:brightness-105 text-[10px] text-ellipsis overflow-hidden"><PencilIcon className="size-3 place-self-center mr-2 inline min-w-3"/> Rename</Button>}
+            {user?.role === "ROLE_ADMIN" && <Button onPress={() => openBoxModal("delete", undefined, box)} className="w-full rounded-none text-white bg-red-500 p-3 hover:brightness-105 text-[10px] text-ellipsis overflow-hidden"><TrashIcon className="size-3 place-self-center mr-2 inline"/> Delete</Button>}
         </div>
     );
 }
