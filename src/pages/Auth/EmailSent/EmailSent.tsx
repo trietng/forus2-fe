@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useLocation, Location, useNavigate } from "react-router-dom";
 
 interface EmailSentState {
-    email: string;
+    address: string;
 }
 
 export function EmailSent() {
@@ -21,7 +21,7 @@ export function EmailSent() {
         location.state && <div className='flex items-center md:justify-center gap-y-8 md:gap-x-24 flex-col md:flex-row my-4'>
             <div className='flex flex-col gap-4 p-4 w-2/3 sm:w-1/3 md:w-1/4  text-sm'>
                 <div>
-                    An email has been sent to <span className='font-semibold'>{location.state.email}</span>.
+                    An email has been sent to <span className='font-semibold'>{location.state.address}</span>.
                 </div>
                 <div className="text-justify">
                     In case you couldn't receive the email, please check your spam folder. Please contact the following address otherwise:
