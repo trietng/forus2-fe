@@ -70,7 +70,7 @@ export function Register() {
                 <Input label='Email' name='email' type='email' onChange={handleInputChange} required/>
                 <Input ref={passwordRef} errorMessage={formValidation.confirmPassword.message !== '' ? formValidation.confirmPassword.message : undefined} isInvalid={!formValidation.confirmPassword.status} label='Password' name='password' type='password' onChange={handlePasswordInputChange} minLength={PASSWORD_MIN_LENGTH} maxLength={PASSWORD_MAX_LENGTH} current-password />
                 <Input label='Confirm password' name='confirmPassword' type='password' onChange={handleConfirmPasswordInputChange} />
-                <Input label='Display name' name='displayName' type='text' onChange={handleInputChange} required minLength={1} maxLength={100}/>
+                <Input label='Display name' name='displayName' type='text' onChange={handleInputChange} required minLength={PASSWORD_MIN_LENGTH} maxLength={PASSWORD_MAX_LENGTH}/>
                 <Button color='primary' type='submit'>Register</Button>
                 <Button color='secondary' as={Link} href='/login'>Login</Button>
                 <div className='self-center mt-12'>&copy; 2023-2024 ForUS</div>
