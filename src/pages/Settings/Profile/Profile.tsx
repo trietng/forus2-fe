@@ -114,7 +114,7 @@ export function Profile(props: ProfileProps) {
     }, [props.id]);
 
     if (dataState === "loading") {
-        return <FallbackSpinner />;
+        return <FallbackSpinner className="h-full"/>;
     }
 
     return (
@@ -140,7 +140,7 @@ export function Profile(props: ProfileProps) {
                     </ModalBody>
                 </ModalContent>
             </Modal>}
-            <div className="px-4 [&_label]:text-white">
+            <div className="px-4">
                 <div className={"grid gap-4" + (props.mode === "edit" ? " md:flex" : "")}>
                     <div className="text-center">
                         {props.mode === "edit" ?

@@ -86,7 +86,7 @@ export function Box() {
             </div>
             {box.threads?.map(thread => (
                 <div key={thread._id} className="mt-4">
-                    <ThreadPreviewCard thread={thread} />
+                    <ThreadPreviewCard thread={thread} mode="elevated"/>
                 </div>
             ))}
             <div className="mt-4">

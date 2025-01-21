@@ -29,7 +29,7 @@ standard.interceptors.response.use((response) => response, (error) => {
     }
   }
   else {
-    toast.error(error.response?.data?.message ?? 'An error occurred');
+    toast.error(error.response?.data?.message);
   }
   return Promise.reject(error);
 });
