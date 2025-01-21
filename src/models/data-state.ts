@@ -1,0 +1,1 @@
+export type DataState = "idle" | "loading" | "error";

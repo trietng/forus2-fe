@@ -13,6 +13,8 @@ import { DESCRIPTION_MAX_LENGTH } from "../../../constants/validation";
 import { uploadImage, deleteImage, getImage } from "../../../firebase/image";
 import { ACCEPTED_IMAGE_MIME_TYPES, FILE_INPUT_ACCEPT_VALUE } from "../../../utils/image";
 import { UNIX_EPOCH_ZERO_ZONED_DATETIME, UTC_TIMEZONE } from "../../../constants/time";
+import { DataState } from "../../../models/data-state";
+import { FallbackSpinner } from "../../../components/FallbackSpinner";
 
 type ProfileMode = "view" | "edit";
 
@@ -30,6 +32,7 @@ export function Profile(props: ProfileProps) {
     const [openModal, setOpenModal] = useState(false);
     const [canUpload, setCanUpload] = useState(true);
     const [avatar, setAvatar] = useState<string>();
+    const [dataState, setDataState] = useState<DataState>("loading");
 
     async function fetchUser(id?: string) {
         const { data } = await api.get(`/v1/users/${id}`);
@@ -37,6 +40,8 @@ export function Profile(props: ProfileProps) {
         setFormData({ description, displayName, dateOfBirth });
         const { email, createdAt } = immutable;
         setImmutableUserDetails({ email, createdAt });
+        // Avatar image is considered non-critical data
+        setDataState("idle");
         await getAvatarImage();
     }
 
@@ -108,6 +113,9 @@ export function Profile(props: ProfileProps) {
         }
     }, [props.id]);
 
+    if (dataState === "loading") {
+        return <FallbackSpinner />;
+    }
 
     return (
         <>

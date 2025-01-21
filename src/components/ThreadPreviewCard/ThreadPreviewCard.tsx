@@ -1,8 +1,7 @@
-import { Card } from "@heroui/react";
+import { useState } from "react"
+import { Card, Link } from "@heroui/react";
 import { Thread } from "../../models/thread";
 import { TextRenderer } from "../Control/TextRenderer/TextRenderer";
-import { useState } from "react"
-import { Link } from "react-router-dom";
 import { ThreadPreviewInfomation } from "../Control/Thread";
 
 interface ThreadPreviewCardProps {
@@ -20,7 +19,7 @@ export function ThreadPreviewCard(props: ThreadPreviewCardProps) {
                 </div>
                 <div className="flex flex-col w-full justify-between">
                     <div>
-                        <Link className="text-lg font-semibold hover:underline" to={`/thread/${props.thread._id}`}>{props.thread.title}</Link>
+                        <Link href={`/thread/${props.thread._id}`} className="font-bold text-lg text-white border rounded-xl p-2 md:border-0 md:p-0 md:hover:underline">{props.thread.title}</Link>
                         <div className="text-sm my-2">
                             <TextRenderer text={props.thread.body} preview onPreviewImageAvailable={(data) => setPreviewImage(data)}/>
                         </div>

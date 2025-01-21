@@ -96,7 +96,7 @@ export function Search() {
                 <Link className={"rounded-lg p-2 hover:text-forus-secondary hover:bg-black/20" + (type === "box" ? " bg-black/10" : "")} to={route(q!, "box")}>Box</Link>
             </div>
             <div className="flex justify-between mt-4">
-                <Pagination isCompact showControls page={parseInt(params.page || '1')} onChange={handlePageChange} total={result.metadata.pageCount || 0}/>
+                <Pagination color="secondary" isCompact showControls page={parseInt(params.page || '1')} onChange={handlePageChange} total={result.metadata.pageCount || 0}/>
             </div>
             {result.threads && result.threads.map((thread) => (
                 <div className="mt-4" key={thread._id}>

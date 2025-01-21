@@ -80,7 +80,7 @@ export function Box() {
             </div>
             <div className="mt-4 flex justify-between">
                 {(box.pageCount || 1) > 1 ? 
-                <Pagination isCompact showControls page={page} onChange={handlePageChange} total={box.pageCount || 0}/> :
+                <Pagination color="secondary" isCompact showControls page={page} onChange={handlePageChange} total={box.pageCount || 0}/> :
                 <div></div>}
                 <ThreadFilter order={order} direction={direction} onApplyFilter={(order, direction) => handleFilter(order, direction)}/>
             </div>

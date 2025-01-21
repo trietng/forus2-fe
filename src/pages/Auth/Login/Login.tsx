@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { Button, Input, Popover, PopoverContent, PopoverTrigger } from '@heroui/react';
+import { Button, Input, Link, Popover, PopoverContent, PopoverTrigger } from '@heroui/react';
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import "./style.css";
@@ -68,8 +68,8 @@ export function Login() {
                     />
                     <Button color='primary' type='submit'>Login</Button>
                     {/* <HR className='my-0'/> */}
-                    <Button color='secondary' onPress={() => navigate('/register')}>Register</Button>
-                    <Button onPress={() => navigate('/forgot-password')} isDisabled>Forgot password</Button>
+                    <Button as={Link} color='secondary' href='/register'>Register</Button>
+                    <Button as={Link} href='/forgot-password' isDisabled>Forgot password</Button>
                     <div className='self-center mt-12'>&copy; 2023-2024 ForUS</div>
                 </form>
             </div>

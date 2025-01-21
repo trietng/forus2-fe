@@ -1,11 +1,10 @@
 import { Key } from "react";
+import { useStore } from "@nanostores/react";
 import { $groups, type Group } from "../../models/group";
 import { GroupEditor } from "../Control/Group";
-import { Link, useNavigate } from "react-router-dom";
 import { BoxSubscriber } from "../Control/Box";
-import { Button } from "@heroui/react";
 import { api } from "../../api";
-import { useStore } from "@nanostores/react";
+import { ResponsiveLink } from "../ResponsiveLink";
 
 interface GroupProps {
     key: Key;
@@ -13,7 +12,6 @@ interface GroupProps {
 }
 
 export function GroupCard(props: GroupProps) {
-    const navigate = useNavigate();
     const groups = useStore($groups);
 
     async function subscribe(id?: string) {
@@ -45,8 +43,7 @@ export function GroupCard(props: GroupProps) {
             <ul className="text-forus-primary">
                 {props.group.boxes!.map((box) => (
                     <li key={box._id} className="flex flex-col md:flex-row md:items-center justify-between p-3 border-b">
-                        <Link to={`/box/${box._id}`} className="font-semibold hover:underline hidden md:block">{box.name}</Link>
-                        <Button variant="ghost" className="border-forus-primary text-forus-primary font-semibold text-medium justify-start md:hidden" onPress={() => navigate(`/box/${box._id}`)}>{box.name}</Button>
+                        <ResponsiveLink href={`/box/${box._id}`} className="border-forus-primary text-forus-primary">{box.name}</ResponsiveLink>
                         <div className="-mx-3 my-2 md:hidden"/>
                         <div className="flex gap-4 items-center justify-evenly">
                             <div className="flex flex-col items-center justify-center">

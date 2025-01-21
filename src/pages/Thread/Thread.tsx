@@ -189,7 +189,7 @@ export function Thread() {
                 } onSaveContent={saveThread}/>
             </div>
             <div className="mt-4 flex justify-between">
-                <Pagination isCompact showControls page={page} onChange={handlePageChange} total={thread.pageCount || 0}/>
+                <Pagination color="secondary" isCompact showControls page={page} onChange={handlePageChange} total={thread.pageCount || 0}/>
             </div>
             {thread.comments?.map(comment => 
                 <div className="mt-4" key={comment._id}>

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { Button, Input } from '@heroui/react';
+import { Button, Input, Link } from '@heroui/react';
 import { toast } from 'react-toastify';
 import { api } from '../../../api';
 import { FormValidationData } from '../../../models/form-validation-data';
@@ -70,7 +70,7 @@ export function Register() {
                 <Input label='Confirm password' name='confirmPassword' type='password' onChange={handleConfirmPasswordInputChange} />
                 <Input label='Display name' name='displayName' type='text' onChange={handleInputChange} required minLength={1} maxLength={100}/>
                 <Button color='primary' type='submit'>Register</Button>
-                <Button color='secondary' onPress={() => navigate('/login')}>Login</Button>
+                <Button color='secondary' as={Link} href='/login'>Login</Button>
                 <div className='self-center mt-12'>&copy; 2023-2024 ForUS</div>
             </form>
         </div>
