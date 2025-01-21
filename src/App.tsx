@@ -7,12 +7,14 @@ import SimpleLayout from './layouts/SimpleLayout';
 import Forbidden from './pages/Forbidden';
 import All from './pages/All';
 import Login from './pages/Auth/Login';
-import NotFound from './pages/NotFound';
+import NotFound from './pages/ErrorPage';
 import Register from './pages/Auth/Register';
 import Settings from './pages/Settings';
 import Home from './pages/Home';
 import { FallbackSpinner } from './components/FallbackSpinner';
 import MainLayout from './layouts/MainLayout';
+import EmailSent from './pages/Auth/EmailSent';
+import ErrorPage from './pages/ErrorPage';
 const Box = lazy(() => import('./pages/Box'));
 const Thread = lazy(() => import('./pages/Thread'));
 const User = lazy(() => import('./pages/User'));
@@ -75,10 +77,11 @@ function App() {
                         </AuthGuard>
                     }/>
                     <Route path='/register' element={<Register/>}/>
+                    <Route path='/email-sent' element={<EmailSent/>}/>
                 </Route>
                 <Route element={<SimpleLayout header={false}/>}>
-                <Route path='/403' element={<Forbidden/>}/>
-                <Route path='*' element={<NotFound/>}/>
+                <Route path='/403' element={<ErrorPage code={403} message="Forbidden" hideGoBack/>}/>
+                <Route path='*' element={<ErrorPage code={404} message="Page not found"/>}/>
                 </Route>
             </Routes>
         </HeroUIProvider>
