@@ -1,5 +1,5 @@
 import { ExclamationCircleIcon, ArrowPathIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { Modal, Button, ModalContent, ModalBody } from "@heroui/react";
+import { Modal, Button, ModalContent, ModalBody, Spinner } from "@heroui/react";
 import { BlinkingDots } from "../BlinkingDots";
 import { atom } from "nanostores";
 import { useStore } from "@nanostores/react";
@@ -32,7 +32,7 @@ export function ContentModal(props: ContentModalProps) {
                     <div className="m-4 flex flex-col justify-center items-center text-white">
                         {contentModalState === "loading" ?
                         <>
-                            {/* <Spinner color="secondary" className="size-8 mb-2"/> */}
+                            <Spinner color="secondary" className="mb-2"/>
                             <div>Saving content <BlinkingDots/></div> 
                         </> :
                         <>

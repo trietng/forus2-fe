@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import { HeroUIProvider } from "@heroui/react";
 import { SimpleHeader } from "./SimpleHeader";
 import { ToastContainer, Bounce } from "react-toastify";
 
@@ -10,7 +9,7 @@ interface SimpleLayoutProps {
 
 export function SimpleLayout(props: SimpleLayoutProps) {
     return (
-        <HeroUIProvider>
+        <div>
             <div className={'min-h-screen flex flex-col antialiased' + (props.className ? ' ' + props.className : '')}>
                 {(props.header !== false) && <SimpleHeader />}
                 <div className='my-auto'>
@@ -30,6 +29,6 @@ export function SimpleLayout(props: SimpleLayoutProps) {
                 theme="light"
                 transition={Bounce}
             />
-        </HeroUIProvider>
+        </div>
     );
 }

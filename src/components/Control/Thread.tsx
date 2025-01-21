@@ -120,8 +120,11 @@ export function ThreadCommentCounter(props: ThreadCommentCounterProps) {
     );
 }
 
+export type ThreadInfomationMode = "compact" | "elevated";
+
 interface ThreadInfomationProps {
     thread: Thread;
+    mode: ThreadInfomationMode;
     vertical?: boolean;
 }
 
@@ -164,8 +167,12 @@ export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
                 <ThreadCommentCounter thread={props.thread} vertical/>
             </div>
             <div className="mt-2 flex flex-col justify-center items-center gap-2">
-                <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
-                <ContentDeleter content={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
+                {props.mode === "elevated" && (
+                    <>
+                        <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
+                        <ContentDeleter content={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
+                    </>
+                )}
             </div>
         </> :    
         <div className="flex justify-between flex-wrap">
@@ -178,8 +185,12 @@ export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
                 <div className="py-2 ms-2 md:flex justify-stretch items-center gap-4 hidden">
                     <ThreadCommentCounter thread={props.thread}/>
                     <Voter onVote={(action) => voteThread(props.thread, action)} content={props.thread}/>
-                    <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
-                    <ContentDeleter content={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
+                    {props.mode === "elevated" && (
+                        <>
+                            <VisibilityToggle content={props.thread} onToggle={toggleThreadVisibilityInBox}/>
+                            <ContentDeleter content={props.thread} onClick={() => openThreadModal("delete", props.thread, "refresh")}/>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

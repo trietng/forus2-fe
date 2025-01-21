@@ -17,7 +17,7 @@ export function Voter(props: VoterProps) {
                     props.onVote("upvote");
                 }
             }} className={
-                "hover:bg-green-500 p-2 text-center rounded-s-lg" + 
+                "hover:bg-green-500 p-2 text-center rounded-t-lg md:rounded-s-lg md:rounded-tr-none" + 
                 (props.vertical === true ? " w-full" : " h-full") +
                 (props.content.voteStatus === 1 ? " bg-green-500" : "") +
                 (props.onVote ? "" : " cursor-not-allowed")
@@ -30,7 +30,7 @@ export function Voter(props: VoterProps) {
                     props.onVote("downvote");
                 }
             }} className={
-                "hover:bg-red-500 p-2 text-center rounded-e-lg" + 
+                "hover:bg-red-500 p-2 text-center rounded-b-lg md:rounded-e-lg md:rounded-bl-none" + 
                 (props.vertical === true ? " w-full" : " h-full") +
                 (props.content.voteStatus === -1 ? " bg-red-500" : "") +
                 (props.onVote ? "" : " cursor-not-allowed")

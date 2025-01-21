@@ -80,13 +80,13 @@ export function Box() {
             </div>
             <div className="mt-4 flex justify-between">
                 {(box.pageCount || 1) > 1 ? 
-                <Pagination isCompact showControls page={page} onChange={handlePageChange} total={box.pageCount || 0}/> :
+                <Pagination color="secondary" isCompact showControls page={page} onChange={handlePageChange} total={box.pageCount || 0}/> :
                 <div></div>}
                 <ThreadFilter order={order} direction={direction} onApplyFilter={(order, direction) => handleFilter(order, direction)}/>
             </div>
             {box.threads?.map(thread => (
                 <div key={thread._id} className="mt-4">
-                    <ThreadPreviewCard thread={thread} />
+                    <ThreadPreviewCard thread={thread} mode="elevated"/>
                 </div>
             ))}
             <div className="mt-4">

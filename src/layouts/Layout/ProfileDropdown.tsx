@@ -41,13 +41,13 @@ export function ProfileDropdown() {
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile dropdown menu">
                 <DropdownSection showDivider title="Profile">
-                    <DropdownItem key="user" textValue="User" onPress={() => navigate(`/user/${user?.id}`)}>
+                    <DropdownItem key="user" textValue="User" href={`/user/${user?.id}`}>
                         <span className="block text-sm font-medium">{user?.username}</span>
                         {user?.role && <span className="block text-sm">{UserRoleMap[user.role]}</span>}
                     </DropdownItem>
                 </DropdownSection>
                 <DropdownSection title="Quick actions">
-                    <DropdownItem key="settings" onPress={() => navigate('/settings')} startContent={<Cog6ToothIcon className="size-4"/>}>
+                    <DropdownItem key="settings" href="/settings" startContent={<Cog6ToothIcon className="size-4"/>}>
                         Settings
                     </DropdownItem>
                     <DropdownItem key="logout" onPress={() => logout()} startContent={<ArrowLeftStartOnRectangleIcon className="size-4"/>}>

@@ -38,7 +38,7 @@ export function Reply(props: ReplyProps) {
     }
 
     return (
-        <div className={"justify-between rounded-lg overflow-hidden bg-forus-body-secondary" + (props.mode === "reply" ? " border border-primary" : "")}>
+        <div className={"justify-between rounded-lg overflow-hidden bg-forus-body-secondary" + (props.mode === "reply" ? " border border-forus-primary" : "")}>
             <div className="flex justify-between items-center bg-forus-primary p-4">
                 <span onClick={() => handleGoToOriginalComment()} className="font-bold hover:underline cursor-pointer">{props.reply.author && props.reply.author.displayName} {' '} said:</span>
                 {props.mode !== "reply" && <Button color="danger" onPress={() => {
@@ -58,7 +58,7 @@ export function Reply(props: ReplyProps) {
 
 export function MissingReply() {
     return (
-        <div className="justify-between rounded-lg overflow-hidden bg-forus-body-secondary border border-primary">
+        <div className="justify-between rounded-lg overflow-hidden bg-forus-body-secondary border border-forus-primary">
             <div className="flex justify-between items-center bg-forus-primary p-4">
                 [unavailable] said:
             </div>
