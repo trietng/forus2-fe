@@ -4,6 +4,7 @@ import { HeroUIProvider } from '@heroui/react';
 import { AuthGuard } from './guards/AuthGuard';
 import Layout from './layouts/Layout';
 import SimpleLayout from './layouts/SimpleLayout';
+import AuthLayout from './layouts/AuthLayout';
 import All from './pages/All';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -14,6 +15,8 @@ import MainLayout from './layouts/MainLayout';
 import EmailSent from './pages/Auth/EmailSent';
 import ErrorPage from './pages/ErrorPage';
 import EmailVerified from './pages/Auth/EmailVerified';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import ResetPassword from './pages/Auth/ResetPassword';
 const Box = lazy(() => import('./pages/Box'));
 const Thread = lazy(() => import('./pages/Thread'));
 const User = lazy(() => import('./pages/User'));
@@ -69,19 +72,21 @@ function App() {
                 }>
                     <Route path="/search/:page" element={<Suspense fallback={<FallbackSpinner/>}><Search/></Suspense>}/>
                 </Route>
-                <Route element={<SimpleLayout header={false} className='bg-forus-tertiary'/>}>
+                <Route element={<AuthLayout className='bg-forus-tertiary'/>}>
                     <Route path='/login' element={
                         <AuthGuard reverse>
                             <Login/>
                         </AuthGuard>
                     }/>
                     <Route path='/register' element={<Register/>}/>
-                    <Route path='/email-sent' element={<EmailSent/>}/>
-                    <Route path='/email-verified' element={<EmailVerified/>}/>
+                    <Route path='/email_sent' element={<EmailSent/>}/>
+                    <Route path='/email_verified' element={<EmailVerified/>}/>
+                    <Route path='/forgot_password' element={<ForgotPassword/>}/>
+                    <Route path='/reset_password' element={<ResetPassword/>}/>
                 </Route>
-                <Route element={<SimpleLayout header={false}/>}>
-                <Route path='/403' element={<ErrorPage code={403} message="Forbidden" hideGoBack/>}/>
-                <Route path='*' element={<ErrorPage code={404} message="Page not found"/>}/>
+                <Route element={<SimpleLayout hideHeader hideToast/>}>
+                    <Route path='/403' element={<ErrorPage code={403} message="Forbidden" hideGoBack/>}/>
+                    <Route path='*' element={<ErrorPage code={404} message="Page not found"/>}/>
                 </Route>
             </Routes>
         </HeroUIProvider>
