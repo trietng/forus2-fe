@@ -20,6 +20,7 @@ export function EmailSent() {
     return (
         location.state && <div className='flex items-center md:justify-center gap-y-8 md:gap-x-24 flex-col md:flex-row my-4'>
             <div className='flex flex-col gap-4 p-4 w-2/3 sm:w-1/3 md:w-1/4  text-sm'>
+                <img src='/assets/logo.svg' className='w-2/3 self-center' alt='logo'/>
                 <div>
                     An email has been sent to <span className='font-semibold'>{location.state.address}</span>.
                 </div>
