@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, createRef, FormEvent, useEffect, useState } from 'react';
-import { Button, Input, Link } from '@heroui/react';
+import { Button, Input, Link, Spinner } from '@heroui/react';
 import { toast } from 'react-toastify';
 import { api } from '../../../api';
 import { FormValidationData } from '../../../models/form-validation-data';
 import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, VALIDATION_MESSAGE_CONFIRM_PASSWORD, VALIDATION_MESSAGE_FORM } from '../../../constants/validation';
+import { DataState } from '../../../models/data-state';
 
 interface RegisterFormData {
     username: string;
@@ -17,6 +18,7 @@ interface RegisterFormData {
 export function Register() {
     const navigate = useNavigate();
     const passwordRef = createRef<HTMLInputElement>();
+    const [state, setState] = useState<DataState>('idle');
     const [formData, setFormData] = useState<RegisterFormData>({username: '', email: '', password: '', confirmPassword: '', displayName: ''});
     const [formValidation, setFormValidation] = useState<Record<keyof RegisterFormData, FormValidationData>>({
         username: {status: true, message: ''},
@@ -48,10 +50,15 @@ export function Register() {
             toast.error(VALIDATION_MESSAGE_FORM);
         }
         else {
+            setState('loading');
             const { confirmPassword, ...registerFormData } = formData;
-            await api.post('/v1/auth/register', registerFormData);
-            const { email, ...loginFormData } = registerFormData;
-            navigate('/login', { state: loginFormData });
+            try {
+                await api.post('/v1/auth/register', registerFormData);
+                const { email } = registerFormData;
+                navigate('/email_sent', { state: { address: email } });
+            } finally {
+                setState('idle');
+            }
         }
     }
 
@@ -63,6 +70,7 @@ export function Register() {
 
     return (
         <div className='flex items-center md:justify-center gap-y-8 md:gap-x-24 flex-col md:flex-row my-4'>
+            {state === 'idle' ?
             <form className='flex flex-col gap-4 p-4 w-2/3 md:w-1/4' onSubmit={handleSubmit} noValidate>
                 <img src='/assets/logo.svg' className='w-2/3 self-center'/>
                 <h1 className='text-3xl font-semibold text-black text-center'>Register</h1>
@@ -74,7 +82,8 @@ export function Register() {
                 <Button color='primary' type='submit'>Register</Button>
                 <Button color='secondary' as={Link} href='/login'>Login</Button>
                 <div className='self-center mt-12'>&copy; 2023-2024 ForUS</div>
-            </form>
+            </form> :
+            <Spinner color='secondary'/>}
         </div>
     );
 }

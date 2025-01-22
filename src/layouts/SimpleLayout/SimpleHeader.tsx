@@ -1,5 +1,4 @@
 import { Logo } from '../../components/Logo';
-import './simple.css';
 
 export function SimpleHeader() {
   return (

@@ -1,0 +1,1 @@
+export { EmailSent as default } from './EmailSent';
