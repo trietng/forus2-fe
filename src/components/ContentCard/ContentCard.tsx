@@ -35,7 +35,7 @@ export function ContentCard(props: ContentCardProps) {
     return (
         <div className="flex flex-col md:flex-row content-card" id={props.content._id}>
             {props.hideUserInformation !== true && <Card className="text-white p-6 hidden md:flex bg-forus-primary border-none rounded-e-none min-w-36">
-                <div className="place-self-start h-full text-center">
+                <div className="place-self-center h-full text-center">
                     <Avatar className="[&_img]:opacity-100 place-self-center" size="lg" src={avatarUrl}/>
                     <Link className="text-sm font-medium mt-1 hover:underline" to={`/user/${props.content.author?._id}`}>{props.content.author?.displayName}</Link>
                     {props.content.author?.role && <span className="block text-sm">{UserRoleMap[props.content.author?.role]}</span>}
