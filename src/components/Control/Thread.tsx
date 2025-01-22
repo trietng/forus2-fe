@@ -176,7 +176,7 @@ export function ThreadPreviewInfomation(props: ThreadInfomationProps) {
             </div>
         </> :    
         <div className="flex justify-between flex-wrap">
-            <div className="flex gap-2 justify-center">
+            <div className="flex gap-2 justify-center items-center">
                 <Avatar className="[&_img]:opacity-100" src={avatarUrl}/>
                 <div className="flex flex-col justify-center">
                     <Link className="text-sm hover:underline" to={`/user/${props.thread.author?._id}`}>{props.thread.author?.displayName}</Link>
