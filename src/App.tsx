@@ -72,12 +72,12 @@ function App() {
                 }>
                     <Route path="/search/:page" element={<Suspense fallback={<FallbackSpinner/>}><Search/></Suspense>}/>
                 </Route>
-                <Route element={<AuthLayout className='bg-forus-tertiary'/>}>
-                    <Route path='/login' element={
-                        <AuthGuard reverse>
-                            <Login/>
+                <Route element={
+                    <AuthGuard reverse>
+                        <AuthLayout className='bg-forus-tertiary'/>
                         </AuthGuard>
-                    }/>
+                }>
+                    <Route path='/login' element={<Login/>}/>
                     <Route path='/register' element={<Register/>}/>
                     <Route path='/email_sent' element={<EmailSent/>}/>
                     <Route path='/email_verified' element={<EmailVerified/>}/>

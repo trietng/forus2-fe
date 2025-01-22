@@ -4,6 +4,7 @@ import { Avatar, Button, Modal, Textarea, Input, Spinner, ModalContent, ModalBod
 import { PencilIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
 import { parseAbsolute, ZonedDateTime } from "@internationalized/date";
+import { atom } from "nanostores";
 import { Payload } from "../../../models/payload";
 import { getDecodedPayload } from "../../../helpers/jwt";
 import { UserRoleMap } from "../../../models/role";
@@ -23,6 +24,8 @@ interface ProfileProps {
     id?: string;
 }
 
+export const $email = atom<string | undefined>();
+
 export function Profile(props: ProfileProps) {
     const navigate = useNavigate();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -40,6 +43,8 @@ export function Profile(props: ProfileProps) {
         setFormData({ description, displayName, dateOfBirth });
         const { email, createdAt } = immutable;
         setImmutableUserDetails({ email, createdAt });
+        // set email for later use in the security page
+        $email.set(email);
         // Avatar image is considered non-critical data
         setDataState("idle");
         await getAvatarImage();
